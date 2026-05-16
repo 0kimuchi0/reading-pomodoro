@@ -154,15 +154,15 @@ const BOOKSHELF_HELP = [
         {/* カード1 */}
         <rect x="20" y="48" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
         <text x="34" y="65" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">吾輩は猫である</text>
-        <text x="119" y="65" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        <text x="252" y="65" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
         {/* カード2 */}
         <rect x="20" y="80" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
         <text x="34" y="97" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">坊っちゃん</text>
-        <text x="94" y="97" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        <text x="252" y="97" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
         {/* カード3 */}
         <rect x="20" y="112" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
         <text x="34" y="129" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">こころ</text>
-        <text x="72" y="129" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        <text x="252" y="129" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
         {/* ヒット数 */}
         <text x="140" y="152" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
       </svg>
