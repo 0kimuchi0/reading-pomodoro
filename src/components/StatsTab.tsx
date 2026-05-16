@@ -53,7 +53,7 @@ const STATS_HELP = [
     icon: <IconCalendar size={18} />,
     title: '月間読書カレンダー',
     desc: 'セッションのあった日をカレンダー上でハイライト表示します',
-    detail: '月ごとのカレンダーでセッションを記録した日を色付きで表示します。読書習慣のパターンを視覚的に把握できます。◀▶ボタンで月を移動できます。',
+    detail: '月ごとのカレンダーでセッションを記録した日を色付きで表示します。セッション数に応じて色の濃さが変わるヒートマップ表示で、読書習慣のパターンを視覚的に把握できます。日付にマウスオーバーすると読んだ本・セッション数・集中時間が確認できます。◀▶ボタンで月を移動できます。',
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
@@ -367,8 +367,16 @@ function MonthCalendar({ sessions }: { sessions: Session[] }) {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth()) // 0-indexed
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null)
 
-  const sessionDates = new Set(sessions.map(s => s.date))
+  // Map date -> Session[]
+  const sessionsByDate = new Map<string, Session[]>()
+  sessions.forEach(s => {
+    const arr = sessionsByDate.get(s.date) ?? []
+    arr.push(s)
+    sessionsByDate.set(s.date, arr)
+  })
+
   const today = toLocalDate(new Date())
 
   const firstDow = new Date(year, month, 1).getDay() // 0=Sun
@@ -387,6 +395,19 @@ function MonthCalendar({ sessions }: { sessions: Session[] }) {
   }
   const canGoNext = new Date(year, month + 1, 1) <= now
 
+  // Monthly stats
+  const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`
+  const monthSessions = sessions.filter(s => s.date.startsWith(monthKey))
+  const monthMinutes = monthSessions.reduce((sum, s) => sum + s.duration, 0)
+  const monthDays = new Set(monthSessions.map(s => s.date)).size
+
+  const intensityClass = (count: number) => {
+    if (count === 0) return ''
+    if (count === 1) return 'intensity-1'
+    if (count === 2) return 'intensity-2'
+    return 'intensity-3'
+  }
+
   return (
     <div className="cal-wrap">
       <div className="cal-nav">
@@ -401,17 +422,48 @@ function MonthCalendar({ sessions }: { sessions: Session[] }) {
         {cells.map((day, i) => {
           if (day === null) return <div key={`e-${i}`} className="cal-empty" />
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-          const hasSession = sessionDates.has(dateStr)
+          const daySessions = sessionsByDate.get(dateStr) ?? []
+          const count = daySessions.length
           const isToday = dateStr === today
+          const ic = intensityClass(count)
+          const isHovered = hoveredDate === dateStr
+          // deduplicated book titles for tooltip
+          const books = [...new Set(daySessions.map(s => s.bookTitle))]
+          const dayMinutes = daySessions.reduce((sum, s) => sum + s.duration, 0)
           return (
             <div
               key={day}
-              className={`cal-day${hasSession ? ' has-session' : ''}${isToday ? ' is-today' : ''}`}
+              className={`cal-day${ic ? ` has-session ${ic}` : ''}${isToday ? ' is-today' : ''}${count > 0 ? ' cal-day-hover' : ''}`}
+              onMouseEnter={() => { if (count > 0) setHoveredDate(dateStr) }}
+              onMouseLeave={() => setHoveredDate(null)}
             >
               {day}
+              {isHovered && count > 0 && (
+                <div className="cal-tooltip">
+                  <div className="cal-tooltip-count">{count}セッション / {dayMinutes}分</div>
+                  {books.map(title => (
+                    <div key={title} className="cal-tooltip-book">{title}</div>
+                  ))}
+                </div>
+              )}
             </div>
           )
         })}
+      </div>
+
+      {/* Monthly stats */}
+      <div className="cal-stats">
+        <span className="cal-stat"><strong>{monthDays}</strong>日 読書</span>
+        <span className="cal-stat"><strong>{monthSessions.length}</strong>セッション</span>
+        <span className="cal-stat"><strong>{monthMinutes}</strong>分 集中</span>
+      </div>
+
+      {/* Intensity legend */}
+      <div className="cal-legend">
+        <span className="cal-legend-label">セッション数:</span>
+        <span className="cal-legend-item intensity-1">1</span>
+        <span className="cal-legend-item intensity-2">2</span>
+        <span className="cal-legend-item intensity-3">3+</span>
       </div>
     </div>
   )
