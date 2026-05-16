@@ -670,7 +670,7 @@ export default function StatsTab({ books, sessions }: Props) {
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 16, left: 4, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis dataKey="month" tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 20, right: 20 }} />
+              <XAxis dataKey="month" tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 8, right: 8 }} />
               <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={40} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="集中時間" fill="#534AB7" radius={[4, 4, 0, 0]} maxBarSize={40} />
