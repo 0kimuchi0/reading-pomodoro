@@ -344,21 +344,33 @@ function getMonthlyData(sessions: Session[]): { month: string; 集中時間: num
   return result
 }
 
-function getCumulativeData(sessions: Session[]): { month: string; 累計セッション: number }[] {
+function getCumulativeData(sessions: Session[]): { week: string; 累計セッション: number }[] {
   if (sessions.length === 0) return []
-  const months = sessions.map(s => s.date.slice(0, 7)).sort()
-  const minMonth = months[0]
-  const maxMonth = toLocalDate(new Date()).slice(0, 7)
-  const result: { month: string; 累計セッション: number }[] = []
+  const sorted = [...sessions].sort((a, b) => a.date.localeCompare(b.date))
+
+  // Return Monday of the week containing dateStr
+  const getWeekStart = (dateStr: string): Date => {
+    const d = new Date(dateStr)
+    d.setHours(0, 0, 0, 0)
+    const day = d.getDay() // 0=Sun
+    d.setDate(d.getDate() - (day === 0 ? 6 : day - 1))
+    return d
+  }
+
+  const firstWeek = getWeekStart(sorted[0].date)
+  const currentWeek = getWeekStart(toLocalDate(new Date()))
+  const result: { week: string; 累計セッション: number }[] = []
   let cumulative = 0
-  let [y, m] = minMonth.split('-').map(Number)
-  const [ey, em] = maxMonth.split('-').map(Number)
-  while (y < ey || (y === ey && m <= em)) {
-    const key = `${y}-${String(m).padStart(2, '0')}`
-    cumulative += sessions.filter(s => s.date.startsWith(key)).length
-    result.push({ month: `${y % 100}/${m}`, 累計セッション: cumulative })
-    m++
-    if (m > 12) { m = 1; y++ }
+  const cur = new Date(firstWeek)
+
+  while (cur <= currentWeek) {
+    const weekStartStr = toLocalDate(cur)
+    const next = new Date(cur)
+    next.setDate(next.getDate() + 7)
+    const weekEndStr = toLocalDate(next)
+    cumulative += sessions.filter(s => s.date >= weekStartStr && s.date < weekEndStr).length
+    result.push({ week: `${cur.getMonth() + 1}/${cur.getDate()}`, 累計セッション: cumulative })
+    cur.setDate(cur.getDate() + 7)
   }
   return result
 }
@@ -642,10 +654,15 @@ export default function StatsTab({ books, sessions }: Props) {
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <LineChart data={cumulativeData} margin={{ top: 5, right: 20, left: 0, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis dataKey="month" tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} />
+              <XAxis
+                dataKey="week"
+                interval={cumulativeData.length > 16 ? Math.ceil(cumulativeData.length / 8) - 1 : cumulativeData.length > 8 ? 1 : 0}
+                tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }}
+                axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30}
+              />
               <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={36} />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="累計セッション" stroke="#7C75D4" strokeWidth={2} dot={{ r: 4, fill: '#7C75D4' }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey="累計セッション" stroke="#7C75D4" strokeWidth={2} dot={cumulativeData.length > 20 ? false : { r: 3, fill: '#7C75D4' }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
