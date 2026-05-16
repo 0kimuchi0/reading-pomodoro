@@ -627,7 +627,7 @@ export default function StatsTab({ books, sessions }: Props) {
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
               <YAxis dataKey="name" type="category" width={isMobile ? 76 : 110} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="ページ/分" fill="#A8A3E3" radius={[0, 4, 4, 0]} maxBarSize={24} />
+              <Bar dataKey="ページ/分" fill="#7C75D4" radius={[0, 4, 4, 0]} maxBarSize={24} />
             </BarChart>
           </ResponsiveContainer>
         )}
