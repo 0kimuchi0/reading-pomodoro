@@ -1425,15 +1425,22 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .help-detail-panel { padding: 16px 20px; }
 }
 
+/* タブ：アイコンのみ (≤ 600px) */
+@media (max-width: 600px) {
+  .tab-btn { padding: 8px 12px; gap: 0; font-size: 0; }
+  .tab-btn svg { display: block; }
+  .app-header { padding: 10px 14px; margin: 6px 0 0; }
+  .app-title { font-size: 1.05rem; }
+}
+
 /* モバイル (≤ 480px) */
 @media (max-width: 480px) {
   /* ヘッダー */
   .app-header { padding: 10px 12px; margin: 4px 0 0; }
   .app-title { font-size: 1rem; }
 
-  /* タブナビ：テキストを非表示にしてアイコンのみ */
-  .tab-btn { padding: 8px 10px; gap: 0; font-size: 0; }
-  .tab-btn svg { display: block; }
+  /* タブナビ */
+  .tab-btn { padding: 8px 10px; }
 
   /* メインコンテンツ */
   .app-main { padding: 10px 8px; }
