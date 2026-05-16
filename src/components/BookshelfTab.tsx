@@ -140,26 +140,25 @@ const BOOKSHELF_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* 検索バー */}
-        <rect x="20" y="20" width="240" height="32" rx="8" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
-        <circle cx="36" cy="36" r="6" fill="none" stroke="#534AB7" strokeWidth="1.5" />
-        <line x1="40" y1="40" x2="44" y2="44" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
-        <text x="54" y="41" fontSize="11" fill="#534AB7" fontFamily="sans-serif">夏目</text>
-        {/* × ボタン */}
-        <circle cx="246" cy="36" r="8" fill="#E2E1F0" />
-        <text x="246" y="40" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">×</text>
-        {/* 結果リスト */}
+        <rect x="20" y="14" width="240" height="28" rx="8" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
+        <circle cx="35" cy="28" r="5" fill="none" stroke="#534AB7" strokeWidth="1.5" />
+        <line x1="39" y1="32" x2="42" y2="35" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
+        <text x="50" y="33" fontSize="11" fill="#534AB7" fontFamily="sans-serif">夏目</text>
+        <circle cx="246" cy="28" r="7" fill="#E2E1F0" />
+        <text x="246" y="32" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">×</text>
+        {/* 結果リスト（カード高さ34、間隔38） */}
         {[
-          { title: '吾輩は猫である', sub: '夏目漱石', match: true },
-          { title: '坊っちゃん', sub: '夏目漱石', match: true },
-          { title: 'こころ', sub: '夏目漱石', match: true },
+          { title: '吾輩は猫である', sub: '夏目漱石' },
+          { title: '坊っちゃん',     sub: '夏目漱石' },
+          { title: 'こころ',         sub: '夏目漱石' },
         ].map((item, i) => (
           <g key={i}>
-            <rect x="20" y={64 + i * 28} width="240" height="24" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
-            <text x="34" y={80 + i * 28} fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{item.title}</text>
-            <text x="34" y={93 + i * 28} fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{item.sub}</text>
+            <rect x="20" y={52 + i * 36} width="240" height="30" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
+            <text x="34" y={67 + i * 36} fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{item.title}</text>
+            <text x="34" y={79 + i * 36} fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{item.sub}</text>
           </g>
         ))}
-        <text x="140" y="152" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
+        <text x="245" y="156" textAnchor="end" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
       </svg>
     ),
   },

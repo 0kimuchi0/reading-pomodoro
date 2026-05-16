@@ -137,21 +137,15 @@ const TIMER_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* カード1：セッション数 */}
-        <rect x="30" y="30" width="100" height="100" rx="12" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="80" y="72" textAnchor="middle" fontSize="32" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">3</text>
-        <text x="80" y="100" textAnchor="middle" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">今日のセッション</text>
-        {/* バーグラフ小 */}
-        <rect x="54" y="108" width="12" height="14" rx="3" fill="#EEEDfA" />
-        <rect x="72" y="102" width="12" height="20" rx="3" fill="#C8C4F0" />
-        <rect x="90" y="96" width="12" height="26" rx="3" fill="#534AB7" />
+        <rect x="20" y="24" width="112" height="112" rx="14" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="76" y="78" textAnchor="middle" fontSize="36" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">3</text>
+        <text x="76" y="100" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">今日の</text>
+        <text x="76" y="114" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">セッション</text>
         {/* カード2：集中時間 */}
-        <rect x="150" y="30" width="100" height="100" rx="12" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="200" y="72" textAnchor="middle" fontSize="32" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">75</text>
-        <text x="200" y="100" textAnchor="middle" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">今日の集中（分）</text>
-        {/* 時計アイコン */}
-        <circle cx="200" cy="116" r="10" fill="none" stroke="#EEEDfA" strokeWidth="2" />
-        <line x1="200" y1="110" x2="200" y2="116" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="200" y1="116" x2="205" y2="119" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
+        <rect x="148" y="24" width="112" height="112" rx="14" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="204" y="78" textAnchor="middle" fontSize="36" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">75</text>
+        <text x="204" y="100" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">今日の集中</text>
+        <text x="204" y="114" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">（分）</text>
       </svg>
     ),
   },
