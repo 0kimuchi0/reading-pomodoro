@@ -27,24 +27,24 @@ const TIMER_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         {/* 背景 */}
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* リング背景 */}
-        <circle cx="140" cy="82" r="58" fill="none" stroke="#E2E1F0" strokeWidth="10" />
+        {/* 上部ラベル（リングと十分な間隔） */}
+        <text x="140" y="14" textAnchor="middle" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">ポモドーロタイマー</text>
+        {/* リング背景（cy=92に下げて余白確保） */}
+        <circle cx="140" cy="92" r="56" fill="none" stroke="#E2E1F0" strokeWidth="10" />
         {/* リング進捗（約75%） */}
         <circle
-          cx="140" cy="82" r="58"
+          cx="140" cy="92" r="56"
           fill="none" stroke="#534AB7" strokeWidth="10"
-          strokeDasharray={`${2 * Math.PI * 58 * 0.75} ${2 * Math.PI * 58 * 0.25}`}
-          strokeDashoffset={`${2 * Math.PI * 58 * 0.25}`}
+          strokeDasharray={`${2 * Math.PI * 56 * 0.75} ${2 * Math.PI * 56 * 0.25}`}
+          strokeDashoffset={`${2 * Math.PI * 56 * 0.25}`}
           strokeLinecap="round"
-          transform="rotate(-90 140 82)"
+          transform="rotate(-90 140 92)"
         />
         {/* 時刻テキスト */}
-        <text x="140" y="78" textAnchor="middle" fontSize="22" fontWeight="700" fill="#1A1A2E" fontFamily="sans-serif">25:00</text>
+        <text x="140" y="88" textAnchor="middle" fontSize="22" fontWeight="700" fill="#1A1A2E" fontFamily="sans-serif">25:00</text>
         {/* 集中バッジ */}
-        <rect x="112" y="90" width="56" height="20" rx="10" fill="#EEEDfA" />
-        <text x="140" y="104" textAnchor="middle" fontSize="11" fontWeight="600" fill="#534AB7" fontFamily="sans-serif">集中</text>
-        {/* 上部ラベル */}
-        <text x="140" y="18" textAnchor="middle" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">ポモドーロタイマー</text>
+        <rect x="112" y="100" width="56" height="20" rx="10" fill="#EEEDfA" />
+        <text x="140" y="114" textAnchor="middle" fontSize="11" fontWeight="600" fill="#534AB7" fontFamily="sans-serif">集中</text>
       </svg>
     ),
   },
@@ -85,18 +85,18 @@ const TIMER_HELP = [
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* 集中バッジ */}
         <rect x="30" y="60" width="80" height="40" rx="10" fill="#534AB7" />
-        <text x="70" y="82" textAnchor="middle" fontSize="13" fontWeight="700" fill="#FFFFFF" fontFamily="sans-serif">集中</text>
-        <text x="70" y="96" textAnchor="middle" fontSize="10" fill="#C8C4F0" fontFamily="sans-serif">25:00</text>
+        <text x="70" y="78" textAnchor="middle" fontSize="13" fontWeight="700" fill="#FFFFFF" fontFamily="sans-serif">集中</text>
+        <text x="70" y="92" textAnchor="middle" fontSize="10" fill="#C8C4F0" fontFamily="sans-serif">25:00</text>
         {/* 矢印 */}
         <path d="M118 80 L145 80" stroke="#534AB7" strokeWidth="2" strokeLinecap="round" />
         <polygon points="143,75 152,80 143,85" fill="#534AB7" />
         {/* 休憩バッジ */}
         <rect x="158" y="60" width="80" height="40" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1.5" />
-        <text x="198" y="82" textAnchor="middle" fontSize="13" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">休憩</text>
-        <text x="198" y="96" textAnchor="middle" fontSize="10" fill="#7C75D4" fontFamily="sans-serif">05:00</text>
+        <text x="198" y="78" textAnchor="middle" fontSize="13" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">休憩</text>
+        <text x="198" y="92" textAnchor="middle" fontSize="10" fill="#7C75D4" fontFamily="sans-serif">05:00</text>
         {/* 循環矢印（下） */}
         <path d="M198 108 Q198 130 140 130 Q82 130 70 108" stroke="#C8C4F0" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeDasharray="4 3" />
-        <polygon points="67,107 75,102 75,112" fill="#C8C4F0" />
+        <polygon points="70,101 65,109 75,109" fill="#C8C4F0" />
         <text x="140" y="148" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">自動切り替え</text>
       </svg>
     ),
