@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -171,17 +171,26 @@ function getLast7Days() {
 
 export default function StatsTab({ books, sessions }: Props) {
   const [showHelp, setShowHelp] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth)
+  useEffect(() => {
+    const handler = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
+  const isMobile = windowWidth < 480
+
   const last7 = getLast7Days()
   const weeklyData = last7.map(date => ({
     date: date.slice(5).split('-').map(Number).join('/'),
     セッション: sessions.filter(s => s.date === date).length,
   }))
 
+  const titleLimit = isMobile ? 7 : 10
   const bookSessionData = books
     .filter(b => b.sessions > 0)
     .sort((a, b) => b.sessions - a.sessions)
     .slice(0, 8)
-    .map(b => ({ name: b.title.length > 10 ? b.title.slice(0, 10) + '…' : b.title, セッション: b.sessions }))
+    .map(b => ({ name: b.title.length > titleLimit ? b.title.slice(0, titleLimit) + '…' : b.title, セッション: b.sessions }))
 
   const genreMap: Record<string, number> = {}
   books.filter(b => b.status === 'done').forEach(b => {
@@ -224,10 +233,10 @@ export default function StatsTab({ books, sessions }: Props) {
 
       <div className="chart-card">
         <h3>週間セッション数</h3>
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={weeklyData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+        <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
+          <LineChart data={weeklyData} margin={{ top: 5, right: 30, left: 0, bottom: isMobile ? 24 : 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-            <XAxis dataKey="date" tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
+            <XAxis dataKey="date" tick={isMobile ? { fontSize: 11, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} />
             <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={30} />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="セッション" stroke="#534AB7" strokeWidth={2} dot={{ r: 4, fill: '#534AB7' }} activeDot={{ r: 6 }} />
@@ -241,10 +250,10 @@ export default function StatsTab({ books, sessions }: Props) {
           <p className="chart-empty">セッションを記録すると表示されます</p>
         ) : (
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={bookSessionData} layout="vertical">
+            <BarChart data={bookSessionData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
-              <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={isMobile ? 68 : 90} tick={{ fontSize: isMobile ? 10 : 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
             </BarChart>
@@ -257,9 +266,9 @@ export default function StatsTab({ books, sessions }: Props) {
         {genreData.length === 0 ? (
           <p className="chart-empty">読了した本が登録されると表示されます</p>
         ) : (
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={isMobile ? 240 : 220}>
             <PieChart>
-              <Pie data={genreData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+              <Pie data={genreData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={isMobile ? 60 : 80} label={isMobile ? undefined : ({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                 {genreData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
