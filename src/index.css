@@ -1020,6 +1020,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .tutorial-title {
   font-size: 1rem; font-weight: 700;
   color: var(--color-text); margin: 0 0 8px;
+  display: flex; align-items: center; gap: 6px;
 }
 .tutorial-desc {
   font-size: 0.85rem; line-height: 1.65;

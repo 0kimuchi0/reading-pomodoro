@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
+import { IconSparkles, IconClock, IconBooks, IconChartBar, IconSettings } from '@tabler/icons-react'
 
 const TUTORIAL_KEY = 'pr_tutorial_done'
 
 interface Rect { top: number; left: number; width: number; height: number }
 
 interface Step {
+  icon: React.ReactNode
   title: string
   desc: string
   selector?: string  // ハイライト対象の CSS セレクター
@@ -12,26 +14,31 @@ interface Step {
 
 const STEPS: Step[] = [
   {
+    icon: <IconSparkles size={18} />,
     title: 'PomRead へようこそ！',
     desc: '読書に特化したポモドーロタイマーアプリです。\n主な機能を簡単にご紹介します。',
   },
   {
-    title: '⏱ タイマー',
+    icon: <IconClock size={18} />,
+    title: 'タイマー',
     desc: '25 分の集中タイマーで読書を管理します。\n本を選んでスタートすると、セッションが自動で記録されます。',
     selector: '.tab-nav > .tab-btn:nth-child(1)',
   },
   {
-    title: '📚 本棚',
+    icon: <IconBooks size={18} />,
+    title: '本棚',
     desc: '読んでいる本・読みたい本を登録・管理できます。\nページ数や読書ステータスも記録できます。',
     selector: '.tab-nav > .tab-btn:nth-child(2)',
   },
   {
-    title: '📊 統計',
+    icon: <IconChartBar size={18} />,
+    title: '統計',
     desc: '日別・週別のセッション数や集中時間を\nグラフで確認できます。',
     selector: '.tab-nav > .tab-btn:nth-child(3)',
   },
   {
-    title: '⚙️ 設定・ログイン',
+    icon: <IconSettings size={18} />,
+    title: '設定・ログイン',
     desc: 'アカウントを作成してログインすると、\n複数デバイス間でデータを自動同期できます。',
     selector: '.tab-nav-right .tab-btn:last-child',
   },
@@ -105,7 +112,7 @@ export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
           ))}
         </div>
 
-        <h3 className="tutorial-title">{current.title}</h3>
+        <h3 className="tutorial-title">{current.icon}{current.title}</h3>
         <p className="tutorial-desc">{current.desc}</p>
 
         <div className="tutorial-actions">
