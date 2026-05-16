@@ -575,7 +575,7 @@ export default function StatsTab({ books, sessions }: Props) {
               <XAxis dataKey="month" tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} />
               <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={36} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="集中時間" fill="#534AB7" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="集中時間" fill="#534AB7" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -609,7 +609,7 @@ export default function StatsTab({ books, sessions }: Props) {
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
               <YAxis dataKey="name" type="category" width={isMobile ? 76 : 110} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} maxBarSize={24} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -627,7 +627,7 @@ export default function StatsTab({ books, sessions }: Props) {
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
               <YAxis dataKey="name" type="category" width={isMobile ? 76 : 110} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="ページ/分" fill="#A8A3E3" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="ページ/分" fill="#A8A3E3" radius={[0, 4, 4, 0]} maxBarSize={24} />
             </BarChart>
           </ResponsiveContainer>
         )}
