@@ -27,15 +27,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const clearBannedError = () => setBannedError(null)
 
-  const fetchRole = async (userId: string) => {
-    try {
-      const profile = await getMyProfile(userId)
-      setRole(profile?.role ?? null)
-    } catch {
-      setRole(null)
-    }
-  }
-
   const checkBan = async (userId: string): Promise<boolean> => {
     try {
       const profile = await getMyProfile(userId)
@@ -55,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let initialDone = false
 
     // onAuthStateChange で初回セッション取得 + 以降の変化を一本化
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const newUser = session?.user ?? null
 
       if (!initialDone) {

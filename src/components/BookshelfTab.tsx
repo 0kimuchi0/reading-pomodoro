@@ -13,7 +13,6 @@ import {
   IconPencil,
   IconX,
   IconDeviceFloppy,
-  IconSearch,
   IconSettings,
   IconRuler,
   IconTags,

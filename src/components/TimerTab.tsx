@@ -7,7 +7,6 @@ import {
   IconBook,
   IconQuestionMark,
   IconClock,
-  IconBookmark,
   IconRefresh,
   IconChartBar,
 } from '@tabler/icons-react'
