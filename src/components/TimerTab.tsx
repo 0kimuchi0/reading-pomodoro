@@ -339,7 +339,7 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
             </span>
             {selectedBook && (
               <span className="book-select-author">
-                {selectedBook.author}{selectedBook.publisher ? `・${selectedBook.publisher}` : ''}
+                {selectedBook.author}{selectedBook.publisher ? `/${selectedBook.publisher}` : ''}
               </span>
             )}
             <IconChevronDown size={16} className={`book-select-chevron${showBookDropdown ? ' rotated' : ''}`} />
