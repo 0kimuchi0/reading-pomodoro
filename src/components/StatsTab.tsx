@@ -337,7 +337,7 @@ function getMonthlyData(sessions: Session[]): { month: string; 集中時間: num
   while (y < ey || (y === ey && m <= em)) {
     const key = `${y}-${String(m).padStart(2, '0')}`
     const total = sessions.filter(s => s.date.startsWith(key)).reduce((sum, s) => sum + s.duration, 0)
-    result.push({ month: `${y % 100}/${m}`, 集中時間: total })
+    result.push({ month: `${y}/${m}`, 集中時間: total })
     m++
     if (m > 12) { m = 1; y++ }
   }
@@ -387,7 +387,7 @@ function getCumulativeData(sessions: Session[]): { label: string; 累計セッ�
     while (y < ey || (y === ey && m <= em)) {
       const key = `${y}-${String(m).padStart(2, '0')}`
       cumulative += sessions.filter(s => s.date.startsWith(key)).length
-      result.push({ label: `${y % 100}/${m}`, 累計セッション: cumulative, granularity })
+      result.push({ label: `${y}/${m}`, 累計セッション: cumulative, granularity })
       m++; if (m > 12) { m = 1; y++ }
     }
   } else {
@@ -400,7 +400,7 @@ function getCumulativeData(sessions: Session[]): { label: string; 累計セッ�
       const qEndStr = toLocalDate(qEnd)
       const qStartStr = `${y}-${String(m).padStart(2, '0')}-01`
       cumulative += sessions.filter(s => s.date >= qStartStr && s.date < qEndStr).length
-      result.push({ label: `${y % 100}Q${Math.ceil(m / 3)}`, 累計セッション: cumulative, granularity })
+      result.push({ label: `${y}Q${Math.ceil(m / 3)}`, 累計セッション: cumulative, granularity })
       m += 3; if (m > 12) { m = m - 12; y++ }
     }
   }
