@@ -98,28 +98,28 @@ const BOOKSHELF_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* status-pick-btn: 読みたい */}
-        <rect x="12" y="20" width="82" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <rect x="12" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
         {/* ブックマークアイコン */}
-        <path d="M44,34 L62,34 L62,58 L53,51 L44,58 Z" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinejoin="round" />
-        <text x="53" y="80" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
-        <text x="53" y="94" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">積読・予定</text>
-        <text x="53" y="108" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">タブ使用可</text>
+        <path d="M44,38 L62,38 L62,62 L53,55 L44,62 Z" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinejoin="round" />
+        <text x="53" y="86" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
+        <text x="53" y="100" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">積読・予定</text>
+        <text x="53" y="114" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">タブ使用可</text>
         {/* status-pick-btn: 読書中（active） */}
-        <rect x="99" y="10" width="82" height="140" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
+        <rect x="99" y="16" width="82" height="128" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
         {/* 本アイコン */}
-        <path d="M127,28 L140,33 L153,28 L153,52 L140,57 L127,52 Z" fill="none" stroke="#534AB7" strokeWidth="1.5" strokeLinejoin="round" />
-        <line x1="140" y1="33" x2="140" y2="57" stroke="#534AB7" strokeWidth="1" />
-        <text x="140" y="76" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
-        <text x="140" y="90" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">現在読んでいる</text>
-        <text x="140" y="104" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">タイマー選択可</text>
+        <path d="M127,36 L140,41 L153,36 L153,60 L140,65 L127,60 Z" fill="none" stroke="#534AB7" strokeWidth="1.5" strokeLinejoin="round" />
+        <line x1="140" y1="41" x2="140" y2="65" stroke="#534AB7" strokeWidth="1" />
+        <text x="140" y="86" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
+        <text x="140" y="100" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">現在読んでいる</text>
+        <text x="140" y="114" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">タイマー選択可</text>
         {/* status-pick-btn: 読了 */}
-        <rect x="186" y="20" width="82" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <rect x="186" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
         {/* チェックアイコン */}
-        <circle cx="227" cy="46" r="12" fill="none" stroke="#6B6B8A" strokeWidth="1.5" />
-        <path d="M221,46 L225,51 L234,40" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="227" y="80" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
-        <text x="227" y="94" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">読み終えた</text>
-        <text x="227" y="108" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">履歴に保存</text>
+        <circle cx="227" cy="54" r="12" fill="none" stroke="#6B6B8A" strokeWidth="1.5" />
+        <path d="M221,54 L225,59 L234,48" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <text x="227" y="86" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
+        <text x="227" y="100" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">読み終えた</text>
+        <text x="227" y="114" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">履歴に保存</text>
       </svg>
     ),
   },
