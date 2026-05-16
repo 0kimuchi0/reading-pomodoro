@@ -27,7 +27,23 @@ function AppInner() {
   const [syncState, setSyncState] = useState<SyncState>('idle')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
+  const [splashDone, setSplashDone] = useState(false)
+  const [splashVisible, setSplashVisible] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
+
+  // スプラッシュを最低5秒表示
+  useEffect(() => {
+    const t = setTimeout(() => setSplashDone(true), 3000)
+    return () => clearTimeout(t)
+  }, [])
+
+  // ローディング完了 & 5秒経過したらフェードアウト開始 → 600ms後に非表示
+  useEffect(() => {
+    if (!authLoading && dataLoaded && splashDone) {
+      const t = setTimeout(() => setSplashVisible(false), 1000)
+      return () => clearTimeout(t)
+    }
+  }, [authLoading, dataLoaded, splashDone])
 
   // Load data whenever auth state settles or user changes
   useEffect(() => {
@@ -102,11 +118,27 @@ function AppInner() {
     })
   }, [withSync])
 
-  if (authLoading || !dataLoaded) {
+  if (splashVisible) {
+    const exiting = !authLoading && dataLoaded && splashDone
     return (
-      <div className="app-loading">
-        <div className="app-loading-spinner" />
-        <p>読み込み中...</p>
+      <div className={`app-splash${exiting ? ' exiting' : ''}`}>
+        <div className="app-splash-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="96" height="96">
+            <rect width="64" height="64" rx="14" fill="#534AB7"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="3.5"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="3.5"
+              strokeDasharray="122.5 40.8" strokeLinecap="round"
+              transform="rotate(-90 32 32)"/>
+            <path d="M18 22 C18 21 20 20 25 20 C28.5 20 31 21.5 31 22.5 L31 43 C29 42 26 41.5 22 42 C19.5 42.5 18 42 18 41 Z" fill="white"/>
+            <path d="M46 22 C46 21 44 20 39 20 C35.5 20 33 21.5 33 22.5 L33 43 C35 42 38 41.5 42 42 C44.5 42.5 46 42 46 41 Z" fill="rgba(255,255,255,0.7)"/>
+            <line x1="32" y1="21" x2="32" y2="43" stroke="#534AB7" strokeWidth="1.5" opacity="0.5"/>
+            <line x1="21" y1="27" x2="29" y2="26.5" stroke="#534AB7" strokeWidth="1.2" opacity="0.25" strokeLinecap="round"/>
+            <line x1="21" y1="30.5" x2="29" y2="30" stroke="#534AB7" strokeWidth="1.2" opacity="0.25" strokeLinecap="round"/>
+            <line x1="21" y1="34" x2="27" y2="33.5" stroke="#534AB7" strokeWidth="1.2" opacity="0.25" strokeLinecap="round"/>
+          </svg>
+        </div>
+        <h1 className="app-splash-title">PomRead</h1>
+        <p className="app-splash-sub">読書ポモドーロタイマー</p>
       </div>
     )
   }
