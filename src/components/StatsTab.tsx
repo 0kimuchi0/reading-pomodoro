@@ -18,10 +18,10 @@ const STATS_HELP = [
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* カード4枚 */}
         {[
-          { x: 10, label: '総セッション', value: '42' },
-          { x: 80, label: '総集中（分）', value: '1050' },
-          { x: 150, label: '読了', value: '7' },
-          { x: 220, label: '読書中', value: '2' },
+          { x: 6,   label: '総セッション', value: '42' },
+          { x: 74,  label: '総集中（分）', value: '1050' },
+          { x: 142, label: '読了', value: '7' },
+          { x: 210, label: '読書中', value: '2' },
         ].map((card) => (
           <g key={card.x}>
             <rect x={card.x} y="30" width="62" height="80" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
