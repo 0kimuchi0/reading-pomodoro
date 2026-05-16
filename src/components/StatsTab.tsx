@@ -648,7 +648,7 @@ export default function StatsTab({ books, sessions }: Props) {
         </div>
         <div className="summary-card">
           <span className="summary-value summary-streak">
-            {streakCurrent}<IconFlame size={22} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: 2 }} />
+            {streakCurrent}<IconFlame size={20} />
           </span>
           <span className="summary-label">連続日数</span>
         </div>

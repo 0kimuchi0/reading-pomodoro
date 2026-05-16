@@ -583,7 +583,16 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   box-shadow: var(--shadow);
 }
-.summary-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
 .summary-label { font-size: 0.8rem; color: var(--color-text-muted); text-align: center; }
 
 .chart-card {
