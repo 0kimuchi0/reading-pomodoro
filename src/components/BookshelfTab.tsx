@@ -378,6 +378,10 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
         </button>
       </div>
       <div className="quick-add-card">
+        <div className="quick-add-header">
+          <IconPlus size={16} />
+          <span>本を追加</span>
+        </div>
         <div className="quick-add-row">
           <div className="inputs-wrap">
             <div className="suggest-wrap">
