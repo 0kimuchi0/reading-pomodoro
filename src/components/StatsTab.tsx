@@ -8,10 +8,125 @@ import type { Book, Session } from '../types'
 import HelpModal from './HelpModal'
 
 const STATS_HELP = [
-  { icon: <IconLayoutGrid size={18} />,  title: 'サマリーカード',   desc: '総セッション数・総集中時間・読了冊数・読書中冊数を一覧表示します' },
-  { icon: <IconTrendingUp size={18} />,  title: '週間セッション数', desc: '過去7日間のセッション数の推移を折れ線グラフで確認できます' },
-  { icon: <IconBooks size={18} />,       title: '本別セッション数', desc: 'セッションを記録した本ごとの回数をランキング形式で表示します' },
-  { icon: <IconChartPie size={18} />,    title: '読了ジャンル分布', desc: '読了した本のジャンル内訳を円グラフで可視化します' },
+  {
+    icon: <IconLayoutGrid size={18} />,
+    title: 'サマリーカード',
+    desc: '総セッション数・総集中時間・読了冊数・読書中冊数を一覧表示します',
+    detail: '画面上部に総セッション数・総集中時間・読了冊数・読書中冊数の4つのサマリーカードを表示します。すべての期間のデータを集計した累計値です。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* カード4枚 */}
+        {[
+          { x: 10, label: '総セッション', value: '42' },
+          { x: 80, label: '総集中（分）', value: '1050' },
+          { x: 150, label: '読了', value: '7' },
+          { x: 220, label: '読書中', value: '2' },
+        ].map((card) => (
+          <g key={card.x}>
+            <rect x={card.x} y="30" width="62" height="80" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+            <text x={card.x + 31} y="68" textAnchor="middle" fontSize="18" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
+            <text x={card.x + 31} y="90" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
+          </g>
+        ))}
+        <text x="140" y="130" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">全期間の累計</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconTrendingUp size={18} />,
+    title: '週間セッション数',
+    desc: '過去7日間のセッション数の推移を折れ線グラフで確認できます',
+    detail: '過去7日間のセッション数の推移を折れ線グラフで表示します。読書習慣が視覚的に確認でき、継続のモチベーション維持に役立ちます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* グリッド */}
+        {[30, 60, 90, 120].map(y => (
+          <line key={y} x1="40" y1={y} x2="260" y2={y} stroke="#E2E1F0" strokeWidth="1" strokeDasharray="4 3" />
+        ))}
+        {/* 折れ線データ（7点） */}
+        {(() => {
+          const pts = [
+            { x: 50, y: 110 }, { x: 83, y: 95 }, { x: 116, y: 80 },
+            { x: 150, y: 65 }, { x: 183, y: 50 }, { x: 216, y: 70 }, { x: 250, y: 45 }
+          ]
+          return (
+            <>
+              <polyline
+                points={pts.map(p => `${p.x},${p.y}`).join(' ')}
+                fill="none" stroke="#534AB7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              />
+              {pts.map((p, i) => (
+                <circle key={i} cx={p.x} cy={p.y} r="4" fill="#534AB7" stroke="#FFFFFF" strokeWidth="2" />
+              ))}
+              {/* x軸ラベル */}
+              {['月', '火', '水', '木', '金', '土', '日'].map((d, i) => (
+                <text key={d} x={pts[i].x} y="140" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">{d}</text>
+              ))}
+            </>
+          )
+        })()}
+      </svg>
+    ),
+  },
+  {
+    icon: <IconBooks size={18} />,
+    title: '本別セッション数',
+    desc: 'セッションを記録した本ごとの回数をランキング形式で表示します',
+    detail: 'セッションを記録した本ごとの回数を棒グラフで表示します。どの本に最も時間を使ったかを把握できます。本棚に登録した本のうちセッションが1回以上あるものが表示されます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* 水平棒グラフ */}
+        {[
+          { label: '吾輩は猫…', w: 160, val: '8' },
+          { label: '坊っちゃん', w: 120, val: '6' },
+          { label: '走れメロス', w: 80, val: '4' },
+          { label: 'こころ', w: 50, val: '2' },
+        ].map((bar, i) => (
+          <g key={i}>
+            <text x="100" y={32 + i * 32} textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">{bar.label}</text>
+            <rect x="106" y={18 + i * 32} width={bar.w} height="18" rx="4"
+              fill={i === 0 ? '#534AB7' : i === 1 ? '#7C75D4' : i === 2 ? '#A8A3E3' : '#C8C4F0'} />
+            <text x={112 + bar.w} y={31 + i * 32} fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">{bar.val}</text>
+          </g>
+        ))}
+      </svg>
+    ),
+  },
+  {
+    icon: <IconChartPie size={18} />,
+    title: '読了ジャンル分布',
+    desc: '読了した本のジャンル内訳を円グラフで可視化します',
+    detail: '読了した本のジャンル内訳を円グラフで可視化します。どのジャンルを多く読んでいるかを把握できます。読了ステータスの本のみが集計対象です。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* 円グラフ（4セクター） */}
+        {/* 小説 40% */}
+        <path d="M110 80 L110 30 A50 50 0 0 1 153 105 Z" fill="#534AB7" />
+        {/* ビジネス 30% */}
+        <path d="M110 80 L153 105 A50 50 0 0 1 68 110 Z" fill="#7C75D4" />
+        {/* 技術 20% */}
+        <path d="M110 80 L68 110 A50 50 0 0 1 72 45 Z" fill="#A8A3E3" />
+        {/* その他 10% */}
+        <path d="M110 80 L72 45 A50 50 0 0 1 110 30 Z" fill="#D4D1F5" />
+        {/* 凡例 */}
+        {[
+          { color: '#534AB7', label: '小説 40%' },
+          { color: '#7C75D4', label: 'ビジネス 30%' },
+          { color: '#A8A3E3', label: '技術 20%' },
+          { color: '#D4D1F5', label: 'その他 10%' },
+        ].map((item, i) => (
+          <g key={i}>
+            <rect x="180" y={35 + i * 26} width="12" height="12" rx="3" fill={item.color} />
+            <text x="198" y={46 + i * 26} fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">{item.label}</text>
+          </g>
+        ))}
+      </svg>
+    ),
+  },
 ]
 
 const COLORS = ['#534AB7', '#7C75D4', '#A8A3E3', '#D4D1F5', '#6C63C4', '#9B94D8']

@@ -24,12 +24,138 @@ import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
 import HelpModal from './HelpModal'
 
 const BOOKSHELF_HELP = [
-  { icon: <IconPlus size={18} />,       title: '本を追加',         desc: 'タイトルと著者名を入力して「＋」ボタンで登録。Enterキーでも追加できます' },
-  { icon: <IconSearch size={18} />,     title: 'オートコンプリート', desc: '有名な作品はタイトル入力中に候補が表示されます。選ぶと著者・ジャンルが自動入力されます' },
-  { icon: <IconSettings size={18} />,   title: '詳細設定',         desc: '「詳細設定」を開くと出版社・ページ数・ジャンル・初期ステータスを設定できます' },
-  { icon: <IconRuler size={18} />,      title: '読書進捗',         desc: 'ページ数を設定した本はスライダーや数値クリックで現在ページを記録できます' },
-  { icon: <IconTags size={18} />,       title: 'ステータス管理',   desc: '読みたい・読書中・読了の3段階で本の状態を管理できます' },
-  { icon: <IconArrowsSort size={18} />, title: '並び替え',         desc: '登録日・タイトル・セッション数・進捗で昇順/降順に並び替えられます' },
+  {
+    icon: <IconPlus size={18} />,
+    title: '本の追加',
+    desc: 'タイトルと著者名を入力して「＋」ボタンで登録。Enterキーでも追加できます',
+    detail: 'タイトルと著者名を入力して「＋」ボタン（またはEnterキー）で本を登録します。有名な作品はタイトル入力中に候補が自動表示されます。選択すると著者・ジャンルが自動入力されます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* タイトル入力フィールド */}
+        <rect x="30" y="40" width="140" height="32" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="44" y="61" fontSize="12" fill="#6B6B8A" fontFamily="sans-serif">タイトル *</text>
+        {/* 著者フィールド */}
+        <rect x="30" y="82" width="140" height="32" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="44" y="103" fontSize="12" fill="#6B6B8A" fontFamily="sans-serif">著者名 *</text>
+        {/* ＋ボタン */}
+        <rect x="182" y="40" width="60" height="74" rx="8" fill="#534AB7" />
+        <text x="212" y="83" textAnchor="middle" fontSize="26" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
+        {/* オートコンプリート候補 */}
+        <rect x="30" y="122" width="140" height="22" rx="4" fill="#EEEDfA" />
+        <text x="44" y="137" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconSettings size={18} />,
+    title: '詳細設定',
+    desc: '「詳細設定」を開くと出版社・ページ数・ジャンル・初期ステータスを設定できます',
+    detail: '「詳細設定」を開くと出版社・総ページ数・ジャンル・初期ステータスを設定できます。総ページ数を設定するとプログレスバーと進捗スライダーが表示され、読書の進み具合を記録できます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* 詳細パネル */}
+        <rect x="20" y="20" width="240" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        {/* フィールド：出版社 */}
+        <text x="34" y="44" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">出版社</text>
+        <rect x="34" y="48" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="44" y="63" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">岩波書店</text>
+        {/* フィールド：総ページ数 */}
+        <text x="136" y="44" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">総ページ数</text>
+        <rect x="136" y="48" width="106" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="146" y="63" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">320</text>
+        {/* フィールド：ジャンル */}
+        <text x="34" y="88" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">ジャンル</text>
+        <rect x="34" y="92" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="44" y="107" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">小説  ▾</text>
+        {/* フィールド：ステータス */}
+        <text x="136" y="88" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">ステータス</text>
+        <rect x="136" y="92" width="106" height="22" rx="5" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1" />
+        <text x="146" y="107" fontSize="10" fill="#534AB7" fontFamily="sans-serif">読みたい</text>
+        {/* 詳細設定トグル */}
+        <rect x="34" y="122" width="120" height="10" rx="5" fill="#EEEDfA" />
+        <text x="44" y="131" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▲ 詳細設定（折りたたむ）</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconTags size={18} />,
+    title: 'ステータス管理',
+    desc: '読みたい・読書中・読了の3段階で本の状態を管理できます',
+    detail: '各本には「読みたい」「読書中」「読了」の3つのステータスがあります。本カードのバッジをクリックするか、ドロップダウンから変更できます。タイマーで使用できるのは「読みたい」と「読書中」の本のみです。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* バッジ：読みたい */}
+        <rect x="20" y="55" width="74" height="50" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="57" y="78" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">🔖</text>
+        <text x="57" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
+        <text x="57" y="106" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">積読・予定</text>
+        {/* バッジ：読書中（アクティブ） */}
+        <rect x="103" y="45" width="74" height="70" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
+        <text x="140" y="72" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">📖</text>
+        <text x="140" y="88" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
+        <text x="140" y="102" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">現在読んでいる</text>
+        {/* バッジ：読了 */}
+        <rect x="186" y="55" width="74" height="50" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="223" y="78" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">✓</text>
+        <text x="223" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
+        <text x="223" y="106" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">読み終えた</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconRuler size={18} />,
+    title: '読書進捗の記録',
+    desc: 'ページ数を設定した本はスライダーや数値クリックで現在ページを記録できます',
+    detail: '総ページ数を設定した本では現在ページを記録できます。ページ数の数値をクリックすると直接入力できます。スライダーで大まかに調整することも可能です。進捗はプログレスバーで視覚的に確認できます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* ヘッダー */}
+        <text x="34" y="42" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">進捗</text>
+        <text x="210" y="42" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">160 / 320p</text>
+        {/* プログレスバー */}
+        <rect x="34" y="52" width="212" height="16" rx="8" fill="#E2E1F0" />
+        <rect x="34" y="52" width="106" height="16" rx="8" fill="#534AB7" />
+        <text x="87" y="64" textAnchor="middle" fontSize="10" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">50%</text>
+        {/* スライダー */}
+        <rect x="34" y="80" width="212" height="4" rx="2" fill="#E2E1F0" />
+        <rect x="34" y="80" width="106" height="4" rx="2" fill="#534AB7" />
+        <circle cx="140" cy="82" r="9" fill="#534AB7" stroke="#FFFFFF" strokeWidth="2" />
+        {/* ページ入力説明 */}
+        <rect x="90" y="106" width="100" height="28" rx="8" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1.5" />
+        <text x="140" y="117" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">クリックで直接入力</text>
+        <text x="140" y="129" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">160</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconArrowsSort size={18} />,
+    title: '並び替え',
+    desc: '登録日・タイトル・セッション数・進捗で昇順/降順に並び替えられます',
+    detail: '本棚上部の並び替えボタンで登録日・タイトル・セッション数・進捗（ページ）の4種類のキーで並び替えられます。同じキーを再度クリックすると昇順・降順が切り替わります。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* ソートセレクト */}
+        <rect x="30" y="30" width="140" height="30" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="44" y="50" fontSize="12" fill="#1A1A2E" fontFamily="sans-serif">登録日  ▾</text>
+        {/* 昇順/降順ボタン */}
+        <rect x="180" y="30" width="68" height="30" rx="8" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1.5" />
+        <text x="214" y="50" textAnchor="middle" fontSize="12" fill="#534AB7" fontFamily="sans-serif">↑ 降順</text>
+        {/* 4つのオプション一覧 */}
+        {[['登録日', true], ['タイトル', false], ['セッション数', false], ['進捗', false]].map(([label, active], i) => (
+          <g key={i}>
+            <rect x="30" y={76 + i * 20} width="218" height="18" rx="4" fill={active ? '#EEEDfA' : '#FFFFFF'} stroke="#E2E1F0" strokeWidth="0.5" />
+            <text x="44" y={89 + i * 20} fontSize="10" fill={active ? '#534AB7' : '#6B6B8A'} fontFamily="sans-serif" fontWeight={active ? '600' : '400'}>{label as string}</text>
+            {active && <text x="234" y={89 + i * 20} textAnchor="end" fontSize="10" fill="#534AB7" fontFamily="sans-serif">✓</text>}
+          </g>
+        ))}
+      </svg>
+    ),
+  },
 ]
 
 const GENRES: Genre[] = ['小説', 'ビジネス', '自己啓発', '技術', '歴史', 'その他']
