@@ -25,6 +25,7 @@ function AppInner() {
     (localStorage.getItem('pr_theme') as Theme) ?? 'system'
   )
   const [syncState, setSyncState] = useState<SyncState>('idle')
+  const [timerRunning, setTimerRunning] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
   const [splashDone, setSplashDone] = useState(false)
@@ -159,15 +160,19 @@ function AppInner() {
           タイマー
         </button>
         <button
-          className={`tab-btn ${tab === 'bookshelf' ? 'active' : ''}`}
-          onClick={() => setTab('bookshelf')}
+          className={`tab-btn ${tab === 'bookshelf' ? 'active' : ''}${timerRunning ? ' tab-btn-locked' : ''}`}
+          onClick={() => { if (!timerRunning) setTab('bookshelf') }}
+          disabled={timerRunning}
+          title={timerRunning ? 'タイマー動作中は移動できません' : undefined}
         >
           <IconBooks size={18} />
           本棚
         </button>
         <button
-          className={`tab-btn ${tab === 'stats' ? 'active' : ''}`}
-          onClick={() => setTab('stats')}
+          className={`tab-btn ${tab === 'stats' ? 'active' : ''}${timerRunning ? ' tab-btn-locked' : ''}`}
+          onClick={() => { if (!timerRunning) setTab('stats') }}
+          disabled={timerRunning}
+          title={timerRunning ? 'タイマー動作中は移動できません' : undefined}
         >
           <IconChartBar size={18} />
           統計
@@ -194,7 +199,7 @@ function AppInner() {
 
       <main className="app-main">
         {tab === 'timer' && (
-          <TimerTab books={books} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} />
+          <TimerTab books={books} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} onRunningChange={setTimerRunning} />
         )}
         {tab === 'bookshelf' && (
           <BookshelfTab

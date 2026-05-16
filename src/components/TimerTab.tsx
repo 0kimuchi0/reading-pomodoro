@@ -163,9 +163,10 @@ interface Props {
   books: Book[]
   onSessionComplete: (bookId: string, session: Session) => void
   onStatusChange: (bookId: string, status: Book['status']) => void
+  onRunningChange?: (running: boolean) => void
 }
 
-export default function TimerTab({ books, onSessionComplete, onStatusChange }: Props) {
+export default function TimerTab({ books, onSessionComplete, onStatusChange, onRunningChange }: Props) {
   const [showHelp, setShowHelp] = useState(false)
   const [focusMin, setFocusMin] = useState(25)
   const [breakMin, setBreakMin] = useState(5)
@@ -212,6 +213,11 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
       setTimeout(() => bookSearchRef.current?.focus(), 30)
     }
   }, [showBookDropdown])
+
+  // running 変化を親に通知
+  useEffect(() => {
+    onRunningChange?.(running)
+  }, [running, onRunningChange])
 
   useEffect(() => {
     if (!running) return

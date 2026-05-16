@@ -85,6 +85,8 @@ body {
   font-weight: 700;
 }
 .tab-btn:hover:not(.active) { background: var(--color-border); color: var(--color-text); }
+.tab-btn-locked { opacity: 0.35; cursor: not-allowed !important; }
+.tab-btn-locked:hover { background: none !important; }
 
 .app-main {
   flex: 1;
