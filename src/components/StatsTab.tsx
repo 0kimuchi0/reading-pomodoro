@@ -3,7 +3,7 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
-import { IconQuestionMark, IconLayoutGrid, IconTrendingUp, IconBooks, IconChartPie, IconFlame, IconCalendar, IconRun, IconChartBar } from '@tabler/icons-react'
+import { IconQuestionMark, IconLayoutGrid, IconTrendingUp, IconBooks, IconChartPie, IconFlame, IconCalendar, IconRun, IconChartBar, IconSum } from '@tabler/icons-react'
 import type { Book, Session } from '../types'
 import HelpModal from './HelpModal'
 
@@ -12,7 +12,7 @@ const STATS_HELP = [
     icon: <IconLayoutGrid size={18} />,
     title: 'サマリーカード',
     desc: '総セッション数・総集中時間・読了冊数・連続日数などを一覧表示します',
-    detail: '総セッション数・総集中時間・読了冊数・読書中冊数・現在の連続読書日数・最長連続記録の6つのサマリーカードを表示します。',
+    detail: '総セッション数・総集中時間・読了冊数・読書中冊数の4つの基本指標をサマリーカードで表示します。',
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
@@ -29,6 +29,30 @@ const STATS_HELP = [
           </g>
         ))}
         <text x="140" y="130" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">全期間の累計</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconSum size={18} />,
+    title: '平均サマリーカード',
+    desc: '1日・週・1冊あたりの平均セッション数や集中時間を表示します',
+    detail: '読書習慣の密度を示す4つの平均指標を表示します。「1日平均セッション」「1日平均集中（分）」は読書のあった日だけを対象に計算します。「週平均セッション」は開始週から現在までの全週で平均します。「1冊平均セッション」はセッションが1回以上ある本のみを対象にします。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {[
+          { x: 6,   label: '1日平均SS', value: '2.5' },
+          { x: 74,  label: '1日平均（分）', value: '62' },
+          { x: 142, label: '週平均SS', value: '17' },
+          { x: 210, label: '1冊平均SS', value: '21' },
+        ].map((card) => (
+          <g key={card.x}>
+            <rect x={card.x} y="30" width="62" height="80" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+            <text x={card.x + 31} y="68" textAnchor="middle" fontSize="18" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
+            <text x={card.x + 31} y="90" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
+          </g>
+        ))}
+        <text x="140" y="130" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">読書のあった日・週・冊で算出</text>
       </svg>
     ),
   },
@@ -63,13 +87,16 @@ const STATS_HELP = [
         {Array.from({ length: 28 }, (_, i) => {
           const col = i % 7
           const row = Math.floor(i / 7)
-          const active = [2,3,6,7,9,12,13,14,20,21].includes(i)
+          // 0=none, 1=intensity-1, 2=intensity-2, 3=intensity-3
+          const level = [2,6,13,20].includes(i) ? 3 : [3,7,12,21].includes(i) ? 2 : [9,14].includes(i) ? 1 : 0
+          const fill = level === 3 ? '#534AB7' : level === 2 ? '#7C75D4' : level === 1 ? '#A8A3E3' : '#FFFFFF'
+          const stroke = level === 0 ? '#E2E1F0' : 'none'
           return (
             <g key={i}>
               <rect x={13 + col * 34} y={40 + row * 28} width="22" height="22" rx="5"
-                fill={active ? '#534AB7' : '#FFFFFF'} stroke={active ? 'none' : '#E2E1F0'} strokeWidth="1" />
+                fill={fill} stroke={stroke} strokeWidth="1" />
               <text x={24 + col * 34} y={55 + row * 28} textAnchor="middle" fontSize="9"
-                fill={active ? 'white' : '#6B6B8A'} fontFamily="sans-serif">{i + 1}</text>
+                fill={level > 0 ? 'white' : '#6B6B8A'} fontFamily="sans-serif">{i + 1}</text>
             </g>
           )
         })}
@@ -133,9 +160,9 @@ const STATS_HELP = [
   },
   {
     icon: <IconTrendingUp size={18} />,
-    title: 'アプリ開始からの累計推移',
-    desc: '開始月から現在までの累計セッション数を折れ線グラフで表示します',
-    detail: 'アプリを使い始めた月から現在までの累計セッション数の推移を可視化します。読書の積み重ねを一目で確認できます。',
+    title: 'アプリ開始からの累計セッション',
+    desc: '開始から現在までの累計セッション数の推移を折れ線グラフで表示します',
+    detail: 'アプリを使い始めてからの累計セッション数の推移を折れ線グラフで可視化します。記録期間に応じて粒度が自動切り替えされます（12週以下: 週次 / 13〜52週: 月次 / 53週超: 四半期）。チャートタイトル横のバッジで現在の粒度を確認できます。',
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
