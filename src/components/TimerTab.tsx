@@ -9,6 +9,8 @@ import {
   IconClock,
   IconRefresh,
   IconChartBar,
+  IconChevronDown,
+  IconCheck,
 } from '@tabler/icons-react'
 import type { Book, Session } from '../types'
 import HelpModal from './HelpModal'
@@ -169,12 +171,26 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
   const [secondsLeft, setSecondsLeft] = useState(focusMin * 60)
   const [running, setRunning] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string>('')
+  const [showBookDropdown, setShowBookDropdown] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const bookDropdownRef = useRef<HTMLDivElement>(null)
   const [todaySessions, setTodaySessions] = useState(0)
   const [totalMinutes, setTotalMinutes] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const selectableBooks = books.filter(b => b.status !== 'done')
+  const selectedBook = selectableBooks.find(b => b.id === selectedBookId) ?? null
+
+  // ドロップダウン外クリックで閉じる
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (bookDropdownRef.current && !bookDropdownRef.current.contains(e.target as Node)) {
+        setShowBookDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   useEffect(() => {
     if (!running) return
@@ -311,18 +327,42 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
           </div>
         )}
 
-        <div className="book-select-wrap">
-          <IconBook size={18} />
-          <select
-            value={selectedBookId}
-            onChange={e => setSelectedBookId(e.target.value)}
+        <div className="book-select-wrap" ref={bookDropdownRef}>
+          <button
+            className={`book-select-btn${showBookDropdown ? ' open' : ''}${running ? ' disabled' : ''}`}
+            onClick={() => { if (!running) setShowBookDropdown(v => !v) }}
             disabled={running}
           >
-            <option value="">本を選択...</option>
-            {selectableBooks.map(b => (
-              <option key={b.id} value={b.id}>{b.title}</option>
-            ))}
-          </select>
+            <IconBook size={16} className="book-select-icon" />
+            <span className="book-select-label">
+              {selectedBook ? selectedBook.title : '本を選択...'}
+            </span>
+            {selectedBook && (
+              <span className="book-select-author">{selectedBook.author}</span>
+            )}
+            <IconChevronDown size={16} className={`book-select-chevron${showBookDropdown ? ' rotated' : ''}`} />
+          </button>
+
+          {showBookDropdown && (
+            <div className="book-select-dropdown">
+              {selectableBooks.length === 0 ? (
+                <div className="book-select-empty">本棚に本を追加してください</div>
+              ) : (
+                selectableBooks.map(b => (
+                  <button
+                    key={b.id}
+                    className={`book-select-option${b.id === selectedBookId ? ' selected' : ''}`}
+                    onClick={() => { setSelectedBookId(b.id); setShowBookDropdown(false) }}
+                  >
+                    <span className={`book-status-dot status-${b.status}`} />
+                    <span className="book-option-title">{b.title}</span>
+                    <span className="book-option-author">{b.author}</span>
+                    {b.id === selectedBookId && <IconCheck size={14} className="book-option-check" />}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
         {phase === 'focus' && !selectedBookId && selectableBooks.length > 0 && !running && (
           <p className="hint">本を選択してからスタートしてください</p>

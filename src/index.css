@@ -192,10 +192,61 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .settings-row input { width: 80px; text-align: center; }
 
 .book-select-wrap {
-  width: 100%; display: flex; align-items: center; gap: 8px;
-  color: var(--color-text-muted);
+  width: 100%; position: relative;
 }
-.book-select-wrap select { flex: 1; }
+.book-select-btn {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  cursor: pointer; text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.book-select-btn:hover:not(.disabled) { border-color: var(--accent); }
+.book-select-btn.open { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(83,74,183,0.15); }
+.book-select-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+.book-select-icon { color: var(--accent); flex-shrink: 0; }
+.book-select-label { flex: 1; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.book-select-author { font-size: 0.75rem; color: var(--color-text-muted); white-space: nowrap; }
+.book-select-chevron { color: var(--color-text-muted); flex-shrink: 0; transition: transform 0.2s; }
+.book-select-chevron.rotated { transform: rotate(180deg); }
+
+.book-select-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 100;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  overflow: hidden;
+  animation: dropdown-in 0.15s ease;
+}
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.book-select-empty {
+  padding: 16px; text-align: center;
+  font-size: 0.85rem; color: var(--color-text-muted);
+}
+.book-select-option {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: none; border: none; cursor: pointer;
+  text-align: left; color: var(--color-text);
+  transition: background 0.1s;
+}
+.book-select-option:hover { background: var(--color-border); }
+.book-select-option.selected { background: rgba(83,74,183,0.08); }
+.book-status-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.book-status-dot.status-reading { background: #534AB7; }
+.book-status-dot.status-want    { background: #F0A500; }
+.book-option-title { flex: 1; font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.book-option-author { font-size: 0.75rem; color: var(--color-text-muted); white-space: nowrap; }
+.book-option-check { color: var(--accent); flex-shrink: 0; }
 
 .hint { font-size: 0.8rem; color: var(--color-danger); }
 
