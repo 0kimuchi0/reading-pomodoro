@@ -131,6 +131,27 @@ const STATS_HELP = [
 
 const COLORS = ['#534AB7', '#7C75D4', '#A8A3E3', '#D4D1F5', '#6C63C4', '#9B94D8']
 
+interface TooltipProps {
+  active?: boolean
+  payload?: Array<{ name: string; value: number; color?: string }>
+  label?: string
+}
+function CustomTooltip({ active, payload, label }: TooltipProps) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="chart-tooltip">
+      {label && <p className="chart-tooltip-label">{label}</p>}
+      {payload.map((p, i) => (
+        <p key={i} className="chart-tooltip-row">
+          <span className="chart-tooltip-dot" style={{ background: p.color ?? '#534AB7' }} />
+          <span className="chart-tooltip-name">{p.name}</span>
+          <span className="chart-tooltip-value">{p.value}</span>
+        </p>
+      ))}
+    </div>
+  )
+}
+
 interface Props {
   books: Book[]
   sessions: Session[]
@@ -202,10 +223,10 @@ export default function StatsTab({ books, sessions }: Props) {
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={weeklyData}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-            <Tooltip />
-            <Line type="monotone" dataKey="セッション" stroke="#534AB7" strokeWidth={2} dot={{ r: 4 }} />
+            <XAxis dataKey="date" tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+            <Tooltip content={<CustomTooltip />} />
+            <Line type="monotone" dataKey="セッション" stroke="#534AB7" strokeWidth={2} dot={{ r: 4, fill: '#534AB7' }} activeDot={{ r: 6 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -216,9 +237,9 @@ export default function StatsTab({ books, sessions }: Props) {
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={bookSessionData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
-              <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11 }} />
-              <Tooltip />
+              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -236,7 +257,7 @@ export default function StatsTab({ books, sessions }: Props) {
                 ))}
               </Pie>
               <Legend />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
         </div>

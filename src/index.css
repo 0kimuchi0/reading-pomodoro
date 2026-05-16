@@ -1172,6 +1172,34 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 .tutorial-next-btn:hover { opacity: 0.88; }
 
+/* ===== チャートカスタムツールチップ ===== */
+.chart-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  font-size: 0.85rem;
+  min-width: 100px;
+}
+.chart-tooltip-label {
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+.chart-tooltip-row {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--color-text);
+}
+.chart-tooltip-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.chart-tooltip-name { flex: 1; }
+.chart-tooltip-value { font-weight: 700; color: var(--accent); }
+
+/* 凡例テキスト */
+.recharts-legend-item-text { color: var(--color-text) !important; font-size: 0.82rem; }
+
 /* ===== ダークモード視認性改善 ===== */
 
 /* input / select / textarea — 背景を surface 色に統一してボーダーを明確化 */
