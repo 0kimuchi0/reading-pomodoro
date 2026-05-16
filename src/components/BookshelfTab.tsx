@@ -36,22 +36,24 @@ const BOOKSHELF_HELP = [
         <rect x="12" y="8" width="256" height="144" rx="10" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
         {/* ヘッダー「本を追加」 */}
         <text x="24" y="26" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">本を追加</text>
-        {/* タイトル入力 */}
-        <rect x="24" y="32" width="172" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="34" y="51" fontSize="11" fill="#C0C0D8" fontFamily="sans-serif">タイトル *</text>
-        {/* 著者入力 */}
-        <rect x="24" y="64" width="172" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="34" y="83" fontSize="11" fill="#C0C0D8" fontFamily="sans-serif">著者名 *</text>
-        {/* ＋ボタン（両入力欄の高さに合わせてスパン） */}
-        <rect x="200" y="32" width="56" height="60" rx="8" fill="#534AB7" />
-        <text x="228" y="67" textAnchor="middle" fontSize="24" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
+        {/* タイトル入力（横） */}
+        <rect x="24" y="32" width="96" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="32" y="50" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">タイトル *</text>
+        {/* 著者入力（横並び） */}
+        <rect x="124" y="32" width="80" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="132" y="50" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">著者名 *</text>
+        {/* ＋ボタン */}
+        <rect x="208" y="32" width="48" height="28" rx="6" fill="#534AB7" />
+        <text x="232" y="50" textAnchor="middle" fontSize="18" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
+        {/* オートコンプリート候補（タイトル入力の下に表示） */}
+        <rect x="24" y="62" width="96" height="20" rx="4" fill="#EEEDfA" />
+        <text x="30" y="76" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である</text>
+        <rect x="24" y="82" width="96" height="20" rx="0" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="0.5" />
+        <text x="30" y="96" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">　 坊っちゃん</text>
         {/* 区切り線 */}
-        <line x1="24" y1="100" x2="256" y2="100" stroke="#E2E1F0" strokeWidth="1" />
+        <line x1="24" y1="110" x2="256" y2="110" stroke="#E2E1F0" strokeWidth="1" />
         {/* 詳細設定トグル */}
-        <text x="32" y="118" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▼ 詳細設定（出版社・ページ数・ジャンル）</text>
-        {/* オートコンプリート候補（ヒント） */}
-        <rect x="24" y="126" width="172" height="18" rx="4" fill="#EEEDfA" />
-        <text x="32" y="139" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
+        <text x="32" y="128" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▼ 詳細設定（出版社・ページ数・ジャンル）</text>
       </svg>
     ),
   },
