@@ -45,11 +45,11 @@ const BOOKSHELF_HELP = [
         {/* ＋ボタン */}
         <rect x="208" y="32" width="48" height="28" rx="6" fill="#534AB7" />
         <text x="232" y="50" textAnchor="middle" fontSize="18" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
-        {/* オートコンプリート候補（タイトル入力の下に表示） */}
-        <rect x="24" y="62" width="96" height="20" rx="4" fill="#EEEDfA" />
-        <text x="30" y="76" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である</text>
-        <rect x="24" y="82" width="96" height="20" rx="0" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="0.5" />
-        <text x="30" y="96" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">　 坊っちゃん</text>
+        {/* オートコンプリート候補（タイトル＋著者入力の幅） */}
+        <rect x="24" y="62" width="180" height="20" rx="4" fill="#EEEDfA" />
+        <text x="30" y="76" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
+        <rect x="24" y="82" width="180" height="20" rx="0" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="0.5" />
+        <text x="30" y="96" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">　 坊っちゃん — 夏目漱石</text>
         {/* 区切り線 */}
         <line x1="24" y1="110" x2="256" y2="110" stroke="#E2E1F0" strokeWidth="1" />
         {/* 詳細設定トグル */}
