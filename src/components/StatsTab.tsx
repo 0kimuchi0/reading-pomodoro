@@ -691,9 +691,11 @@ export default function StatsTab({ books, sessions }: Props) {
       </div>
 
       {/* Monthly focus time */}
-      {monthlyData.length > 0 && (
-        <div className="chart-card">
-          <h3>月別集中時間（分）</h3>
+      <div className="chart-card">
+        <h3>月別集中時間（分）</h3>
+        {monthlyData.length === 0 ? (
+          <p className="chart-empty">セッションを記録すると表示されます</p>
+        ) : (
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 16, left: 4, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
@@ -703,17 +705,21 @@ export default function StatsTab({ books, sessions }: Props) {
               <Bar dataKey="集中時間" fill="#534AB7" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Cumulative sessions */}
-      {cumulativeData.length > 1 && (
-        <div className="chart-card chart-card-wide">
-          <h3>アプリ開始からの累計セッション
+      <div className="chart-card chart-card-wide">
+        <h3>アプリ開始からの累計セッション
+          {cumulativeData.length > 1 && (
             <span className="chart-granularity-badge">
               {cumulativeData[0].granularity === 'weekly' ? '週次' : cumulativeData[0].granularity === 'monthly' ? '月次' : '四半期'}
             </span>
-          </h3>
+          )}
+        </h3>
+        {cumulativeData.length <= 1 ? (
+          <p className="chart-empty">セッションを記録すると表示されます</p>
+        ) : (
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <LineChart data={cumulativeData} margin={{ top: 5, right: 16, left: 4, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
@@ -729,8 +735,8 @@ export default function StatsTab({ books, sessions }: Props) {
               <Line type="monotone" dataKey="累計セッション" stroke="#7C75D4" strokeWidth={2} dot={cumulativeData.length > 20 ? false : { r: 3, fill: '#7C75D4' }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Per-book sessions */}
       <div className="chart-card chart-card-wide">
