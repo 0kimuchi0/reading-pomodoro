@@ -173,7 +173,7 @@ export default function StatsTab({ books, sessions }: Props) {
   const [showHelp, setShowHelp] = useState(false)
   const last7 = getLast7Days()
   const weeklyData = last7.map(date => ({
-    date: date.slice(5),
+    date: date.slice(5).split('-').map(Number).join('/'),
     セッション: sessions.filter(s => s.date === date).length,
   }))
 
