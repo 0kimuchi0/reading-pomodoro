@@ -568,7 +568,6 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
     gap: 16px;
     align-items: start;
   }
-  .stats-tab > .tab-help-row,
   .stats-tab > .summary-cards,
   .stats-tab > .chart-card-wide,
   .stats-tab > .empty-msg {
@@ -768,18 +767,24 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .theme-option-desc { font-size: 0.72rem; color: var(--color-text-muted); text-align: center; line-height: 1.4; }
 
 /* ===== Help Button ===== */
-.tab-help-row { display: flex; justify-content: flex-end; }
+.tab-help-row {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+}
 .help-btn {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 12px;
-  background: none;
+  padding: 8px 14px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 99px;
   color: var(--color-text-muted);
   font-size: 0.8rem; font-weight: 500;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  box-shadow: 0 2px 12px rgba(83, 74, 183, 0.15);
+  transition: color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.help-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+.help-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); box-shadow: 0 4px 16px rgba(83, 74, 183, 0.25); }
 
 /* ===== Help Modal ===== */
 .help-overlay {
