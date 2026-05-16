@@ -269,7 +269,7 @@ export default function StatsTab({ books, sessions }: Props) {
             <BarChart data={bookSessionData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
-              <YAxis dataKey="name" type="category" width={isMobile ? 72 : 94} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text)' , fontWeight: 600 }} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={isMobile ? 72 : 94} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
             </BarChart>
