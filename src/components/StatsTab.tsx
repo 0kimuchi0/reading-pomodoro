@@ -141,7 +141,7 @@ function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: {
   const x = cx + r * Math.cos(-midAngle * RADIAN)
   const y = cy + r * Math.sin(-midAngle * RADIAN)
   return (
-    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={600}>
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={15} fontWeight={600}>
       {`${(percent * 100).toFixed(0)}%`}
     </text>
   )
