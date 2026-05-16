@@ -846,3 +846,96 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   font-size: 1.1rem; cursor: pointer; opacity: 0.8; padding: 0;
 }
 .banned-toast button:hover { opacity: 1; }
+
+/* ===== Tutorial ===== */
+/* 背景オーバーレイ */
+.tutorial-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 3000;
+  cursor: pointer;
+}
+
+/* スポットライト（対象要素をくり抜く） */
+.tutorial-spotlight {
+  position: fixed;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  z-index: 3001;
+  pointer-events: none;
+  transition: top 0.3s cubic-bezier(0.4,0,0.2,1),
+              left 0.3s cubic-bezier(0.4,0,0.2,1),
+              width 0.3s cubic-bezier(0.4,0,0.2,1),
+              height 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ツールチップ */
+.tutorial-tooltip {
+  position: fixed;
+  width: 300px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  z-index: 3002;
+  animation: tutorialFadeIn 0.2s ease;
+}
+@keyframes tutorialFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ステップドット */
+.tutorial-dots {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.tutorial-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background 0.2s, transform 0.2s;
+}
+.tutorial-dot.active {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+
+/* テキスト */
+.tutorial-title {
+  font-size: 1rem; font-weight: 700;
+  color: var(--color-text); margin: 0 0 8px;
+}
+.tutorial-desc {
+  font-size: 0.85rem; line-height: 1.65;
+  color: var(--color-text-muted); margin: 0 0 18px;
+  white-space: pre-line;
+}
+
+/* アクション行 */
+.tutorial-actions {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tutorial-skip-btn {
+  background: none; border: none;
+  font-size: 0.8rem; color: var(--color-text-muted);
+  cursor: pointer; padding: 4px 0;
+  text-decoration: underline; opacity: 0.7;
+}
+.tutorial-skip-btn:hover { opacity: 1; }
+.tutorial-nav {
+  display: flex; gap: 8px; align-items: center;
+}
+.tutorial-prev-btn {
+  background: none; border: 1px solid var(--color-border);
+  color: var(--color-text-muted); font-size: 0.82rem;
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.15s;
+}
+.tutorial-prev-btn:hover { background: var(--color-bg); }
+.tutorial-next-btn {
+  background: var(--accent); color: #fff;
+  border: none; font-size: 0.85rem; font-weight: 600;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tutorial-next-btn:hover { opacity: 0.88; }

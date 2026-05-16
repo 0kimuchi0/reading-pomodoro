@@ -6,6 +6,7 @@ import StatsTab from './components/StatsTab'
 import SettingsTab from './components/SettingsTab'
 import AdminTab from './components/AdminTab'
 import SyncIndicator from './components/SyncIndicator'
+import TutorialOverlay, { shouldShowTutorial } from './components/TutorialOverlay'
 import AuthModal from './auth/AuthModal'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import type { Book, Session } from './types'
@@ -26,6 +27,7 @@ function AppInner() {
   const [syncState, setSyncState] = useState<SyncState>('idle')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
 
   // Load data whenever auth state settles or user changes
   useEffect(() => {
@@ -42,6 +44,7 @@ function AppInner() {
         setSessions(s)
         setSyncState('synced')
         setDataLoaded(true)
+        if (shouldShowTutorial()) setShowTutorial(true)
       })
       .catch(() => { clearTimeout(timeout); setSyncState('offline'); setDataLoaded(true) })
   }, [authLoading, user])
@@ -185,6 +188,7 @@ function AppInner() {
       </main>
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      {showTutorial && <TutorialOverlay onDone={() => setShowTutorial(false)} />}
       {bannedError && (
         <div className="banned-toast">
           <span>{bannedError}</span>
