@@ -455,6 +455,18 @@ export default function StatsTab({ books, sessions }: Props) {
   const readingBooks = books.filter(b => b.status === 'reading').length
   const { current: streakCurrent, best: streakBest } = calcStreak(sessions)
 
+  // Averages
+  const activeDays = new Set(sessions.map(s => s.date)).size
+  const avgSessionsPerDay = activeDays > 0 ? Math.round((totalSessions / activeDays) * 10) / 10 : 0
+  const avgMinutesPerDay = activeDays > 0 ? Math.round((totalMinutes / activeDays) * 10) / 10 : 0
+  const firstDate = sessions.length > 0 ? sessions.map(s => s.date).sort()[0] : null
+  const weeksSinceFirst = firstDate
+    ? Math.max(1, Math.ceil((Date.now() - new Date(firstDate).getTime()) / (7 * 24 * 60 * 60 * 1000)))
+    : 1
+  const avgSessionsPerWeek = sessions.length > 0 ? Math.round((totalSessions / weeksSinceFirst) * 10) / 10 : 0
+  const booksWithSessions = books.filter(b => b.sessions > 0).length
+  const avgSessionsPerBook = booksWithSessions > 0 ? Math.round((totalSessions / booksWithSessions) * 10) / 10 : 0
+
   // Monthly focus time
   const monthlyData = getMonthlyData(sessions)
 
@@ -512,6 +524,22 @@ export default function StatsTab({ books, sessions }: Props) {
         <div className="summary-card">
           <span className="summary-value">{streakBest}</span>
           <span className="summary-label">ベスト連続</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-value">{avgSessionsPerDay}</span>
+          <span className="summary-label">1日平均セッション</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-value">{avgMinutesPerDay}</span>
+          <span className="summary-label">1日平均集中（分）</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-value">{avgSessionsPerWeek}</span>
+          <span className="summary-label">週平均セッション</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-value">{avgSessionsPerBook}</span>
+          <span className="summary-label">1冊平均セッション</span>
         </div>
       </div>
 
