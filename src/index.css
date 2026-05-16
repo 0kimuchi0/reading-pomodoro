@@ -1398,10 +1398,25 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .app-header { padding: 12px 16px; }
   .tab-btn { padding: 8px 14px; font-size: 0.9rem; }
   .sort-filter-row { flex-direction: column; align-items: flex-start; }
-  .help-modal-v2 { width: 95vw; height: min(520px, 90vh); }
-  .help-sidebar { width: 180px; }
   .timer-ring-wrap { width: 220px; height: 220px; }
   .timer-display { font-size: 3rem; }
+
+  /* ヘルプモーダル：縦積み＋サイドバー横スクロール */
+  .help-modal-v2 { width: 95vw; height: min(560px, 90vh); }
+  .help-modal-body { flex-direction: column; }
+  .help-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 6px;
+    flex-shrink: 0;
+  }
+  .help-sidebar-item { white-space: nowrap; flex-shrink: 0; padding: 8px 12px; }
+  .help-detail-panel { padding: 16px 20px; }
 }
 
 /* モバイル (≤ 480px) */
