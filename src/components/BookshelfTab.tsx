@@ -214,7 +214,7 @@ function sortBooks(books: Book[], key: SortKey, dir: SortDir): Book[] {
   })
 }
 
-type EditForm = { title: string; author: string; publisher: string; totalPages: number; genre: Genre; isbn: string; ccode: string; catalogNumber: string; ndc: string }
+type EditForm = { title: string; author: string; publisher: string; totalPages: number; genre: Genre; isbn: string; ccode: string; catalogNumber: string; ndc: string; memo: string }
 
 function StatusPicker({ value, onChange }: { value: BookStatus; onChange: (s: BookStatus) => void }) {
   return (
@@ -238,7 +238,7 @@ function StatusPicker({ value, onChange }: { value: BookStatus; onChange: (s: Bo
 export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props) {
   const [showHelp, setShowHelp] = useState(false)
   const [editingBookId, setEditingBookId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<EditForm>({ title: '', author: '', publisher: '', totalPages: 0, genre: 'その他', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
+  const [editForm, setEditForm] = useState<EditForm>({ title: '', author: '', publisher: '', totalPages: 0, genre: 'その他', isbn: '', ccode: '', catalogNumber: '', ndc: '', memo: '' })
   const [quickTitle, setQuickTitle] = useState('')
   const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(emptyDetails)
@@ -341,7 +341,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
 
   const startEdit = (book: Book) => {
     setEditingBookId(book.id)
-    setEditForm({ title: book.title, author: book.author, publisher: book.publisher ?? '', totalPages: book.totalPages, genre: book.genre, isbn: book.isbn ?? '', ccode: book.ccode ?? '', catalogNumber: book.catalogNumber ?? '', ndc: book.ndc ?? '' })
+    setEditForm({ title: book.title, author: book.author, publisher: book.publisher ?? '', totalPages: book.totalPages, genre: book.genre, isbn: book.isbn ?? '', ccode: book.ccode ?? '', catalogNumber: book.catalogNumber ?? '', ndc: book.ndc ?? '', memo: book.memo ?? '' })
   }
 
   const saveEdit = (book: Book) => {
@@ -569,6 +569,16 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                           <input value={editForm.catalogNumber} onChange={e => setEditForm(f => ({ ...f, catalogNumber: e.target.value }))} placeholder="な-1-1" />
                         </div>
                       </div>
+                      <div className="form-field form-field-full">
+                        <label>メモ</label>
+                        <textarea
+                          className="book-memo-input"
+                          value={editForm.memo}
+                          onChange={e => setEditForm(f => ({ ...f, memo: e.target.value }))}
+                          placeholder="読書メモ・感想など（任意）"
+                          rows={3}
+                        />
+                      </div>
                       <div className="edit-actions">
                         <button className="btn-primary" onClick={() => saveEdit(book)} disabled={!editForm.title.trim() || !editForm.author.trim()}>
                           <IconDeviceFloppy size={15} />保存
@@ -605,6 +615,10 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
               </div>
 
               {!isEditing && <span className="genre-tag">{book.genre}</span>}
+
+              {!isEditing && book.memo && (
+                <p className="book-memo-display">{book.memo}</p>
+              )}
 
               {!isEditing && book.totalPages > 0 && (
                 <div className="progress-wrap">

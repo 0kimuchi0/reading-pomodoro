@@ -21,6 +21,7 @@ function toRow(book: Book, userId: string) {
     c_code: book.ccode ?? '',
     catalog_number: book.catalogNumber ?? '',
     ndc: book.ndc ?? '',
+    memo: book.memo ?? '',
   }
 }
 
@@ -40,6 +41,7 @@ function fromRow(row: Record<string, unknown>): Book {
     ccode: (row.c_code as string) || undefined,
     catalogNumber: (row.catalog_number as string) || undefined,
     ndc: (row.ndc as string) || undefined,
+    memo: (row.memo as string) || undefined,
   }
 }
 

@@ -26,6 +26,7 @@ export interface Book {
   ccode?: string
   catalogNumber?: string
   ndc?: string
+  memo?: string
 }
 
 export interface Session {
