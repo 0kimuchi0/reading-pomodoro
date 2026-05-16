@@ -41,7 +41,7 @@ function AppInner() {
   // ローディング完了 & 5秒経過したらフェードアウト開始 → 600ms後に非表示
   useEffect(() => {
     if (!authLoading && dataLoaded && splashDone) {
-      const t = setTimeout(() => setSplashVisible(false), 1000)
+      const t = setTimeout(() => setSplashVisible(false), 600)
       return () => clearTimeout(t)
     }
   }, [authLoading, dataLoaded, splashDone])
