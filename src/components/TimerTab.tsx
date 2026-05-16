@@ -357,11 +357,9 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
                     onClick={() => { setSelectedBookId(b.id); setShowBookDropdown(false) }}
                   >
                     <span className={`book-status-dot status-${b.status}`} />
-                    <span className="book-option-info">
-                      <span className="book-option-title">{b.title}</span>
-                      <span className="book-option-meta">
-                        {b.author}{b.publisher ? `・${b.publisher}` : ''}
-                      </span>
+                    <span className="book-option-title">{b.title}</span>
+                    <span className="book-option-meta">
+                      {b.author}{b.publisher ? `/${b.publisher}` : ''}
                     </span>
                     {b.id === selectedBookId && <IconCheck size={14} className="book-option-check" />}
                   </button>
