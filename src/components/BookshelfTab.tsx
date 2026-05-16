@@ -87,21 +87,26 @@ const BOOKSHELF_HELP = [
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* バッジ：読みたい */}
-        <rect x="20" y="55" width="74" height="50" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="57" y="78" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">🔖</text>
-        <text x="57" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
-        <text x="57" y="106" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">積読・予定</text>
-        {/* バッジ：読書中（アクティブ） */}
-        <rect x="103" y="45" width="74" height="70" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
-        <text x="140" y="72" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">📖</text>
-        <text x="140" y="88" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
-        <text x="140" y="102" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">現在読んでいる</text>
-        {/* バッジ：読了 */}
-        <rect x="186" y="55" width="74" height="50" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="223" y="78" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">✓</text>
-        <text x="223" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
-        <text x="223" y="106" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">読み終えた</text>
+        {/* カード：読みたい */}
+        <rect x="12" y="38" width="76" height="84" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <rect x="22" y="52" width="56" height="18" rx="9" fill="#F0F0F5" />
+        <text x="50" y="65" textAnchor="middle" fontSize="9" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
+        <text x="50" y="88" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">積読・予定</text>
+        <text x="50" y="104" textAnchor="middle" fontSize="8" fill="#B8B8CC" fontFamily="sans-serif">タブ使用可</text>
+        {/* カード：読書中（アクティブ） */}
+        <rect x="102" y="28" width="76" height="104" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
+        <rect x="112" y="42" width="56" height="18" rx="9" fill="#534AB7" />
+        <text x="140" y="55" textAnchor="middle" fontSize="9" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">読書中</text>
+        <text x="140" y="80" textAnchor="middle" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">現在進行中</text>
+        <text x="140" y="96" textAnchor="middle" fontSize="8" fill="#7C75D4" fontFamily="sans-serif">タイマー選択可</text>
+        <rect x="114" y="106" width="52" height="14" rx="7" fill="#534AB7" />
+        <text x="140" y="117" textAnchor="middle" fontSize="8" fill="#FFFFFF" fontFamily="sans-serif">▲ 選択中</text>
+        {/* カード：読了 */}
+        <rect x="192" y="38" width="76" height="84" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <rect x="202" y="52" width="56" height="18" rx="9" fill="#F0F0F5" />
+        <text x="230" y="65" textAnchor="middle" fontSize="9" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
+        <text x="230" y="88" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">読み終えた</text>
+        <text x="230" y="104" textAnchor="middle" fontSize="8" fill="#B8B8CC" fontFamily="sans-serif">履歴に保存</text>
       </svg>
     ),
   },
@@ -140,25 +145,26 @@ const BOOKSHELF_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {/* 検索バー */}
-        <rect x="20" y="14" width="240" height="28" rx="8" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
-        <circle cx="35" cy="28" r="5" fill="none" stroke="#534AB7" strokeWidth="1.5" />
-        <line x1="39" y1="32" x2="42" y2="35" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
-        <text x="50" y="33" fontSize="11" fill="#534AB7" fontFamily="sans-serif">夏目</text>
-        <circle cx="246" cy="28" r="7" fill="#E2E1F0" />
-        <text x="246" y="32" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">×</text>
-        {/* 結果リスト（カード高さ34、間隔38） */}
-        {[
-          { title: '吾輩は猫である', sub: '夏目漱石' },
-          { title: '坊っちゃん',     sub: '夏目漱石' },
-          { title: 'こころ',         sub: '夏目漱石' },
-        ].map((item, i) => (
-          <g key={i}>
-            <rect x="20" y={52 + i * 36} width="240" height="30" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
-            <text x="34" y={67 + i * 36} fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{item.title}</text>
-            <text x="34" y={79 + i * 36} fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{item.sub}</text>
-          </g>
-        ))}
-        <text x="245" y="156" textAnchor="end" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
+        <rect x="20" y="12" width="240" height="28" rx="8" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
+        <circle cx="35" cy="26" r="5" fill="none" stroke="#534AB7" strokeWidth="1.5" />
+        <line x1="39" y1="30" x2="42" y2="33" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
+        <text x="50" y="31" fontSize="11" fill="#534AB7" fontFamily="sans-serif">夏目</text>
+        <circle cx="246" cy="26" r="7" fill="#E2E1F0" />
+        <text x="246" y="30" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">×</text>
+        {/* カード1 */}
+        <rect x="20" y="48" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="34" y="65" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">吾輩は猫である</text>
+        <text x="119" y="65" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        {/* カード2 */}
+        <rect x="20" y="80" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="34" y="97" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">坊っちゃん</text>
+        <text x="94" y="97" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        {/* カード3 */}
+        <rect x="20" y="112" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="34" y="129" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">こころ</text>
+        <text x="72" y="129" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
+        {/* ヒット数 */}
+        <text x="140" y="152" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
       </svg>
     ),
   },
