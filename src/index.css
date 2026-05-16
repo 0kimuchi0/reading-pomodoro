@@ -483,6 +483,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   box-shadow: var(--shadow);
 }
 .chart-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; }
+.chart-empty { font-size: 0.85rem; color: var(--color-text-muted); text-align: center; padding: 32px 0; }
 
 /* ===== Settings Tab ===== */
 .settings-tab { display: flex; flex-direction: column; gap: 20px; }

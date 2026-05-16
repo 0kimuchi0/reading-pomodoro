@@ -231,9 +231,11 @@ export default function StatsTab({ books, sessions }: Props) {
         </ResponsiveContainer>
       </div>
 
-      {bookSessionData.length > 0 && (
-        <div className="chart-card">
-          <h3>本別セッション数</h3>
+      <div className="chart-card">
+        <h3>本別セッション数</h3>
+        {bookSessionData.length === 0 ? (
+          <p className="chart-empty">セッションを記録すると表示されます</p>
+        ) : (
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={bookSessionData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
@@ -243,12 +245,14 @@ export default function StatsTab({ books, sessions }: Props) {
               <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      )}
+        )}
+      </div>
 
-      {genreData.length > 0 && (
-        <div className="chart-card">
-          <h3>読了ジャンル分布</h3>
+      <div className="chart-card">
+        <h3>読了ジャンル分布</h3>
+        {genreData.length === 0 ? (
+          <p className="chart-empty">読了した本が登録されると表示されます</p>
+        ) : (
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie data={genreData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
@@ -260,8 +264,8 @@ export default function StatsTab({ books, sessions }: Props) {
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
-        </div>
-      )}
+        )}
+      </div>
 
       {sessions.length === 0 && books.length === 0 && (
         <p className="empty-msg">まだデータがありません。本を登録してセッションを始めましょう！</p>
