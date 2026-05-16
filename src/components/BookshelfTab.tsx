@@ -571,6 +571,9 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
               {s === 'all' ? 'すべて' : STATUS_LABELS[s]}
             </button>
           ))}
+          <span className="book-count-label">
+            {q ? `${displayBooks.length}件ヒット / 全${books.length}冊` : `全${books.length}冊`}
+          </span>
         </div>
         <div className="sort-row">
           <span className="sort-label">並び替え</span>
