@@ -112,8 +112,6 @@ const BOOKSHELF_HELP = [
         <text x="140" y="76" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
         <text x="140" y="90" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">現在読んでいる</text>
         <text x="140" y="104" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">タイマー選択可</text>
-        <rect x="111" y="118" width="58" height="16" rx="8" fill="#534AB7" />
-        <text x="140" y="130" textAnchor="middle" fontSize="9" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">▲ 選択中</text>
         {/* status-pick-btn: 読了 */}
         <rect x="186" y="20" width="82" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
         {/* チェックアイコン */}
