@@ -338,7 +338,9 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
               {selectedBook ? selectedBook.title : '本を選択...'}
             </span>
             {selectedBook && (
-              <span className="book-select-author">{selectedBook.author}</span>
+              <span className="book-select-author">
+                {selectedBook.author}{selectedBook.publisher ? `・${selectedBook.publisher}` : ''}
+              </span>
             )}
             <IconChevronDown size={16} className={`book-select-chevron${showBookDropdown ? ' rotated' : ''}`} />
           </button>
@@ -355,8 +357,12 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
                     onClick={() => { setSelectedBookId(b.id); setShowBookDropdown(false) }}
                   >
                     <span className={`book-status-dot status-${b.status}`} />
-                    <span className="book-option-title">{b.title}</span>
-                    <span className="book-option-author">{b.author}</span>
+                    <span className="book-option-info">
+                      <span className="book-option-title">{b.title}</span>
+                      <span className="book-option-meta">
+                        {b.author}{b.publisher ? `・${b.publisher}` : ''}
+                      </span>
+                    </span>
                     {b.id === selectedBookId && <IconCheck size={14} className="book-option-check" />}
                   </button>
                 ))
