@@ -17,6 +17,7 @@ import {
   IconRuler,
   IconTags,
   IconArrowsSort,
+  IconSearch,
 } from '@tabler/icons-react'
 import type { Book, BookStatus, Genre } from '../types'
 import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
@@ -245,6 +246,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
   const [sortKey, setSortKey] = useState<SortKey>('created')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
   const [filterStatus, setFilterStatus] = useState<BookStatus | 'all'>('all')
+  const [searchQuery, setSearchQuery] = useState('')
   const [editingPageId, setEditingPageId] = useState<string | null>(null)
   const [pageInput, setPageInput] = useState('')
   const [suggestions, setSuggestions] = useState<ReturnType<typeof searchSuggestions>>([])
@@ -355,6 +357,16 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     if (status === 'reading') return <IconBook size={16} />
     return <IconCheck size={16} />
   }
+
+  const q = searchQuery.trim().toLowerCase()
+  const statusFiltered = filterStatus === 'all' ? books : books.filter(b => b.status === filterStatus)
+  const displayBooks = q
+    ? statusFiltered.filter(b =>
+        b.title.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        (b.publisher ?? '').toLowerCase().includes(q)
+      )
+    : statusFiltered
 
   return (
     <div className="bookshelf-tab">
@@ -479,6 +491,22 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
         )}
       </div>
 
+      <div className="bookshelf-search-wrap">
+        <IconSearch size={15} className="bookshelf-search-icon" />
+        <input
+          className="bookshelf-search-input"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="タイトル・著者・出版社で検索..."
+          autoComplete="off"
+        />
+        {searchQuery && (
+          <button className="bookshelf-search-clear" onClick={() => setSearchQuery('')} title="クリア">
+            <IconX size={13} />
+          </button>
+        )}
+      </div>
+
       <div className="sort-filter-row">
         <div className="filter-row">
           {(['all', 'want', 'reading', 'done'] as const).map(s => (
@@ -516,7 +544,10 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
         {books.length === 0 && (
           <p className="empty-msg">本がまだ登録されていません</p>
         )}
-        {sortBooks(filterStatus === 'all' ? books : books.filter(b => b.status === filterStatus), sortKey, sortDir).map(book => {
+        {books.length > 0 && displayBooks.length === 0 && (
+          <p className="empty-msg">「{searchQuery}」に一致する本が見つかりません</p>
+        )}
+        {sortBooks(displayBooks, sortKey, sortDir).map(book => {
           const progress = book.totalPages > 0 ? (book.currentPage / book.totalPages) * 100 : 0
           const isEditing = editingBookId === book.id
           return (

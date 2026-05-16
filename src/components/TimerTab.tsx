@@ -11,6 +11,8 @@ import {
   IconChartBar,
   IconChevronDown,
   IconCheck,
+  IconSearch,
+  IconX,
 } from '@tabler/icons-react'
 import type { Book, Session } from '../types'
 import HelpModal from './HelpModal'
@@ -172,8 +174,10 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
   const [running, setRunning] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string>('')
   const [showBookDropdown, setShowBookDropdown] = useState(false)
+  const [bookSearch, setBookSearch] = useState('')
   const [showSettings, setShowSettings] = useState(false)
   const bookDropdownRef = useRef<HTMLDivElement>(null)
+  const bookSearchRef = useRef<HTMLInputElement>(null)
   const [todaySessions, setTodaySessions] = useState(0)
   const [totalMinutes, setTotalMinutes] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -181,16 +185,33 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
   const selectableBooks = books.filter(b => b.status !== 'done')
   const selectedBook = selectableBooks.find(b => b.id === selectedBookId) ?? null
 
+  const bq = bookSearch.trim().toLowerCase()
+  const filteredSelectableBooks = bq
+    ? selectableBooks.filter(b =>
+        b.title.toLowerCase().includes(bq) ||
+        b.author.toLowerCase().includes(bq) ||
+        (b.publisher ?? '').toLowerCase().includes(bq)
+      )
+    : selectableBooks
+
   // ドロップダウン外クリックで閉じる
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (bookDropdownRef.current && !bookDropdownRef.current.contains(e.target as Node)) {
         setShowBookDropdown(false)
+        setBookSearch('')
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  // ドロップダウンが開いたら検索欄をフォーカス
+  useEffect(() => {
+    if (showBookDropdown) {
+      setTimeout(() => bookSearchRef.current?.focus(), 30)
+    }
+  }, [showBookDropdown])
 
   useEffect(() => {
     if (!running) return
@@ -330,7 +351,7 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
         <div className="book-select-wrap" ref={bookDropdownRef}>
           <button
             className={`book-select-btn${showBookDropdown ? ' open' : ''}${running ? ' disabled' : ''}`}
-            onClick={() => { if (!running) setShowBookDropdown(v => !v) }}
+            onClick={() => { if (!running) { setShowBookDropdown(v => !v); setBookSearch('') } }}
             disabled={running}
           >
             <IconBook size={16} className="book-select-icon" />
@@ -350,20 +371,44 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange }: P
               {selectableBooks.length === 0 ? (
                 <div className="book-select-empty">本棚に本を追加してください</div>
               ) : (
-                selectableBooks.map(b => (
-                  <button
-                    key={b.id}
-                    className={`book-select-option${b.id === selectedBookId ? ' selected' : ''}`}
-                    onClick={() => { setSelectedBookId(b.id); setShowBookDropdown(false) }}
-                  >
-                    <span className={`book-status-dot status-${b.status}`} />
-                    <span className="book-option-title">{b.title}</span>
-                    <span className="book-option-meta">
-                      {b.author}{b.publisher ? `/${b.publisher}` : ''}
-                    </span>
-                    {b.id === selectedBookId && <IconCheck size={14} className="book-option-check" />}
-                  </button>
-                ))
+                <>
+                  <div className="book-dropdown-search-wrap">
+                    <IconSearch size={13} className="book-dropdown-search-icon" />
+                    <input
+                      ref={bookSearchRef}
+                      className="book-dropdown-search-input"
+                      value={bookSearch}
+                      onChange={e => setBookSearch(e.target.value)}
+                      placeholder="タイトル・著者で検索..."
+                      autoComplete="off"
+                    />
+                    {bookSearch && (
+                      <button className="book-dropdown-search-clear" onClick={() => setBookSearch('')}>
+                        <IconX size={11} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="book-dropdown-list">
+                    {filteredSelectableBooks.length === 0 ? (
+                      <div className="book-select-empty">「{bookSearch}」に一致する本がありません</div>
+                    ) : (
+                      filteredSelectableBooks.map(b => (
+                        <button
+                          key={b.id}
+                          className={`book-select-option${b.id === selectedBookId ? ' selected' : ''}`}
+                          onClick={() => { setSelectedBookId(b.id); setShowBookDropdown(false); setBookSearch('') }}
+                        >
+                          <span className={`book-status-dot status-${b.status}`} />
+                          <span className="book-option-title">{b.title}</span>
+                          <span className="book-option-meta">
+                            {b.author}{b.publisher ? `/${b.publisher}` : ''}
+                          </span>
+                          {b.id === selectedBookId && <IconCheck size={14} className="book-option-check" />}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </>
               )}
             </div>
           )}

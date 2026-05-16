@@ -226,6 +226,49 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ドロップダウン内検索 */
+.book-dropdown-search-wrap {
+  position: relative;
+  display: flex; align-items: center;
+  padding: 8px 8px 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+.book-dropdown-search-icon {
+  position: absolute; left: 18px;
+  color: var(--color-text-muted); pointer-events: none;
+}
+.book-dropdown-search-input {
+  width: 100%; padding: 6px 26px 6px 28px;
+  font-size: 0.82rem;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.book-dropdown-search-input:focus { border-color: var(--accent); }
+.book-dropdown-search-input::placeholder { color: var(--color-text-muted); }
+.book-dropdown-search-clear {
+  position: absolute; right: 16px;
+  display: flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--color-border); border: none; cursor: pointer;
+  color: var(--color-text-muted); padding: 0;
+}
+.book-dropdown-search-clear:hover { background: var(--color-text-muted); color: var(--color-surface); }
+
+/* スクロール可能なリスト */
+.book-dropdown-list {
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.book-dropdown-list::-webkit-scrollbar { width: 4px; }
+.book-dropdown-list::-webkit-scrollbar-track { background: transparent; }
+.book-dropdown-list::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
 .book-select-empty {
   padding: 16px; text-align: center;
   font-size: 0.85rem; color: var(--color-text-muted);
@@ -266,6 +309,38 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .bookshelf-tab { display: flex; flex-direction: column; gap: 16px; }
 .tab-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .tab-header h2 { font-size: 1.1rem; font-weight: 700; }
+
+/* 本棚検索バー */
+.bookshelf-search-wrap {
+  position: relative;
+  display: flex; align-items: center;
+}
+.bookshelf-search-icon {
+  position: absolute; left: 12px;
+  color: var(--color-text-muted); pointer-events: none;
+}
+.bookshelf-search-input {
+  width: 100%; padding: 9px 36px 9px 34px;
+  font-size: 0.88rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.bookshelf-search-input:focus { border-color: var(--accent); }
+.bookshelf-search-input::placeholder { color: var(--color-text-muted); }
+.bookshelf-search-clear {
+  position: absolute; right: 10px;
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--color-border); border: none; cursor: pointer;
+  color: var(--color-text-muted); padding: 0;
+  transition: background 0.1s;
+}
+.bookshelf-search-clear:hover { background: var(--color-text-muted); color: var(--color-surface); }
+
 .sort-filter-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .filter-btn {
@@ -1275,4 +1350,24 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 [data-theme="dark"] .admin-role-select { background: var(--color-surface); border-color: #4A4A6A; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .admin-role-select { background: var(--color-surface); border-color: #4A4A6A; }
+}
+
+/* 検索バー (bookshelf / timer dropdown) のダークモード */
+[data-theme="dark"] .bookshelf-search-input,
+[data-theme="dark"] .book-dropdown-search-input {
+  background: var(--color-surface); border-color: #3E3E5E;
+}
+[data-theme="dark"] .bookshelf-search-input:focus,
+[data-theme="dark"] .book-dropdown-search-input:focus { border-color: var(--accent); }
+[data-theme="dark"] .book-dropdown-search-wrap { border-bottom-color: #3E3E5E; }
+[data-theme="dark"] .bookshelf-search-clear,
+[data-theme="dark"] .book-dropdown-search-clear { background: #3E3E5E; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bookshelf-search-input,
+  :root:not([data-theme="light"]) .book-dropdown-search-input {
+    background: var(--color-surface); border-color: #3E3E5E;
+  }
+  :root:not([data-theme="light"]) .book-dropdown-search-wrap { border-bottom-color: #3E3E5E; }
+  :root:not([data-theme="light"]) .bookshelf-search-clear,
+  :root:not([data-theme="light"]) .book-dropdown-search-clear { background: #3E3E5E; }
 }
