@@ -225,10 +225,10 @@ export default function StatsTab({ books, sessions }: Props) {
       <div className="chart-card">
         <h3>週間セッション数</h3>
         <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={weeklyData}>
+          <LineChart data={weeklyData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
             <XAxis dataKey="date" tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={30} />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="セッション" stroke="#534AB7" strokeWidth={2} dot={{ r: 4, fill: '#534AB7' }} activeDot={{ r: 6 }} />
           </LineChart>
