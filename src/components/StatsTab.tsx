@@ -520,7 +520,9 @@ export default function StatsTab({ books, sessions }: Props) {
           <span className="summary-label">読書中</span>
         </div>
         <div className="summary-card">
-          <span className="summary-value summary-streak">{streakCurrent}🔥</span>
+          <span className="summary-value summary-streak">
+            {streakCurrent}<IconFlame size={22} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: 2 }} />
+          </span>
           <span className="summary-label">連続日数</span>
         </div>
         <div className="summary-card">
