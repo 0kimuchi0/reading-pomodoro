@@ -131,6 +131,22 @@ const STATS_HELP = [
 
 const COLORS = ['#534AB7', '#7C75D4', '#A8A3E3', '#D4D1F5', '#6C63C4', '#9B94D8']
 
+const RADIAN = Math.PI / 180
+function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: {
+  cx: number; cy: number; midAngle: number
+  innerRadius: number; outerRadius: number; percent: number
+}) {
+  if (percent < 0.08) return null
+  const r = innerRadius + (outerRadius - innerRadius) * 0.55
+  const x = cx + r * Math.cos(-midAngle * RADIAN)
+  const y = cy + r * Math.sin(-midAngle * RADIAN)
+  return (
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={600}>
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  )
+}
+
 interface TooltipProps {
   active?: boolean
   payload?: Array<{ name: string; value: number; color?: string }>
@@ -268,7 +284,7 @@ export default function StatsTab({ books, sessions }: Props) {
         ) : (
           <ResponsiveContainer width="100%" height={isMobile ? 240 : 220}>
             <PieChart>
-              <Pie data={genreData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={isMobile ? 60 : 80} label={isMobile ? undefined : ({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+              <Pie data={genreData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={isMobile ? 60 : 80} label={PieLabel} labelLine={false}>
                 {genreData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
