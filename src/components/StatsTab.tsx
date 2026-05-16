@@ -136,7 +136,7 @@ function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: {
   cx: number; cy: number; midAngle: number
   innerRadius: number; outerRadius: number; percent: number
 }) {
-  if (percent < 0.08) return null
+  if (percent < 0.15) return null
   const r = innerRadius + (outerRadius - innerRadius) * 0.55
   const x = cx + r * Math.cos(-midAngle * RADIAN)
   const y = cy + r * Math.sin(-midAngle * RADIAN)
@@ -201,7 +201,7 @@ export default function StatsTab({ books, sessions }: Props) {
     セッション: sessions.filter(s => s.date === date).length,
   }))
 
-  const titleLimit = isMobile ? 7 : 10
+  const titleLimit = isMobile ? 6 : 7
   const bookSessionData = books
     .filter(b => b.sessions > 0)
     .sort((a, b) => b.sessions - a.sessions)
@@ -269,7 +269,7 @@ export default function StatsTab({ books, sessions }: Props) {
             <BarChart data={bookSessionData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} />
-              <YAxis dataKey="name" type="category" width={isMobile ? 72 : 94} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={isMobile ? 76 : 110} tick={{ fontSize: isMobile ? 11 : 12, fill: 'var(--color-text-muted)', fontWeight: 600 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="セッション" fill="#534AB7" radius={[0, 4, 4, 0]} />
             </BarChart>
