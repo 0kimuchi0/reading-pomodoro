@@ -671,7 +671,7 @@ export default function StatsTab({ books, sessions }: Props) {
       </div>
 
       {/* Calendar */}
-      <div className="chart-card">
+      <div className="chart-card chart-card-wide">
         <h3>月間読書カレンダー</h3>
         <MonthCalendar sessions={sessions} />
       </div>
@@ -708,7 +708,7 @@ export default function StatsTab({ books, sessions }: Props) {
 
       {/* Cumulative sessions */}
       {cumulativeData.length > 1 && (
-        <div className="chart-card">
+        <div className="chart-card chart-card-wide">
           <h3>アプリ開始からの累計セッション
             <span className="chart-granularity-badge">
               {cumulativeData[0].granularity === 'weekly' ? '週次' : cumulativeData[0].granularity === 'monthly' ? '月次' : '四半期'}
@@ -733,7 +733,7 @@ export default function StatsTab({ books, sessions }: Props) {
       )}
 
       {/* Per-book sessions */}
-      <div className="chart-card">
+      <div className="chart-card chart-card-wide">
         <h3>本別セッション数</h3>
         {bookSessionData.length === 0 ? (
           <p className="chart-empty">セッションを記録すると表示されます</p>

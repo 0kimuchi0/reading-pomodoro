@@ -560,6 +560,21 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 
 /* ===== Stats Tab ===== */
 .stats-tab { display: flex; flex-direction: column; gap: 16px; }
+
+@media (min-width: 640px) {
+  .stats-tab {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .stats-tab > .tab-help-row,
+  .stats-tab > .summary-cards,
+  .stats-tab > .chart-card-wide,
+  .stats-tab > .empty-msg {
+    grid-column: span 2;
+  }
+}
 .summary-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .summary-card {
   background: var(--color-surface);
