@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -618,15 +617,12 @@ export default function StatsTab({ books, sessions }: Props) {
   return (
     <div className="stats-tab">
       {showHelp && <HelpModal title="統計の見方" items={STATS_HELP} onClose={() => setShowHelp(false)} />}
-      {createPortal(
-        <div className="stats-help-float">
-          <button className="help-btn" onClick={() => setShowHelp(true)}>
-            <IconQuestionMark size={15} />
-            使い方
-          </button>
-        </div>,
-        document.body
-      )}
+      <div className="tab-help-row">
+        <button className="help-btn" onClick={() => setShowHelp(true)}>
+          <IconQuestionMark size={15} />
+          使い方
+        </button>
+      </div>
 
       {/* Summary cards */}
       <div className="summary-cards">

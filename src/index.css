@@ -568,6 +568,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
     gap: 16px;
     align-items: start;
   }
+  .stats-tab > .tab-help-row,
   .stats-tab > .summary-cards,
   .stats-tab > .chart-card-wide,
   .stats-tab > .empty-msg {
@@ -768,12 +769,6 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 
 /* ===== Help Button ===== */
 .tab-help-row { display: flex; justify-content: flex-end; }
-.stats-help-float {
-  position: fixed;
-  bottom: 24px;
-  right: max(24px, calc((100vw - 780px) / 2 + 16px));
-  z-index: 50;
-}
 .help-btn {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 8px 14px;
