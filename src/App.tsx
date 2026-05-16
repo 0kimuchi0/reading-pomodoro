@@ -188,7 +188,7 @@ function AppInner() {
       </main>
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-      {showTutorial && <TutorialOverlay onDone={() => setShowTutorial(false)} />}
+      {showTutorial && <TutorialOverlay onDone={() => setShowTutorial(false)} onTabChange={setTab} />}
       {bannedError && (
         <div className="banned-toast">
           <span>{bannedError}</span>

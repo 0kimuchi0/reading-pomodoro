@@ -5,42 +5,71 @@ const TUTORIAL_KEY = 'pr_tutorial_done'
 
 interface Rect { top: number; left: number; width: number; height: number }
 
+type TabName = 'timer' | 'bookshelf' | 'stats' | 'settings'
+
 interface Step {
   icon: React.ReactNode
   title: string
-  desc: string
-  selector?: string  // ハイライト対象の CSS セレクター
+  desc: string[]        // 箇条書き
+  selector?: string
+  tab?: TabName         // 遷移先タブ
 }
 
 const STEPS: Step[] = [
   {
     icon: <IconSparkles size={18} />,
     title: 'PomRead へようこそ！',
-    desc: '読書に特化したポモドーロタイマーアプリです。\n主な機能を簡単にご紹介します。',
+    desc: [
+      '読書に特化したポモドーロタイマーアプリです。',
+      '本棚・タイマー・統計の3つの機能で、読書習慣をサポートします。',
+      '主な機能を順番にご紹介します。',
+    ],
   },
   {
     icon: <IconClock size={18} />,
     title: 'タイマー',
-    desc: '25 分の集中タイマーで読書を管理します。\n本を選んでスタートすると、セッションが自動で記録されます。',
+    desc: [
+      '本を選んで25分の集中タイマーをスタートします。',
+      'タイマー終了後に読んだページ数を入力すると、セッションとして自動記録されます。',
+      '短い休憩（5分）・長い休憩（15分）の切り替えも可能です。',
+      'セッション数は統計グラフや本棚の実績に自動で反映されます。',
+    ],
     selector: '.tab-nav > .tab-btn:nth-child(1)',
+    tab: 'timer',
   },
   {
     icon: <IconBooks size={18} />,
     title: '本棚',
-    desc: '読んでいる本・読みたい本を登録・管理できます。\nページ数や読書ステータスも記録できます。',
+    desc: [
+      'タイトル・著者・出版社・ジャンル・総ページ数を登録して本を管理します。',
+      '読書ステータスを「読書中」「積読」「読了」で切り替えられます。',
+      '現在のページ数を更新することで、読書進捗を記録できます。',
+      '登録した本はタイマー画面の本選択リストに表示されます。',
+    ],
     selector: '.tab-nav > .tab-btn:nth-child(2)',
+    tab: 'bookshelf',
   },
   {
     icon: <IconChartBar size={18} />,
     title: '統計',
-    desc: '日別・週別のセッション数や集中時間を\nグラフで確認できます。',
+    desc: [
+      '日別・週別の集中時間とセッション数をグラフで確認できます。',
+      '本ごとの読書時間や総セッション数も一覧で表示されます。',
+      '連続読書日数（ストリーク）でモチベーションを維持しましょう。',
+    ],
     selector: '.tab-nav > .tab-btn:nth-child(3)',
+    tab: 'stats',
   },
   {
     icon: <IconSettings size={18} />,
     title: '設定・ログイン',
-    desc: 'アカウントを作成してログインすると、\n複数デバイス間でデータを自動同期できます。',
+    desc: [
+      'ライト・ダーク・システムテーマを切り替えられます。',
+      'アカウントを作成してログインすると、データがクラウドに保存されます。',
+      'ログイン中はスマホ・PC など複数デバイス間でデータが自動同期されます。',
+    ],
     selector: '.tab-nav-right .tab-btn:last-child',
+    tab: 'settings',
   },
 ]
 
@@ -48,7 +77,12 @@ export function shouldShowTutorial() {
   return !localStorage.getItem(TUTORIAL_KEY)
 }
 
-export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
+interface Props {
+  onDone: () => void
+  onTabChange: (tab: TabName) => void
+}
+
+export default function TutorialOverlay({ onDone, onTabChange }: Props) {
   const [step, setStep] = useState(0)
   const [spotRect, setSpotRect] = useState<Rect | null>(null)
 
@@ -60,14 +94,22 @@ export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
     onDone()
   }, [onDone])
 
-  // ハイライト対象要素の位置を取得
+  // ステップ変更時にタブ遷移 & スポットライト位置更新
+  useEffect(() => {
+    if (current.tab) onTabChange(current.tab)
+  }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // タブ遷移後に DOM が更新されるまで少し待ってから位置取得
   useEffect(() => {
     if (!current.selector) { setSpotRect(null); return }
-    const el = document.querySelector(current.selector)
-    if (!el) { setSpotRect(null); return }
-    const r = el.getBoundingClientRect()
-    const pad = 8
-    setSpotRect({ top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 })
+    const timer = setTimeout(() => {
+      const el = document.querySelector(current.selector!)
+      if (!el) { setSpotRect(null); return }
+      const r = el.getBoundingClientRect()
+      const pad = 8
+      setSpotRect({ top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 })
+    }, 80)
+    return () => clearTimeout(timer)
   }, [step, current.selector])
 
   // ツールチップ位置: スポットライトの下、なければ画面中央
@@ -76,15 +118,14 @@ export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
       return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' } as React.CSSProperties
     }
     const gap = 14
-    const tooltipW = 300
+    const tooltipW = 320
     const belowY = spotRect.top + spotRect.height + gap
     const aboveY = spotRect.top - gap
     const leftX = Math.max(12, Math.min(
       spotRect.left + spotRect.width / 2 - tooltipW / 2,
       window.innerWidth - tooltipW - 12
     ))
-    // 下に収まるか判定
-    if (belowY + 200 > window.innerHeight) {
+    if (belowY + 260 > window.innerHeight) {
       return { bottom: window.innerHeight - aboveY, left: leftX } as React.CSSProperties
     }
     return { top: belowY, left: leftX } as React.CSSProperties
@@ -113,7 +154,11 @@ export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
         </div>
 
         <h3 className="tutorial-title">{current.icon}{current.title}</h3>
-        <p className="tutorial-desc">{current.desc}</p>
+        <ul className="tutorial-desc-list">
+          {current.desc.map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+        </ul>
 
         <div className="tutorial-actions">
           <button className="tutorial-skip-btn" onClick={finish}>スキップ</button>
@@ -122,7 +167,7 @@ export default function TutorialOverlay({ onDone }: { onDone: () => void }) {
               <button className="tutorial-prev-btn" onClick={() => setStep(s => s - 1)}>← 前へ</button>
             )}
             <button className="tutorial-next-btn" onClick={() => isLast ? finish() : setStep(s => s + 1)}>
-              {isLast ? '完了 ✓' : '次へ →'}
+              {isLast ? '完了' : '次へ →'}
             </button>
           </div>
         </div>

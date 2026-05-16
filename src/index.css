@@ -988,7 +988,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 /* ツールチップ */
 .tutorial-tooltip {
   position: fixed;
-  width: 300px;
+  width: 320px;
   background: var(--color-surface);
   border-radius: var(--radius);
   padding: 20px;
@@ -1027,6 +1027,13 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   color: var(--color-text-muted); margin: 0 0 18px;
   white-space: pre-line;
 }
+.tutorial-desc-list {
+  font-size: 0.84rem; line-height: 1.7;
+  color: var(--color-text-muted); margin: 0 0 18px;
+  padding-left: 1.2em; list-style: disc;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tutorial-desc-list li { padding-left: 2px; }
 
 /* アクション行 */
 .tutorial-actions {
