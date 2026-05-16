@@ -682,7 +682,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   background: var(--color-surface);
   border-radius: var(--radius);
   width: min(720px, 95vw);
-  max-height: 85vh;
+  height: min(560px, 85vh);
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
