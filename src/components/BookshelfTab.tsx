@@ -32,18 +32,26 @@ const BOOKSHELF_HELP = [
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* タイトル入力フィールド */}
-        <rect x="30" y="40" width="140" height="32" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="44" y="61" fontSize="12" fill="#6B6B8A" fontFamily="sans-serif">タイトル *</text>
-        {/* 著者フィールド */}
-        <rect x="30" y="82" width="140" height="32" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="44" y="103" fontSize="12" fill="#6B6B8A" fontFamily="sans-serif">著者名 *</text>
-        {/* ＋ボタン */}
-        <rect x="182" y="40" width="60" height="74" rx="8" fill="#534AB7" />
-        <text x="212" y="83" textAnchor="middle" fontSize="26" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
-        {/* オートコンプリート候補 */}
-        <rect x="30" y="122" width="140" height="22" rx="4" fill="#EEEDfA" />
-        <text x="44" y="137" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
+        {/* quick-add-card */}
+        <rect x="12" y="8" width="256" height="144" rx="10" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
+        {/* ヘッダー「本を追加」 */}
+        <text x="24" y="26" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">本を追加</text>
+        {/* タイトル入力 */}
+        <rect x="24" y="32" width="172" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="34" y="51" fontSize="11" fill="#C0C0D8" fontFamily="sans-serif">タイトル *</text>
+        {/* 著者入力 */}
+        <rect x="24" y="64" width="172" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
+        <text x="34" y="83" fontSize="11" fill="#C0C0D8" fontFamily="sans-serif">著者名 *</text>
+        {/* ＋ボタン（両入力欄の高さに合わせてスパン） */}
+        <rect x="200" y="32" width="56" height="60" rx="8" fill="#534AB7" />
+        <text x="228" y="67" textAnchor="middle" fontSize="24" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
+        {/* 区切り線 */}
+        <line x1="24" y1="100" x2="256" y2="100" stroke="#E2E1F0" strokeWidth="1" />
+        {/* 詳細設定トグル */}
+        <text x="32" y="118" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▼ 詳細設定（出版社・ページ数・ジャンル）</text>
+        {/* オートコンプリート候補（ヒント） */}
+        <rect x="24" y="126" width="172" height="18" rx="4" fill="#EEEDfA" />
+        <text x="32" y="139" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
       </svg>
     ),
   },
