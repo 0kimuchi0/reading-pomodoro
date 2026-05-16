@@ -619,7 +619,7 @@ export default function StatsTab({ books, sessions }: Props) {
     <div className="stats-tab">
       {showHelp && <HelpModal title="統計の見方" items={STATS_HELP} onClose={() => setShowHelp(false)} />}
       {createPortal(
-        <div className="tab-help-row">
+        <div className="stats-help-float">
           <button className="help-btn" onClick={() => setShowHelp(true)}>
             <IconQuestionMark size={15} />
             使い方
