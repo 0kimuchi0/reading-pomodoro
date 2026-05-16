@@ -18,18 +18,17 @@ const STATS_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {[
-          { x: 6,   label: '総セッション', value: '42' },
-          { x: 74,  label: '総集中（分）', value: '1050' },
-          { x: 142, label: '読了', value: '7' },
-          { x: 210, label: '連続日数', value: '5' },
+          { x: 10, y: 10, label: '総セッション', value: '42' },
+          { x: 148, y: 10, label: '総集中（分）', value: '1050' },
+          { x: 10, y: 88, label: '読了', value: '7' },
+          { x: 148, y: 88, label: '連続日数', value: '5' },
         ].map((card) => (
-          <g key={card.x}>
-            <rect x={card.x} y="30" width="62" height="80" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-            <text x={card.x + 31} y="68" textAnchor="middle" fontSize="18" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
-            <text x={card.x + 31} y="90" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
+          <g key={`${card.x}-${card.y}`}>
+            <rect x={card.x} y={card.y} width="122" height="62" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+            <text x={card.x + 61} y={card.y + 23} textAnchor="middle" dominantBaseline="central" fontSize="20" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
+            <text x={card.x + 61} y={card.y + 44} textAnchor="middle" dominantBaseline="central" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
           </g>
         ))}
-        <text x="140" y="130" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">全期間の累計</text>
       </svg>
     ),
   },
@@ -42,18 +41,17 @@ const STATS_HELP = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
         {[
-          { x: 6,   label: '1日平均SS', value: '2.5' },
-          { x: 74,  label: '1日平均（分）', value: '62' },
-          { x: 142, label: '週平均SS', value: '17' },
-          { x: 210, label: '1冊平均SS', value: '21' },
+          { x: 10, y: 10, label: '1日平均セッション', value: '2.5' },
+          { x: 148, y: 10, label: '1日平均集中（分）', value: '62' },
+          { x: 10, y: 88, label: '週平均セッション', value: '17' },
+          { x: 148, y: 88, label: '1冊平均セッション', value: '21' },
         ].map((card) => (
-          <g key={card.x}>
-            <rect x={card.x} y="30" width="62" height="80" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-            <text x={card.x + 31} y="68" textAnchor="middle" fontSize="18" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
-            <text x={card.x + 31} y="90" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
+          <g key={`${card.x}-${card.y}`}>
+            <rect x={card.x} y={card.y} width="122" height="62" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+            <text x={card.x + 61} y={card.y + 23} textAnchor="middle" dominantBaseline="central" fontSize="20" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{card.value}</text>
+            <text x={card.x + 61} y={card.y + 44} textAnchor="middle" dominantBaseline="central" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{card.label}</text>
           </g>
         ))}
-        <text x="140" y="130" textAnchor="middle" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">読書のあった日・週・冊で算出</text>
       </svg>
     ),
   },
