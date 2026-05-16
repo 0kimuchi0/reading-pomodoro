@@ -566,7 +566,6 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    align-items: start;
   }
   .stats-tab > .tab-help-row,
   .stats-tab > .summary-cards,
