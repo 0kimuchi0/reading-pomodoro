@@ -1171,3 +1171,79 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   cursor: pointer; transition: opacity 0.15s;
 }
 .tutorial-next-btn:hover { opacity: 0.88; }
+
+/* ===== ダークモード視認性改善 ===== */
+
+/* input / select / textarea — 背景を surface 色に統一してボーダーを明確化 */
+[data-theme="dark"] input:not([type="range"]),
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--color-surface);
+  border-color: #3E3E5E;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder { color: #7070A0; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) input:not([type="range"]),
+  :root:not([data-theme="light"]) select,
+  :root:not([data-theme="light"]) textarea {
+    background: var(--color-surface);
+    border-color: #3E3E5E;
+  }
+  :root:not([data-theme="light"]) input::placeholder,
+  :root:not([data-theme="light"]) textarea::placeholder { color: #7070A0; }
+}
+
+/* ghost ボタン / sort-dir — ボーダーと文字を明るく */
+[data-theme="dark"] .btn-ghost,
+[data-theme="dark"] .sort-dir-btn { border-color: #4A4A6A; color: var(--color-text); }
+[data-theme="dark"] .btn-icon-ghost { color: #AAAACC; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-ghost,
+  :root:not([data-theme="light"]) .sort-dir-btn { border-color: #4A4A6A; color: var(--color-text); }
+  :root:not([data-theme="light"]) .btn-icon-ghost { color: #AAAACC; }
+}
+
+/* filter ボタン（非アクティブ） */
+[data-theme="dark"] .filter-btn { border-color: #4A4A6A; color: #AAAACC; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .filter-btn { border-color: #4A4A6A; color: #AAAACC; }
+}
+
+/* StatusPicker — 非アクティブを surface 背景 + opacity 0.7 で視認性向上 */
+[data-theme="dark"] .status-pick-btn { background: var(--color-surface); color: var(--color-text); opacity: 0.7; }
+[data-theme="dark"] .status-pick-btn.active,
+[data-theme="dark"] .status-pick-btn:hover { opacity: 1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .status-pick-btn { background: var(--color-surface); color: var(--color-text); opacity: 0.7; }
+  :root:not([data-theme="light"]) .status-pick-btn.active,
+  :root:not([data-theme="light"]) .status-pick-btn:hover { opacity: 1; }
+}
+
+/* 本選択ドロップダウン */
+[data-theme="dark"] .book-select-btn { background: var(--color-surface); border-color: #3E3E5E; }
+[data-theme="dark"] .book-select-option:hover { background: #2A2A45; }
+[data-theme="dark"] .book-select-dropdown { border-color: #3E3E5E; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .book-select-btn { background: var(--color-surface); border-color: #3E3E5E; }
+  :root:not([data-theme="light"]) .book-select-option:hover { background: #2A2A45; }
+  :root:not([data-theme="light"]) .book-select-dropdown { border-color: #3E3E5E; }
+}
+
+/* ConfirmDialog キャンセルボタン */
+[data-theme="dark"] .confirm-cancel-btn { border-color: #4A4A6A; color: var(--color-text); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .confirm-cancel-btn { border-color: #4A4A6A; color: var(--color-text); }
+}
+
+/* Google ログインボタン */
+[data-theme="dark"] .btn-google { background: var(--color-surface); border-color: #4A4A6A; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-google { background: var(--color-surface); border-color: #4A4A6A; }
+}
+
+/* admin role select */
+[data-theme="dark"] .admin-role-select { background: var(--color-surface); border-color: #4A4A6A; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .admin-role-select { background: var(--color-surface); border-color: #4A4A6A; }
+}
