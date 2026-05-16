@@ -254,14 +254,15 @@ function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: {
 
 interface TooltipProps {
   active?: boolean
-  payload?: Array<{ name: string; value: number; color?: string }>
+  payload?: Array<{ name: string; value: number; color?: string; payload?: Record<string, unknown> }>
   label?: string
 }
 function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (!active || !payload?.length) return null
+  const displayLabel = (payload[0]?.payload?.fullName as string | undefined) ?? label
   return (
     <div className="chart-tooltip">
-      {label && <p className="chart-tooltip-label">{label}</p>}
+      {displayLabel && <p className="chart-tooltip-label">{displayLabel}</p>}
       {payload.map((p, i) => (
         <p key={i} className="chart-tooltip-row">
           <span className="chart-tooltip-dot" style={{ background: p.color ?? '#534AB7' }} />
@@ -439,7 +440,7 @@ export default function StatsTab({ books, sessions }: Props) {
     .filter(b => b.sessions > 0)
     .sort((a, b) => b.sessions - a.sessions)
     .slice(0, 8)
-    .map(b => ({ name: b.title.length > titleLimit ? b.title.slice(0, titleLimit) + '…' : b.title, セッション: b.sessions }))
+    .map(b => ({ name: b.title.length > titleLimit ? b.title.slice(0, titleLimit) + '…' : b.title, fullName: b.title, セッション: b.sessions }))
 
   // Genre distribution
   const genreMap: Record<string, number> = {}
@@ -482,6 +483,7 @@ export default function StatsTab({ books, sessions }: Props) {
       const pace = totalMins > 0 ? Math.round((b.currentPage / totalMins) * 10) / 10 : 0
       return {
         name: b.title.length > titleLimit ? b.title.slice(0, titleLimit) + '…' : b.title,
+        fullName: b.title,
         'ページ/分': pace,
       }
     })
