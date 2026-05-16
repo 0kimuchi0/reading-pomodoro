@@ -344,33 +344,65 @@ function getMonthlyData(sessions: Session[]): { month: string; 集中時間: num
   return result
 }
 
-function getCumulativeData(sessions: Session[]): { week: string; 累計セッション: number }[] {
+type CumulativeGranularity = 'weekly' | 'monthly' | 'quarterly'
+
+function getCumulativeGranularity(firstDateStr: string): CumulativeGranularity {
+  const totalWeeks = Math.ceil(
+    (Date.now() - new Date(firstDateStr).getTime()) / (7 * 24 * 60 * 60 * 1000)
+  )
+  if (totalWeeks <= 12) return 'weekly'
+  if (totalWeeks <= 52) return 'monthly'
+  return 'quarterly'
+}
+
+function getCumulativeData(sessions: Session[]): { label: string; 累計セッション: number; granularity: CumulativeGranularity } [] {
   if (sessions.length === 0) return []
   const sorted = [...sessions].sort((a, b) => a.date.localeCompare(b.date))
-
-  // Return Monday of the week containing dateStr
-  const getWeekStart = (dateStr: string): Date => {
-    const d = new Date(dateStr)
-    d.setHours(0, 0, 0, 0)
-    const day = d.getDay() // 0=Sun
-    d.setDate(d.getDate() - (day === 0 ? 6 : day - 1))
-    return d
-  }
-
-  const firstWeek = getWeekStart(sorted[0].date)
-  const currentWeek = getWeekStart(toLocalDate(new Date()))
-  const result: { week: string; 累計セッション: number }[] = []
+  const firstDateStr = sorted[0].date
+  const granularity = getCumulativeGranularity(firstDateStr)
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)
+  const result: { label: string; 累計セッション: number; granularity: CumulativeGranularity }[] = []
   let cumulative = 0
-  const cur = new Date(firstWeek)
 
-  while (cur <= currentWeek) {
-    const weekStartStr = toLocalDate(cur)
-    const next = new Date(cur)
-    next.setDate(next.getDate() + 7)
-    const weekEndStr = toLocalDate(next)
-    cumulative += sessions.filter(s => s.date >= weekStartStr && s.date < weekEndStr).length
-    result.push({ week: `${cur.getMonth() + 1}/${cur.getDate()}`, 累計セッション: cumulative })
-    cur.setDate(cur.getDate() + 7)
+  if (granularity === 'weekly') {
+    // Monday of first week
+    const getWeekStart = (dateStr: string): Date => {
+      const d = new Date(dateStr); d.setHours(0, 0, 0, 0)
+      d.setDate(d.getDate() - (d.getDay() === 0 ? 6 : d.getDay() - 1))
+      return d
+    }
+    const cur = getWeekStart(firstDateStr)
+    const curWeekStart = getWeekStart(toLocalDate(now))
+    while (cur <= curWeekStart) {
+      const ws = toLocalDate(cur)
+      const next = new Date(cur); next.setDate(next.getDate() + 7)
+      cumulative += sessions.filter(s => s.date >= ws && s.date < toLocalDate(next)).length
+      result.push({ label: `${cur.getMonth() + 1}/${cur.getDate()}`, 累計セッション: cumulative, granularity })
+      cur.setDate(cur.getDate() + 7)
+    }
+  } else if (granularity === 'monthly') {
+    let [y, m] = firstDateStr.slice(0, 7).split('-').map(Number)
+    const ey = now.getFullYear(), em = now.getMonth() + 1
+    while (y < ey || (y === ey && m <= em)) {
+      const key = `${y}-${String(m).padStart(2, '0')}`
+      cumulative += sessions.filter(s => s.date.startsWith(key)).length
+      result.push({ label: `${y % 100}/${m}`, 累計セッション: cumulative, granularity })
+      m++; if (m > 12) { m = 1; y++ }
+    }
+  } else {
+    // quarterly: Jan, Apr, Jul, Oct
+    let [y, m] = firstDateStr.slice(0, 7).split('-').map(Number)
+    m = Math.floor((m - 1) / 3) * 3 + 1 // round down to quarter start
+    const ey = now.getFullYear(), em = now.getMonth() + 1
+    while (y < ey || (y === ey && m <= em)) {
+      const qEnd = new Date(y, m + 2, 1) // exclusive end of quarter
+      const qEndStr = toLocalDate(qEnd)
+      const qStartStr = `${y}-${String(m).padStart(2, '0')}-01`
+      cumulative += sessions.filter(s => s.date >= qStartStr && s.date < qEndStr).length
+      result.push({ label: `${y % 100}Q${Math.ceil(m / 3)}`, 累計セッション: cumulative, granularity })
+      m += 3; if (m > 12) { m = m - 12; y++ }
+    }
   }
   return result
 }
@@ -650,12 +682,16 @@ export default function StatsTab({ books, sessions }: Props) {
       {/* Cumulative sessions */}
       {cumulativeData.length > 1 && (
         <div className="chart-card">
-          <h3>アプリ開始からの累計セッション</h3>
+          <h3>アプリ開始からの累計セッション
+            <span className="chart-granularity-badge">
+              {cumulativeData[0].granularity === 'weekly' ? '週次' : cumulativeData[0].granularity === 'monthly' ? '月次' : '四半期'}
+            </span>
+          </h3>
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <LineChart data={cumulativeData} margin={{ top: 5, right: 20, left: 0, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis
-                dataKey="week"
+                dataKey="label"
                 interval={cumulativeData.length > 16 ? Math.ceil(cumulativeData.length / 8) - 1 : cumulativeData.length > 8 ? 1 : 0}
                 tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }}
                 axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30}
