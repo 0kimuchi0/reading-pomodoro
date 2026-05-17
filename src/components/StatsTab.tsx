@@ -218,15 +218,31 @@ const STATS_HELP = [
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        {/* Y軸ラベル */}
+        <text x="6" y="13" fontSize="8" fill="#9999AA" fontFamily="sans-serif">ページ/分</text>
+        {/* グリッドライン & Y軸目盛り */}
+        {[{ y: 20, val: '2.0' }, { y: 45, val: '1.5' }, { y: 70, val: '1.0' }, { y: 95, val: '0.5' }].map(tick => (
+          <g key={tick.y}>
+            <line x1="44" y1={tick.y} x2="264" y2={tick.y} stroke="#E2E1F0" strokeWidth="1" strokeDasharray="4 3" />
+            <text x="40" y={tick.y + 3} textAnchor="end" dominantBaseline="central" fontSize="8" fill="#9999AA" fontFamily="sans-serif">{tick.val}</text>
+          </g>
+        ))}
+        {/* X軸 */}
+        <line x1="44" y1="120" x2="264" y2="120" stroke="#C8C4E8" strokeWidth="1.5" />
+        {/* 縦棒 */}
         {[
-          { label: '吾輩は猫…', w: 140 },
-          { label: '坊っちゃん', w: 100 },
-          { label: '走れメロス', w: 70 },
+          { x: 66, h: 90, val: '1.8', label: '吾輩は猫…' },
+          { x: 132, h: 65, val: '1.3', label: '坊っちゃん' },
+          { x: 198, h: 40, val: '0.8', label: 'Clean Code' },
         ].map((bar, i) => (
           <g key={i}>
-            <text x="100" y={40 + i * 38} textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">{bar.label}</text>
-            <rect x="106" y={26 + i * 38} width={bar.w} height="20" rx="4"
+            <rect x={bar.x} y={120 - bar.h} width="45" height={bar.h} rx="4"
               fill={i === 0 ? '#534AB7' : i === 1 ? '#7C75D4' : '#A8A3E3'} />
+            <text x={bar.x + 22} y={120 - bar.h - 6} textAnchor="middle" dominantBaseline="central"
+              fontSize="9" fontWeight="700" fill={i === 0 ? '#534AB7' : i === 1 ? '#7C75D4' : '#A8A3E3'}
+              fontFamily="sans-serif">{bar.val}</text>
+            <text x={bar.x + 22} y="136" textAnchor="middle" dominantBaseline="central"
+              fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">{bar.label}</text>
           </g>
         ))}
       </svg>
