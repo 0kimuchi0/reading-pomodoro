@@ -598,8 +598,8 @@ export default function AdminTab() {
                     <span className="admin-user-meta">{sb.author} · {sb.genre}{sb.publisher ? ` · ${sb.publisher}` : ''}{sb.totalPages ? ` · ${sb.totalPages}p` : ''}</span>
                   </div>
                   <div className="admin-user-actions">
-                    <button className="admin-ban-btn" onClick={() => handleEditStart(sb)} title="編集"><IconPencil size={15} /> 編集</button>
-                    <button className="admin-ban-btn" onClick={() => handleDeleteSuggest(sb.id)} title="削除"><IconTrash size={15} /> 削除</button>
+                    <button className="admin-edit-btn" onClick={() => handleEditStart(sb)} title="編集"><IconPencil size={15} /> 編集</button>
+                    <button className="admin-delete-btn" onClick={() => handleDeleteSuggest(sb.id)} title="削除"><IconTrash size={15} /> 削除</button>
                   </div>
                 </div>
               ))}
