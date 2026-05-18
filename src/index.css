@@ -239,7 +239,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 @keyframes dropdown-in {
   from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ドロップダウン内検索 */
@@ -1058,7 +1058,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 @keyframes splash-icon {
   from { opacity: 0; transform: translateY(12px) scale(0.85); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 1; transform: none; }
 }
 .app-splash-title {
   font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
@@ -1072,7 +1072,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 @keyframes splash-text {
   from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 .app-splash.exiting {
   animation: splash-out 0.6s ease forwards;
@@ -1400,7 +1400,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 @keyframes tutorialFadeIn {
   from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ステップドット */
