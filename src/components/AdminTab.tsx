@@ -367,7 +367,12 @@ export default function AdminTab() {
             const filtered = q ? suggestBooks.filter(sb =>
               sb.title.toLowerCase().includes(q) ||
               sb.author.toLowerCase().includes(q) ||
-              sb.publisher.toLowerCase().includes(q)
+              sb.publisher.toLowerCase().includes(q) ||
+              sb.genre.toLowerCase().includes(q) ||
+              (sb.isbn ?? '').toLowerCase().includes(q) ||
+              (sb.ccode ?? '').toLowerCase().includes(q) ||
+              (sb.catalogNumber ?? '').toLowerCase().includes(q) ||
+              (sb.ndc ?? '').toLowerCase().includes(q)
             ) : suggestBooks
             return <p className="admin-count">{filtered.length} / {suggestBooks.length} 件</p>
           })()}
@@ -378,7 +383,12 @@ export default function AdminTab() {
             const filtered = q ? suggestBooks.filter(sb =>
               sb.title.toLowerCase().includes(q) ||
               sb.author.toLowerCase().includes(q) ||
-              sb.publisher.toLowerCase().includes(q)
+              sb.publisher.toLowerCase().includes(q) ||
+              sb.genre.toLowerCase().includes(q) ||
+              (sb.isbn ?? '').toLowerCase().includes(q) ||
+              (sb.ccode ?? '').toLowerCase().includes(q) ||
+              (sb.catalogNumber ?? '').toLowerCase().includes(q) ||
+              (sb.ndc ?? '').toLowerCase().includes(q)
             ) : suggestBooks
             return filtered.length === 0 ? (
               <p className="admin-empty">「{suggestSearch}」に一致するサジェストが見つかりません</p>

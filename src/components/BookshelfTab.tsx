@@ -423,7 +423,12 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     ? statusFiltered.filter(b =>
         b.title.toLowerCase().includes(q) ||
         b.author.toLowerCase().includes(q) ||
-        (b.publisher ?? '').toLowerCase().includes(q)
+        (b.publisher ?? '').toLowerCase().includes(q) ||
+        b.genre.toLowerCase().includes(q) ||
+        (b.isbn ?? '').toLowerCase().includes(q) ||
+        (b.ccode ?? '').toLowerCase().includes(q) ||
+        (b.catalogNumber ?? '').toLowerCase().includes(q) ||
+        (b.ndc ?? '').toLowerCase().includes(q)
       )
     : statusFiltered
 
