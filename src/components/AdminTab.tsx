@@ -646,7 +646,7 @@ export default function AdminTab() {
                 <div key={sb.id} className="admin-user-card">
                   <div className="admin-user-info">
                     <span className="admin-user-email">{sb.title}</span>
-                    <span className="admin-user-meta">{sb.author} · {sb.genre}{sb.publisher ? ` · ${sb.publisher}` : ''}{sb.totalPages ? ` · ${sb.totalPages}p` : ''}</span>
+                    <span className="admin-user-meta">{sb.author.replace(/[・/]\s*/g, ', ')} / {sb.genre}{sb.publisher ? ` / ${sb.publisher}` : ''}{sb.totalPages ? ` / ${sb.totalPages}p` : ''}</span>
                   </div>
                   <div className="admin-user-actions">
                     <button className="admin-edit-btn" onClick={() => handleEditStart(sb)} title="編集"><IconPencil size={15} /> 編集</button>
