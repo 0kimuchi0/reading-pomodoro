@@ -33,9 +33,8 @@ function AppInner() {
   const [splashVisible, setSplashVisible] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
 
-  // スプラッシュを最低5秒表示
   useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 3000)
+    const t = setTimeout(() => setSplashDone(true), 1000)
     return () => clearTimeout(t)
   }, [])
 

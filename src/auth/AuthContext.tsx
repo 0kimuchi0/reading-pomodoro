@@ -52,11 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!initialDone) {
         // 初回イベント (INITIAL_SESSION / SIGNED_IN / NO_SESSION など)
         initialDone = true
-        setLoading(false)  // ← ハングに関係なく即座にローディング解除
         if (newUser) {
           const banned = await checkBan(newUser.id)
           if (!banned) setUser(newUser)
         }
+        setLoading(false)
         return
       }
 
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initialDone = true
         setLoading(false)
       }
-    }, 5000)
+    }, 3000)
 
     return () => {
       subscription.unsubscribe()
