@@ -52,11 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!initialDone) {
         // 初回イベント (INITIAL_SESSION / SIGNED_IN / NO_SESSION など)
         initialDone = true
+        setLoading(false)
         if (newUser) {
           const banned = await checkBan(newUser.id)
           if (!banned) setUser(newUser)
         }
-        setLoading(false)
         return
       }
 
