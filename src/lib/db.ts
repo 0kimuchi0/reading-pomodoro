@@ -277,6 +277,16 @@ export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<v
   })
 }
 
+export async function updateSuggestBook(book: SuggestBookDB): Promise<void> {
+  await supabase.from('suggest_books').update({
+    title: book.title,
+    author: book.author,
+    genre: book.genre,
+    publisher: book.publisher,
+    total_pages: book.totalPages,
+  }).eq('id', book.id)
+}
+
 export async function deleteSuggestBook(id: string): Promise<void> {
   await supabase.from('suggest_books').delete().eq('id', id)
 }

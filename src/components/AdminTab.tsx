@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash } from '@tabler/icons-react'
-import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, deleteSuggestBook } from '../lib/db'
+import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX } from '@tabler/icons-react'
+import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { setAdminBooksCache } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
@@ -23,6 +23,8 @@ export default function AdminTab() {
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
   const [suggestAdding, setSuggestAdding] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
   const [pending, setPending] = useState<PendingAction | null>(null)
 
   const load = async () => {
@@ -128,6 +130,26 @@ export default function AdminTab() {
     setAdminBooksCache(sb)
     setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
     setSuggestAdding(false)
+  }
+
+  const handleEditStart = (sb: SuggestBookDB) => {
+    setEditingId(sb.id)
+    setEditForm({ title: sb.title, author: sb.author, genre: sb.genre, publisher: sb.publisher, totalPages: String(sb.totalPages || '') })
+  }
+
+  const handleEditSave = async (id: string) => {
+    await updateSuggestBook({
+      id,
+      title: editForm.title.trim(),
+      author: editForm.author.trim(),
+      genre: editForm.genre,
+      publisher: editForm.publisher.trim(),
+      totalPages: Number(editForm.totalPages) || 0,
+    })
+    setEditingId(null)
+    const sb = await getSuggestBooks()
+    setSuggestBooks(sb)
+    setAdminBooksCache(sb)
   }
 
   const handleDeleteSuggest = async (id: string) => {
@@ -312,24 +334,37 @@ export default function AdminTab() {
               <IconPlus size={15} /> 追加
             </button>
           </div>
-          <p className="admin-count">{suggestBooks.length} 件（管理者追加分）</p>
+          <p className="admin-count">{suggestBooks.length} 件</p>
           {suggestBooks.length === 0 ? (
-            <p className="admin-empty">管理者が追加したサジェストはありません</p>
+            <p className="admin-empty">サジェストはありません</p>
           ) : (
             <div className="admin-user-list">
-              {suggestBooks.map(sb => (
+              {suggestBooks.map(sb => editingId === sb.id ? (
+                <div key={sb.id} className="admin-user-card admin-suggest-edit-card">
+                  <div className="admin-suggest-edit-fields">
+                    <input className="admin-suggest-input" placeholder="タイトル *" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} />
+                    <input className="admin-suggest-input" placeholder="著者 *" value={editForm.author} onChange={e => setEditForm(f => ({ ...f, author: e.target.value }))} />
+                    <select className="admin-role-select" value={editForm.genre} onChange={e => setEditForm(f => ({ ...f, genre: e.target.value }))}>
+                      {['小説', 'ビジネス', '自己啓発', '技術', '歴史', 'その他'].map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                    <input className="admin-suggest-input" placeholder="出版社" value={editForm.publisher} onChange={e => setEditForm(f => ({ ...f, publisher: e.target.value }))} />
+                    <input className="admin-suggest-input admin-suggest-pages" placeholder="ページ数" type="number" min="0" value={editForm.totalPages} onChange={e => setEditForm(f => ({ ...f, totalPages: e.target.value }))} />
+                  </div>
+                  <div className="admin-suggest-edit-actions">
+                    <button className="admin-suggest-add-btn" onClick={() => handleEditSave(sb.id)} disabled={!editForm.title.trim() || !editForm.author.trim()}><IconDeviceFloppy size={15} /> 保存</button>
+                    <button className="admin-ban-btn" onClick={() => setEditingId(null)}><IconX size={15} /> キャンセル</button>
+                  </div>
+                </div>
+              ) : (
                 <div key={sb.id} className="admin-user-card">
                   <div className="admin-user-info">
                     <span className="admin-user-email">{sb.title}</span>
                     <span className="admin-user-meta">{sb.author} · {sb.genre}{sb.publisher ? ` · ${sb.publisher}` : ''}{sb.totalPages ? ` · ${sb.totalPages}p` : ''}</span>
                   </div>
-                  <button
-                    className="admin-ban-btn"
-                    onClick={() => handleDeleteSuggest(sb.id)}
-                    title="削除"
-                  >
-                    <IconTrash size={15} /> 削除
-                  </button>
+                  <div className="admin-user-actions">
+                    <button className="admin-ban-btn" onClick={() => handleEditStart(sb)} title="編集"><IconPencil size={15} /> 編集</button>
+                    <button className="admin-ban-btn" onClick={() => handleDeleteSuggest(sb.id)} title="削除"><IconTrash size={15} /> 削除</button>
+                  </div>
                 </div>
               ))}
             </div>

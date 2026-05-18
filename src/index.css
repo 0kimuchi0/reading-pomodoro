@@ -1280,6 +1280,9 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .admin-suggest-pages { max-width: 90px; }
 .admin-suggest-add-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
 .admin-suggest-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-suggest-edit-card { flex-direction: column; align-items: stretch; gap: 8px; }
+.admin-suggest-edit-fields { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-suggest-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
 /* ConfirmDialog reason */
 .confirm-reason { width: 100%; }
