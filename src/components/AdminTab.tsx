@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch } from '@tabler/icons-react'
+import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
@@ -7,6 +7,117 @@ import { setAdminBooksCache } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
 import ConfirmDialog from './ConfirmDialog'
+import HelpModal from './HelpModal'
+import type { HelpItem } from './HelpModal'
+
+const ADMIN_HELP: HelpItem[] = [
+  {
+    icon: <IconUser size={18} />,
+    title: 'ユーザー管理',
+    desc: 'ロール変更・BAN・BAN解除を行えます',
+    detail: 'ユーザー一覧でロール（一般/管理者）の変更、BAN（利用停止）・BAN解除ができます。変更時には必ず理由の入力が必要で、操作は履歴に記録されます。BANされたユーザーは次回ログイン時に強制サインアウトされます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">ユーザー管理</text>
+        {/* ユーザーカード1 */}
+        <rect x="20" y="40" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+        <text x="30" y="60" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">user@example.com</text>
+        <rect x="168" y="46" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+        <text x="175" y="60" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">一般 ▾</text>
+        <rect x="216" y="46" width="36" height="20" rx="4" fill="#FFF0F0" stroke="#E53E3E" strokeWidth="1"/>
+        <text x="226" y="60" fontSize="9" fill="#E53E3E" fontFamily="sans-serif">BAN</text>
+        {/* ユーザーカード2（BAN済み） */}
+        <rect x="20" y="78" width="240" height="32" rx="6" fill="#FFF5F5" stroke="#FEB2B2" strokeWidth="1"/>
+        <text x="30" y="98" fontSize="10" fill="#C53030" fontFamily="sans-serif">banned@example.com</text>
+        <rect x="168" y="84" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+        <text x="175" y="98" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">一般 ▾</text>
+        <rect x="216" y="84" width="36" height="20" rx="4" fill="#E53E3E"/>
+        <text x="221" y="98" fontSize="9" fill="#fff" fontFamily="sans-serif">解除</text>
+        {/* 件数 */}
+        <text x="24" y="128" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">2 アカウント</text>
+      </svg>
+    ),
+  },
+  {
+    icon: <IconChartBar size={18} />,
+    title: '全体統計',
+    desc: '全ユーザーの読書状況をまとめて確認できます',
+    detail: '総ユーザー数・登録冊数・読了冊数・セッション数・総集中時間・平均セッション数を一覧表示します。ユーザー別アクティビティでは各ユーザーの登録冊数とセッション数を多い順に確認できます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">全体統計</text>
+        {[
+          ['総ユーザー', '12'],['登録冊数', '87'],['読了冊数', '34'],
+          ['セッション', '256'],['集中時間(分)', '6400'],['平均/人', '21'],
+        ].map(([label, val], i) => (
+          <g key={i} transform={`translate(${20 + (i % 3) * 82}, ${42 + Math.floor(i / 3) * 54})`}>
+            <rect width="74" height="44" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="37" y="20" textAnchor="middle" fontSize="14" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{val}</text>
+            <text x="37" y="36" textAnchor="middle" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{label}</text>
+          </g>
+        ))}
+      </svg>
+    ),
+  },
+  {
+    icon: <IconBookmark size={18} />,
+    title: 'サジェスト管理',
+    desc: '全ユーザーの検索候補に表示される本を管理できます',
+    detail: '管理者が追加したサジェストは全ユーザーのタイトル入力候補として表示されます。タイトル・著者・出版社・ジャンル・ページ数・ISBN・Cコード・NDC・整理番号を登録できます。検索バーで絞り込んで編集・削除も可能です。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">サジェスト管理</text>
+        {/* 検索バー */}
+        <rect x="20" y="38" width="240" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+        <text x="32" y="53" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">タイトル・著者・出版社で検索...</text>
+        {/* サジェストカード */}
+        {[['こころ', '夏目漱石 · 小説 · 岩波書店'],['坊っちゃん', '夏目漱石 · 小説 · 岩波書店']].map(([title, meta], i) => (
+          <g key={i} transform={`translate(0, ${i * 36})`}>
+            <rect x="20" y="66" width="240" height="30" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="30" y="83" fontSize="10" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{title}</text>
+            <text x="30" y="93" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{meta}</text>
+            <rect x="210" y="71" width="22" height="18" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="221" y="83" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">編</text>
+            <rect x="234" y="71" width="22" height="18" rx="4" fill="#FFF0F0" stroke="#FEB2B2" strokeWidth="1"/>
+            <text x="245" y="83" textAnchor="middle" fontSize="9" fill="#E53E3E" fontFamily="sans-serif">削</text>
+          </g>
+        ))}
+      </svg>
+    ),
+  },
+  {
+    icon: <IconHistory size={18} />,
+    title: '操作履歴',
+    desc: 'ロール変更・BAN操作の履歴を確認・巻き戻せます',
+    detail: 'ユーザー管理で行ったロール変更・BAN・BAN解除の操作が時系列で記録されます。「巻き戻し」ボタンで直前の状態に戻すことができます。巻き戻し操作も新たな履歴として記録されます。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
+        {[
+          ['user@ex.com のロールを「一般」→「管理者」に変更', '理由: テスト用', '2026/05/18 12:34'],
+          ['banned@ex.com をBAN', '理由: 規約違反', '2026/05/17 09:00'],
+        ].map(([desc, reason, date], i) => (
+          <g key={i} transform={`translate(0, ${i * 52})`}>
+            <rect x="20" y="40" width="240" height="44" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="30" y="56" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc}</text>
+            <text x="30" y="68" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{reason}</text>
+            <text x="30" y="78" fontSize="8" fill="#A0A0B8" fontFamily="sans-serif">{date}</text>
+            <rect x="204" y="52" width="48" height="20" rx="4" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1"/>
+            <text x="228" y="65" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
+          </g>
+        ))}
+      </svg>
+    ),
+  },
+]
 
 interface PendingAction {
   message: string
@@ -22,6 +133,7 @@ export default function AdminTab() {
   const [actions, setActions] = useState<AdminAction[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests'>('users')
+  const [showHelp, setShowHelp] = useState(false)
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [suggestAdding, setSuggestAdding] = useState(false)
@@ -204,6 +316,9 @@ export default function AdminTab() {
         <h2>管理者パネル</h2>
         <button className="admin-refresh-btn" onClick={load} title="更新">
           <IconRefresh size={16} />
+        </button>
+        <button className="help-btn" onClick={() => setShowHelp(true)} title="ヘルプ">
+          <IconQuestionMark size={16} />
         </button>
       </div>
 
@@ -478,6 +593,7 @@ export default function AdminTab() {
           onCancel={handleCancel}
         />
       )}
+      {showHelp && <HelpModal title="管理者パネルの使い方" items={ADMIN_HELP} onClose={() => setShowHelp(false)} />}
     </div>
   )
 }
