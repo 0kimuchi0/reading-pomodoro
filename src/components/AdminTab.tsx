@@ -6,6 +6,7 @@ import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
+import { useAuth } from '../auth/AuthContext'
 import ConfirmDialog from './ConfirmDialog'
 import HelpModal from './HelpModal'
 import type { HelpItem } from './HelpModal'
@@ -127,6 +128,7 @@ interface PendingAction {
 }
 
 export default function AdminTab() {
+  const { user } = useAuth()
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [books, setBooks] = useState<Book[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
@@ -265,8 +267,9 @@ export default function AdminTab() {
     setSuggestAddErrors(errs)
     if (hasErrors(errs)) return
     setSuggestAdding(true)
+    const newTitle = suggestForm.title.trim()
     await addSuggestBook({
-      title: suggestForm.title.trim(),
+      title: newTitle,
       author: suggestForm.author.trim(),
       genre: suggestForm.genre,
       publisher: suggestForm.publisher.trim(),
@@ -276,9 +279,20 @@ export default function AdminTab() {
       catalogNumber: suggestForm.catalogNumber.trim() || undefined,
       ndc: suggestForm.ndc.trim() || undefined,
     })
+    await logAdminAction(user?.id ?? '', 'suggest_add', '', newTitle, '')
     const sb = await getSuggestBooks()
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
+    setActions(prev => [{
+      id: crypto.randomUUID(),
+      adminId: user?.id ?? '',
+      targetUserId: user?.id ?? '',
+      actionType: 'suggest_add',
+      previousValue: '',
+      newValue: newTitle,
+      reason: '',
+      createdAt: new Date().toISOString(),
+    }, ...prev])
     setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
     setSuggestAddErrors({})
     setSuggestAdding(false)
@@ -293,9 +307,12 @@ export default function AdminTab() {
     const errs = validateBookFields(editForm)
     setSuggestEditErrors(errs)
     if (hasErrors(errs)) return
+    const oldBook = suggestBooks.find(b => b.id === id)
+    const oldTitle = oldBook?.title ?? ''
+    const newTitle = editForm.title.trim()
     await updateSuggestBook({
       id,
-      title: editForm.title.trim(),
+      title: newTitle,
       author: editForm.author.trim(),
       genre: editForm.genre,
       publisher: editForm.publisher.trim(),
@@ -305,18 +322,42 @@ export default function AdminTab() {
       catalogNumber: editForm.catalogNumber.trim() || undefined,
       ndc: editForm.ndc.trim() || undefined,
     })
+    await logAdminAction(user?.id ?? '', 'suggest_edit', oldTitle, newTitle, '')
     setEditingId(null)
     setSuggestEditErrors({})
     const sb = await getSuggestBooks()
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
+    setActions(prev => [{
+      id: crypto.randomUUID(),
+      adminId: user?.id ?? '',
+      targetUserId: user?.id ?? '',
+      actionType: 'suggest_edit',
+      previousValue: oldTitle,
+      newValue: newTitle,
+      reason: '',
+      createdAt: new Date().toISOString(),
+    }, ...prev])
   }
 
   const handleDeleteSuggest = async (id: string) => {
+    const book = suggestBooks.find(b => b.id === id)
+    const title = book?.title ?? ''
     await deleteSuggestBook(id)
+    await logAdminAction(user?.id ?? '', 'suggest_delete', title, '', '')
     const sb = await getSuggestBooks()
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
+    setActions(prev => [{
+      id: crypto.randomUUID(),
+      adminId: user?.id ?? '',
+      targetUserId: user?.id ?? '',
+      actionType: 'suggest_delete',
+      previousValue: title,
+      newValue: '',
+      reason: '',
+      createdAt: new Date().toISOString(),
+    }, ...prev])
   }
 
   const totalSessions = sessions.length
@@ -325,6 +366,9 @@ export default function AdminTab() {
   const doneBooks = books.filter(b => b.status === 'done').length
 
   const actionLabel = (a: AdminAction) => {
+    if (a.actionType === 'suggest_add') return `サジェスト「${a.newValue}」を追加`
+    if (a.actionType === 'suggest_edit') return `サジェスト「${a.previousValue}」→「${a.newValue}」に編集`
+    if (a.actionType === 'suggest_delete') return `サジェスト「${a.previousValue}」を削除`
     const target = profiles.find(p => p.id === a.targetUserId)?.email ?? a.targetUserId
     if (a.actionType === 'role_change') return `${target} のロールを「${a.previousValue}」→「${a.newValue}」に変更`
     if (a.actionType === 'ban') return `${target} をBAN`

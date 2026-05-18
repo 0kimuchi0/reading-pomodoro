@@ -50,7 +50,7 @@ export interface SuggestBookDB {
   ndc?: string
 }
 
-export type AdminActionType = 'role_change' | 'ban' | 'unban'
+export type AdminActionType = 'role_change' | 'ban' | 'unban' | 'suggest_add' | 'suggest_edit' | 'suggest_delete'
 
 export interface AdminAction {
   id: string
