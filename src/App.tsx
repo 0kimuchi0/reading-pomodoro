@@ -34,7 +34,7 @@ function AppInner() {
   const [showTutorial, setShowTutorial] = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 1000)
+    const t = setTimeout(() => setSplashDone(true), 2500)
     return () => clearTimeout(t)
   }, [])
 
