@@ -101,18 +101,20 @@ const ADMIN_HELP: HelpItem[] = [
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
         <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
+        <text x="24" y="30" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
         {[
-          ['user@ex.com のロールを「一般」→「管理者」に変更', '理由: テスト用', '2026/05/18 12:34'],
-          ['banned@ex.com をBAN', '理由: 規約違反', '2026/05/17 09:00'],
-        ].map(([desc, reason, date], i) => (
-          <g key={i} transform={`translate(0, ${i * 52})`}>
-            <rect x="20" y="40" width="240" height="44" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <text x="30" y="56" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc}</text>
-            <text x="30" y="68" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{reason}</text>
-            <text x="30" y="78" fontSize="8" fill="#A0A0B8" fontFamily="sans-serif">{date}</text>
-            <rect x="204" y="52" width="48" height="20" rx="4" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1"/>
-            <text x="228" y="65" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
+          ['user@ex.com のロールを「一般」→「管理者」', '理由: 昇格', true],
+          ['banned@ex.com をBAN', '理由: 規約違反', true],
+          ['サジェスト「こころ」を追加', '', false],
+        ].map(([desc, reason, canRevert], i) => (
+          <g key={i} transform={`translate(0, ${i * 38})`}>
+            <rect x="20" y="36" width="240" height="32" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="30" y="50" fontSize="8.5" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc as string}</text>
+            <text x="30" y="62" fontSize="7.5" fill="#6B6B8A" fontFamily="sans-serif">{reason as string}</text>
+            {canRevert && (
+              <><rect x="210" y="43" width="42" height="16" rx="3" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1"/>
+              <text x="231" y="54" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text></>
+            )}
           </g>
         ))}
       </svg>
