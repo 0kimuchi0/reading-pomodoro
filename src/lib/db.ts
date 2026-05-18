@@ -260,6 +260,13 @@ export async function getSuggestBooks(): Promise<SuggestBookDB[]> {
 }
 
 export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<void> {
+  const { data: existing } = await supabase
+    .from('suggest_books')
+    .select('id')
+    .eq('title', book.title)
+    .eq('author', book.author)
+    .maybeSingle()
+  if (existing) return
   await supabase.from('suggest_books').insert({
     title: book.title,
     author: book.author,

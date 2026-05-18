@@ -21,6 +21,8 @@ import {
 } from '@tabler/icons-react'
 import type { Book, BookStatus, Genre } from '../types'
 import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
+import { addSuggestBook } from '../lib/db'
+import { useAuth } from '../auth/AuthContext'
 import HelpModal from './HelpModal'
 
 const BOOKSHELF_HELP = [
@@ -287,6 +289,7 @@ function StatusPicker({ value, onChange }: { value: BookStatus; onChange: (s: Bo
 }
 
 export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props) {
+  const { user } = useAuth()
   const [showHelp, setShowHelp] = useState(false)
   const [editingBookId, setEditingBookId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ title: '', author: '', publisher: '', totalPages: 0, genre: 'その他', isbn: '', ccode: '', catalogNumber: '', ndc: '', memo: '' })
@@ -362,7 +365,12 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
       createdAt: new Date().toISOString(),
     }
     if (book.publisher && book.totalPages > 0) {
-      addUserSuggestion({ title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages })
+      const suggestion = { title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages }
+      if (user) {
+        addSuggestBook(suggestion)
+      } else {
+        addUserSuggestion(suggestion)
+      }
     }
     onAdd(book)
     setQuickTitle('')
