@@ -10,7 +10,8 @@ import TutorialOverlay, { shouldShowTutorial } from './components/TutorialOverla
 import AuthModal from './auth/AuthModal'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import type { Book, Session } from './types'
-import { getBooks, saveBook, saveAllBooks, deleteBook, getSessions, saveSession } from './lib/db'
+import { getBooks, saveBook, saveAllBooks, deleteBook, getSessions, saveSession, getSuggestBooks } from './lib/db'
+import { setAdminBooksCache } from './suggestBooks'
 
 type Tab = 'timer' | 'bookshelf' | 'stats' | 'settings' | 'admin'
 export type Theme = 'light' | 'dark' | 'system'
@@ -54,11 +55,12 @@ function AppInner() {
       setSyncState('offline')
       setDataLoaded(true)
     }, 8000)
-    Promise.all([getBooks(), getSessions()])
-      .then(([b, s]) => {
+    Promise.all([getBooks(), getSessions(), getSuggestBooks()])
+      .then(([b, s, sb]) => {
         clearTimeout(timeout)
         setBooks(b)
         setSessions(s)
+        setAdminBooksCache(sb)
         setSyncState('synced')
         setDataLoaded(true)
         if (shouldShowTutorial()) setShowTutorial(true)

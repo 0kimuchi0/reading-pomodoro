@@ -1,4 +1,4 @@
-import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType } from '../types'
+import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType, SuggestBookDB } from '../types'
 import { getBooks as lsGetBooks, saveBooks as lsSaveBooks, getSessions as lsGetSessions, saveSessions as lsSaveSessions } from '../storage'
 import { supabase } from './supabase'
 
@@ -239,6 +239,38 @@ export async function revertAdminAction(action: AdminAction): Promise<void> {
     action.previousValue,
     `[巻き戻し] ${action.reason}`
   )
+}
+
+// ---- suggest books ----
+
+export async function getSuggestBooks(): Promise<SuggestBookDB[]> {
+  const { data, error } = await supabase
+    .from('suggest_books')
+    .select('*')
+    .order('created_at', { ascending: true })
+  if (error) return []
+  return (data ?? []).map(r => ({
+    id: r.id as string,
+    title: r.title as string,
+    author: r.author as string,
+    genre: r.genre as string,
+    publisher: r.publisher as string,
+    totalPages: r.total_pages as number,
+  }))
+}
+
+export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<void> {
+  await supabase.from('suggest_books').insert({
+    title: book.title,
+    author: book.author,
+    genre: book.genre,
+    publisher: book.publisher,
+    total_pages: book.totalPages,
+  })
+}
+
+export async function deleteSuggestBook(id: string): Promise<void> {
+  await supabase.from('suggest_books').delete().eq('id', id)
 }
 
 // ---- migration ----

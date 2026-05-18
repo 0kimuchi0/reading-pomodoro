@@ -1274,6 +1274,12 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .admin-action-date { font-size: 0.75rem; color: var(--color-text-muted); opacity: 0.7; }
 .admin-revert-btn { display: flex; align-items: center; gap: 4px; padding: 5px 10px; font-size: 0.8rem; font-weight: 600; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: none; color: var(--color-text-muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
 .admin-revert-btn:hover { border-color: var(--accent); color: var(--accent); }
+.admin-suggest-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 12px; }
+.admin-suggest-input { flex: 1; min-width: 120px; padding: 6px 10px; font-size: 0.85rem; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); }
+.admin-suggest-input:focus { outline: none; border-color: var(--accent); }
+.admin-suggest-pages { max-width: 90px; }
+.admin-suggest-add-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+.admin-suggest-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ConfirmDialog reason */
 .confirm-reason { width: 100%; }

@@ -37,6 +37,15 @@ export interface Session {
   duration: number
 }
 
+export interface SuggestBookDB {
+  id: string
+  title: string
+  author: string
+  genre: string
+  publisher: string
+  totalPages: number
+}
+
 export type AdminActionType = 'role_change' | 'ban' | 'unban'
 
 export interface AdminAction {
