@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
+import { validateBookFields, hasErrors } from '../lib/validate'
+import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
@@ -26,6 +28,8 @@ export default function AdminTab() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [suggestSearch, setSuggestSearch] = useState('')
+  const [suggestAddErrors, setSuggestAddErrors] = useState<FieldErrors>({})
+  const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
 
   const load = async () => {
@@ -118,6 +122,9 @@ export default function AdminTab() {
 
   const handleAddSuggest = async () => {
     if (!suggestForm.title.trim() || !suggestForm.author.trim()) return
+    const errs = validateBookFields(suggestForm)
+    setSuggestAddErrors(errs)
+    if (hasErrors(errs)) return
     setSuggestAdding(true)
     await addSuggestBook({
       title: suggestForm.title.trim(),
@@ -134,6 +141,7 @@ export default function AdminTab() {
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
     setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
+    setSuggestAddErrors({})
     setSuggestAdding(false)
   }
 
@@ -143,6 +151,9 @@ export default function AdminTab() {
   }
 
   const handleEditSave = async (id: string) => {
+    const errs = validateBookFields(editForm)
+    setSuggestEditErrors(errs)
+    if (hasErrors(errs)) return
     await updateSuggestBook({
       id,
       title: editForm.title.trim(),
@@ -156,6 +167,7 @@ export default function AdminTab() {
       ndc: editForm.ndc.trim() || undefined,
     })
     setEditingId(null)
+    setSuggestEditErrors({})
     const sb = await getSuggestBooks()
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
@@ -335,10 +347,22 @@ export default function AdminTab() {
               value={suggestForm.totalPages}
               onChange={e => setSuggestForm(f => ({ ...f, totalPages: e.target.value }))}
             />
-            <input className="admin-suggest-input" placeholder="ISBN" value={suggestForm.isbn} onChange={e => setSuggestForm(f => ({ ...f, isbn: e.target.value }))} />
-            <input className="admin-suggest-input" placeholder="Cコード" value={suggestForm.ccode} onChange={e => setSuggestForm(f => ({ ...f, ccode: e.target.value }))} />
-            <input className="admin-suggest-input" placeholder="整理番号" value={suggestForm.catalogNumber} onChange={e => setSuggestForm(f => ({ ...f, catalogNumber: e.target.value }))} />
-            <input className="admin-suggest-input" placeholder="NDC" value={suggestForm.ndc} onChange={e => setSuggestForm(f => ({ ...f, ndc: e.target.value }))} />
+            <div style={{ display: 'contents' }}>
+              <input className={`admin-suggest-input${suggestAddErrors.isbn ? ' field-error' : ''}`} placeholder="ISBN" value={suggestForm.isbn} onChange={e => { setSuggestForm(f => ({ ...f, isbn: e.target.value })); setSuggestAddErrors(p => ({ ...p, isbn: undefined })) }} />
+              {suggestAddErrors.isbn && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.isbn}</span>}
+            </div>
+            <div style={{ display: 'contents' }}>
+              <input className={`admin-suggest-input${suggestAddErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード" value={suggestForm.ccode} onChange={e => { setSuggestForm(f => ({ ...f, ccode: e.target.value })); setSuggestAddErrors(p => ({ ...p, ccode: undefined })) }} />
+              {suggestAddErrors.ccode && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.ccode}</span>}
+            </div>
+            <div style={{ display: 'contents' }}>
+              <input className={`admin-suggest-input${suggestAddErrors.catalogNumber ? ' field-error' : ''}`} placeholder="整理番号" value={suggestForm.catalogNumber} onChange={e => { setSuggestForm(f => ({ ...f, catalogNumber: e.target.value })); setSuggestAddErrors(p => ({ ...p, catalogNumber: undefined })) }} />
+              {suggestAddErrors.catalogNumber && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.catalogNumber}</span>}
+            </div>
+            <div style={{ display: 'contents' }}>
+              <input className={`admin-suggest-input${suggestAddErrors.ndc ? ' field-error' : ''}`} placeholder="NDC" value={suggestForm.ndc} onChange={e => { setSuggestForm(f => ({ ...f, ndc: e.target.value })); setSuggestAddErrors(p => ({ ...p, ndc: undefined })) }} />
+              {suggestAddErrors.ndc && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.ndc}</span>}
+            </div>
             <button
               className="admin-suggest-add-btn"
               onClick={handleAddSuggest}
@@ -404,10 +428,22 @@ export default function AdminTab() {
                     </select>
                     <input className="admin-suggest-input" placeholder="出版社" value={editForm.publisher} onChange={e => setEditForm(f => ({ ...f, publisher: e.target.value }))} />
                     <input className="admin-suggest-input admin-suggest-pages" placeholder="ページ数" type="number" min="0" value={editForm.totalPages} onChange={e => setEditForm(f => ({ ...f, totalPages: e.target.value }))} />
-                    <input className="admin-suggest-input" placeholder="ISBN" value={editForm.isbn} onChange={e => setEditForm(f => ({ ...f, isbn: e.target.value }))} />
-                    <input className="admin-suggest-input" placeholder="Cコード" value={editForm.ccode} onChange={e => setEditForm(f => ({ ...f, ccode: e.target.value }))} />
-                    <input className="admin-suggest-input" placeholder="整理番号" value={editForm.catalogNumber} onChange={e => setEditForm(f => ({ ...f, catalogNumber: e.target.value }))} />
-                    <input className="admin-suggest-input" placeholder="NDC" value={editForm.ndc} onChange={e => setEditForm(f => ({ ...f, ndc: e.target.value }))} />
+                    <div style={{ display: 'contents' }}>
+                      <input className={`admin-suggest-input${suggestEditErrors.isbn ? ' field-error' : ''}`} placeholder="ISBN" value={editForm.isbn} onChange={e => { setEditForm(f => ({ ...f, isbn: e.target.value })); setSuggestEditErrors(p => ({ ...p, isbn: undefined })) }} />
+                      {suggestEditErrors.isbn && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.isbn}</span>}
+                    </div>
+                    <div style={{ display: 'contents' }}>
+                      <input className={`admin-suggest-input${suggestEditErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード" value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: e.target.value })); setSuggestEditErrors(p => ({ ...p, ccode: undefined })) }} />
+                      {suggestEditErrors.ccode && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.ccode}</span>}
+                    </div>
+                    <div style={{ display: 'contents' }}>
+                      <input className={`admin-suggest-input${suggestEditErrors.catalogNumber ? ' field-error' : ''}`} placeholder="整理番号" value={editForm.catalogNumber} onChange={e => { setEditForm(f => ({ ...f, catalogNumber: e.target.value })); setSuggestEditErrors(p => ({ ...p, catalogNumber: undefined })) }} />
+                      {suggestEditErrors.catalogNumber && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.catalogNumber}</span>}
+                    </div>
+                    <div style={{ display: 'contents' }}>
+                      <input className={`admin-suggest-input${suggestEditErrors.ndc ? ' field-error' : ''}`} placeholder="NDC" value={editForm.ndc} onChange={e => { setEditForm(f => ({ ...f, ndc: e.target.value })); setSuggestEditErrors(p => ({ ...p, ndc: undefined })) }} />
+                      {suggestEditErrors.ndc && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.ndc}</span>}
+                    </div>
                   </div>
                   <div className="admin-suggest-edit-actions">
                     <button className="admin-suggest-add-btn" onClick={() => handleEditSave(sb.id)} disabled={!editForm.title.trim() || !editForm.author.trim()}><IconDeviceFloppy size={15} /> 保存</button>

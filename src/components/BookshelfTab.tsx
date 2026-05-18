@@ -23,6 +23,8 @@ import type { Book, BookStatus, Genre } from '../types'
 import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
 import { addSuggestBook } from '../lib/db'
 import { useAuth } from '../auth/AuthContext'
+import { validateBookFields, hasErrors } from '../lib/validate'
+import type { FieldErrors } from '../lib/validate'
 import HelpModal from './HelpModal'
 
 const BOOKSHELF_HELP = [
@@ -292,6 +294,8 @@ function StatusPicker({ value, onChange }: { value: BookStatus; onChange: (s: Bo
 export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props) {
   const { user } = useAuth()
   const [showHelp, setShowHelp] = useState(false)
+  const [addErrors, setAddErrors] = useState<FieldErrors>({})
+  const [editErrors, setEditErrors] = useState<FieldErrors>({})
   const [editingBookId, setEditingBookId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm>({ title: '', author: '', publisher: '', totalPages: 0, genre: 'その他', isbn: '', ccode: '', catalogNumber: '', ndc: '', memo: '' })
   const [quickTitle, setQuickTitle] = useState('')
@@ -357,6 +361,9 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
 
   const handleSubmit = () => {
     if (!quickTitle.trim()) return
+    const errs = validateBookFields(details)
+    setAddErrors(errs)
+    if (hasErrors(errs)) return
     const book: Book = {
       id: crypto.randomUUID(),
       title: quickTitle.trim(),
@@ -375,6 +382,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     }
     onAdd(book)
     setQuickTitle('')
+    setAddErrors({})
     setDetails(emptyDetails)
     setShowDetails(false)
     setSuggestions([])
@@ -407,8 +415,12 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
 
   const saveEdit = (book: Book) => {
     if (!editForm.title.trim() || !editForm.author.trim()) return
+    const errs = validateBookFields(editForm)
+    setEditErrors(errs)
+    if (hasErrors(errs)) return
     onUpdate({ ...book, ...editForm, title: editForm.title.trim(), author: editForm.author.trim(), publisher: editForm.publisher.trim() })
     setEditingBookId(null)
+    setEditErrors({})
   }
 
   const statusIcon = (status: BookStatus) => {
@@ -526,33 +538,41 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
               <label>ISBN</label>
               <input
                 value={details.isbn}
-                onChange={e => setDetails({ ...details, isbn: e.target.value })}
+                onChange={e => { setDetails({ ...details, isbn: e.target.value }); setAddErrors(p => ({ ...p, isbn: undefined })) }}
                 placeholder="978-4-..."
+                className={addErrors.isbn ? 'field-error' : ''}
               />
+              {addErrors.isbn && <span className="field-error-msg">{addErrors.isbn}</span>}
             </div>
             <div className="form-field">
               <label>Cコード</label>
               <input
                 value={details.ccode}
-                onChange={e => setDetails({ ...details, ccode: e.target.value })}
+                onChange={e => { setDetails({ ...details, ccode: e.target.value }); setAddErrors(p => ({ ...p, ccode: undefined })) }}
                 placeholder="C0193"
+                className={addErrors.ccode ? 'field-error' : ''}
               />
+              {addErrors.ccode && <span className="field-error-msg">{addErrors.ccode}</span>}
             </div>
             <div className="form-field">
               <label>NDC</label>
               <input
                 value={details.ndc}
-                onChange={e => setDetails({ ...details, ndc: e.target.value })}
+                onChange={e => { setDetails({ ...details, ndc: e.target.value }); setAddErrors(p => ({ ...p, ndc: undefined })) }}
                 placeholder="913.6"
+                className={addErrors.ndc ? 'field-error' : ''}
               />
+              {addErrors.ndc && <span className="field-error-msg">{addErrors.ndc}</span>}
             </div>
             <div className="form-field">
               <label>文庫整理番号</label>
               <input
                 value={details.catalogNumber}
-                onChange={e => setDetails({ ...details, catalogNumber: e.target.value })}
+                onChange={e => { setDetails({ ...details, catalogNumber: e.target.value }); setAddErrors(p => ({ ...p, catalogNumber: undefined })) }}
                 placeholder="な-1-1"
+                className={addErrors.catalogNumber ? 'field-error' : ''}
               />
+              {addErrors.catalogNumber && <span className="field-error-msg">{addErrors.catalogNumber}</span>}
             </div>
           </div>
         )}
@@ -655,19 +675,23 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                       <div className="edit-row">
                         <div className="form-field">
                           <label>ISBN</label>
-                          <input value={editForm.isbn} onChange={e => setEditForm(f => ({ ...f, isbn: e.target.value }))} placeholder="978-4-..." />
+                          <input value={editForm.isbn} onChange={e => { setEditForm(f => ({ ...f, isbn: e.target.value })); setEditErrors(p => ({ ...p, isbn: undefined })) }} placeholder="978-4-..." className={editErrors.isbn ? 'field-error' : ''} />
+                          {editErrors.isbn && <span className="field-error-msg">{editErrors.isbn}</span>}
                         </div>
                         <div className="form-field">
                           <label>Cコード</label>
-                          <input value={editForm.ccode} onChange={e => setEditForm(f => ({ ...f, ccode: e.target.value }))} placeholder="C0193" />
+                          <input value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: e.target.value })); setEditErrors(p => ({ ...p, ccode: undefined })) }} placeholder="C0193" className={editErrors.ccode ? 'field-error' : ''} />
+                          {editErrors.ccode && <span className="field-error-msg">{editErrors.ccode}</span>}
                         </div>
                         <div className="form-field">
                           <label>NDC</label>
-                          <input value={editForm.ndc} onChange={e => setEditForm(f => ({ ...f, ndc: e.target.value }))} placeholder="913.6" />
+                          <input value={editForm.ndc} onChange={e => { setEditForm(f => ({ ...f, ndc: e.target.value })); setEditErrors(p => ({ ...p, ndc: undefined })) }} placeholder="913.6" className={editErrors.ndc ? 'field-error' : ''} />
+                          {editErrors.ndc && <span className="field-error-msg">{editErrors.ndc}</span>}
                         </div>
                         <div className="form-field">
                           <label>文庫整理番号</label>
-                          <input value={editForm.catalogNumber} onChange={e => setEditForm(f => ({ ...f, catalogNumber: e.target.value }))} placeholder="な-1-1" />
+                          <input value={editForm.catalogNumber} onChange={e => { setEditForm(f => ({ ...f, catalogNumber: e.target.value })); setEditErrors(p => ({ ...p, catalogNumber: undefined })) }} placeholder="な-1-1" className={editErrors.catalogNumber ? 'field-error' : ''} />
+                          {editErrors.catalogNumber && <span className="field-error-msg">{editErrors.catalogNumber}</span>}
                         </div>
                       </div>
                       <div className="form-field form-field-full">
