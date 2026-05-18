@@ -66,8 +66,8 @@ const BOOKSHELF_HELP = [
   {
     icon: <IconSettings size={18} />,
     title: '詳細設定',
-    desc: '「詳細設定」を開くと出版社・ページ数・ジャンル・初期ステータスを設定できます',
-    detail: '「詳細設定」を開くと出版社・総ページ数・ジャンル・初期ステータスを設定できます。総ページ数を設定するとプログレスバーと進捗スライダーが表示され、読書の進み具合を記録できます。',
+    desc: '「詳細設定」を開くと出版社・ページ数・ジャンル・ISBN・Cコード・NDC・整理番号なども設定できます',
+    detail: '「詳細設定」を開くと出版社・総ページ数・ジャンル・初期ステータスを設定できます。総ページ数を設定するとプログレスバーと進捗スライダーが表示されます。さらにISBN・Cコード・NDC・整理番号などの書誌情報も登録でき、本棚の検索対象にもなります。',
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
@@ -158,8 +158,8 @@ const BOOKSHELF_HELP = [
   {
     icon: <IconSearch size={18} />,
     title: '本の検索',
-    desc: '検索バーでタイトル・著者・出版社を入力してリアルタイムに絞り込めます',
-    detail: '本棚上部の検索バーにキーワードを入力すると、タイトル・著者名・出版社名が一致する本をリアルタイムで絞り込みます。ステータスフィルターや並び替えと組み合わせて使用できます。入力欄右端の × ボタンで検索をクリアできます。',
+    desc: 'タイトル・著者・出版社・ISBN など全フィールドを横断検索。ひらがなで漢字タイトルも検索できます',
+    detail: '本棚上部の検索バーにキーワードを入力すると、タイトル・著者名・出版社・ジャンル・ISBN・Cコード・NDC・整理番号が一致する本をリアルタイムで絞り込みます。ひらがなで入力すると漢字タイトルも検索できます（例：「なつめ」→「夏目漱石」の本がヒット）。ステータスフィルターや並び替えと組み合わせて使用できます。入力欄右端の × ボタンで検索をクリアできます。',
     image: (
       <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
         <rect width="280" height="160" fill="#F7F7FB" rx="8" />
@@ -209,6 +209,24 @@ const BOOKSHELF_HELP = [
             {active && <text x="234" y={89 + i * 20} textAnchor="end" fontSize="10" fill="#534AB7" fontFamily="sans-serif">✓</text>}
           </g>
         ))}
+      </svg>
+    ),
+  },
+  {
+    icon: <IconPencil size={18} />,
+    title: 'メモ',
+    desc: '各本に読書メモ・感想を自由に記録できます',
+    detail: '本カードの編集モード（鉛筆アイコン）を開くとメモ欄が表示されます。読書中の気づきや感想などを自由に入力でき、保存後は本カードにそのまま表示されます。メモは検索対象外です。',
+    image: (
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
+        <rect x="20" y="16" width="240" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
+        <text x="34" y="40" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">メモ</text>
+        <rect x="34" y="46" width="212" height="60" rx="6" fill="#F7F7FB" stroke="#534AB7" strokeWidth="1.5" />
+        <text x="44" y="66" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">第一章がとても面白かった。</text>
+        <text x="44" y="82" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">主人公の心情描写が秀逸。</text>
+        <rect x="34" y="118" width="80" height="20" rx="6" fill="#534AB7" />
+        <text x="74" y="132" textAnchor="middle" fontSize="10" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">保存</text>
       </svg>
     ),
   },
