@@ -110,33 +110,26 @@ const ADMIN_HELP: HelpItem[] = [
     desc: 'ロール変更・BAN操作・サジェスト操作の履歴を確認・巻き戻せます',
     detail: 'ユーザー管理で行ったロール変更・BAN・BAN解除、およびサジェストの追加・編集・削除の操作が時系列で記録されます。ユーザー管理操作は「巻き戻し」ボタンで直前の状態に戻すことができます。巻き戻し操作も新たな履歴として記録されます。',
     image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="30" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
-        {/* ヘッダー下線 */}
-        <line x1="20" y1="35" x2="260" y2="35" stroke="#E2E1F0" strokeWidth="1"/>
-        {/* 履歴アイテム */}
+      <svg viewBox="0 0 280 178" xmlns="http://www.w3.org/2000/svg" width="280" height="178">
+        <rect width="280" height="178" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="154" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+        <text x="24" y="31" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
+        <line x1="20" y1="38" x2="260" y2="38" stroke="#E2E1F0" strokeWidth="1"/>
         {[
           { desc: 'ロール変更: 一般 → 管理者', sub: '理由: 昇格申請', date: '05/18 12:34', revert: true,  accent: '#534AB7' },
           { desc: 'BAN: banned@ex.com',          sub: '理由: 規約違反',  date: '05/17 09:00', revert: true,  accent: '#EF4444' },
-          { desc: 'サジェスト追加: こころ',        sub: '',               date: '05/16 15:22', revert: false, accent: '#10B981' },
+          { desc: 'サジェスト追加: こころ',        sub: '05/16 15:22',    date: '',            revert: false, accent: '#10B981' },
         ].map(({ desc, sub, date, revert, accent }, i) => (
-          <g key={i} transform={`translate(0, ${i * 38})`}>
-            <rect x="20" y="40" width="240" height="33" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            {/* 左アクセントバー */}
-            <rect x="20" y="40" width="3" height="33" rx="1.5" fill={accent}/>
-            {/* 説明テキスト */}
-            <text x="32" y="53" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc}</text>
-            {/* サブテキスト（理由 or 日時） */}
-            <text x="32" y="65" fontSize="8" fill="#8888AA" fontFamily="sans-serif">{sub || date}</text>
-            {/* 日時（理由がある場合） */}
-            {sub && <text x="258" y="65" textAnchor="end" fontSize="7.5" fill="#B0B0C8" fontFamily="sans-serif">{date}</text>}
-            {/* 巻き戻しボタン */}
+          <g key={i} transform={`translate(0, ${46 + i * 38})`}>
+            <rect x="20" y="0" width="240" height="32" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <rect x="20" y="0" width="3" height="32" rx="1.5" fill={accent}/>
+            <text x="32" y="13" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc}</text>
+            <text x="32" y="26" fontSize="8" fill="#8888AA" fontFamily="sans-serif">{sub}</text>
+            {date && <text x="258" y="26" textAnchor="end" fontSize="7.5" fill="#B0B0C8" fontFamily="sans-serif">{date}</text>}
             {revert && (
               <g>
-                <rect x="204" y="46" width="48" height="17" rx="3" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1"/>
-                <text x="228" y="58" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
+                <rect x="198" y="6" width="54" height="18" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
+                <text x="225" y="19" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
               </g>
             )}
           </g>
