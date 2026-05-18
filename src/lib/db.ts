@@ -256,6 +256,10 @@ export async function getSuggestBooks(): Promise<SuggestBookDB[]> {
     genre: r.genre as string,
     publisher: r.publisher as string,
     totalPages: r.total_pages as number,
+    isbn: r.isbn as string | undefined,
+    ccode: r.ccode as string | undefined,
+    catalogNumber: r.catalog_number as string | undefined,
+    ndc: r.ndc as string | undefined,
   }))
 }
 
@@ -274,6 +278,10 @@ export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<v
     genre: book.genre,
     publisher: book.publisher,
     total_pages: book.totalPages,
+    isbn: book.isbn || null,
+    ccode: book.ccode || null,
+    catalog_number: book.catalogNumber || null,
+    ndc: book.ndc || null,
   })
 }
 
@@ -284,6 +292,10 @@ export async function updateSuggestBook(book: SuggestBookDB): Promise<void> {
     genre: book.genre,
     publisher: book.publisher,
     total_pages: book.totalPages,
+    isbn: book.isbn || null,
+    ccode: book.ccode || null,
+    catalog_number: book.catalogNumber || null,
+    ndc: book.ndc || null,
   }).eq('id', book.id)
 }
 

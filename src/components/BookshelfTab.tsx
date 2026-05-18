@@ -239,6 +239,7 @@ const emptyDetails = {
   ccode: '',
   catalogNumber: '',
   ndc: '',
+  memo: '',
 }
 
 type SortKey = 'created' | 'title' | 'sessions' | 'progress'
@@ -322,7 +323,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     const s = suggestions[idx]
     if (!s) return
     setQuickTitle(s.title)
-    setDetails(prev => ({ ...prev, author: s.author, publisher: s.publisher ?? '', genre: s.genre as Genre, totalPages: s.totalPages ?? prev.totalPages }))
+    setDetails(prev => ({ ...prev, author: s.author, publisher: s.publisher ?? '', genre: s.genre as Genre, totalPages: s.totalPages ?? prev.totalPages, isbn: s.isbn ?? prev.isbn, ccode: s.ccode ?? prev.ccode, catalogNumber: s.catalogNumber ?? prev.catalogNumber, ndc: s.ndc ?? prev.ndc }))
     setShowDetails(true)
     detailsFromSuggestion.current = true
     setSuggestions([])
@@ -365,7 +366,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
       createdAt: new Date().toISOString(),
     }
     if (book.publisher && book.totalPages > 0) {
-      const suggestion = { title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages }
+      const suggestion = { title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages, isbn: book.isbn, ccode: book.ccode, catalogNumber: book.catalogNumber, ndc: book.ndc }
       if (user) {
         addSuggestBook(suggestion)
       } else {

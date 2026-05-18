@@ -6,6 +6,10 @@ export interface SuggestBook {
   genre: string
   publisher: string
   totalPages: number
+  isbn?: string
+  ccode?: string
+  catalogNumber?: string
+  ndc?: string
 }
 
 export const SUGGEST_BOOKS: SuggestBook[] = [

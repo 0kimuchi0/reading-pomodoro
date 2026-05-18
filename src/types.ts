@@ -44,6 +44,10 @@ export interface SuggestBookDB {
   genre: string
   publisher: string
   totalPages: number
+  isbn?: string
+  ccode?: string
+  catalogNumber?: string
+  ndc?: string
 }
 
 export type AdminActionType = 'role_change' | 'ban' | 'unban'

@@ -21,10 +21,10 @@ export default function AdminTab() {
   const [loading, setLoading] = useState(true)
   const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests'>('users')
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
-  const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
+  const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [suggestAdding, setSuggestAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
+  const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [pending, setPending] = useState<PendingAction | null>(null)
 
   const load = async () => {
@@ -124,17 +124,21 @@ export default function AdminTab() {
       genre: suggestForm.genre,
       publisher: suggestForm.publisher.trim(),
       totalPages: Number(suggestForm.totalPages) || 0,
+      isbn: suggestForm.isbn.trim() || undefined,
+      ccode: suggestForm.ccode.trim() || undefined,
+      catalogNumber: suggestForm.catalogNumber.trim() || undefined,
+      ndc: suggestForm.ndc.trim() || undefined,
     })
     const sb = await getSuggestBooks()
     setSuggestBooks(sb)
     setAdminBooksCache(sb)
-    setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
+    setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
     setSuggestAdding(false)
   }
 
   const handleEditStart = (sb: SuggestBookDB) => {
     setEditingId(sb.id)
-    setEditForm({ title: sb.title, author: sb.author, genre: sb.genre, publisher: sb.publisher, totalPages: String(sb.totalPages || '') })
+    setEditForm({ title: sb.title, author: sb.author, genre: sb.genre, publisher: sb.publisher, totalPages: String(sb.totalPages || ''), isbn: sb.isbn ?? '', ccode: sb.ccode ?? '', catalogNumber: sb.catalogNumber ?? '', ndc: sb.ndc ?? '' })
   }
 
   const handleEditSave = async (id: string) => {
@@ -145,6 +149,10 @@ export default function AdminTab() {
       genre: editForm.genre,
       publisher: editForm.publisher.trim(),
       totalPages: Number(editForm.totalPages) || 0,
+      isbn: editForm.isbn.trim() || undefined,
+      ccode: editForm.ccode.trim() || undefined,
+      catalogNumber: editForm.catalogNumber.trim() || undefined,
+      ndc: editForm.ndc.trim() || undefined,
     })
     setEditingId(null)
     const sb = await getSuggestBooks()
@@ -326,6 +334,10 @@ export default function AdminTab() {
               value={suggestForm.totalPages}
               onChange={e => setSuggestForm(f => ({ ...f, totalPages: e.target.value }))}
             />
+            <input className="admin-suggest-input" placeholder="ISBN" value={suggestForm.isbn} onChange={e => setSuggestForm(f => ({ ...f, isbn: e.target.value }))} />
+            <input className="admin-suggest-input" placeholder="Cコード" value={suggestForm.ccode} onChange={e => setSuggestForm(f => ({ ...f, ccode: e.target.value }))} />
+            <input className="admin-suggest-input" placeholder="整理番号" value={suggestForm.catalogNumber} onChange={e => setSuggestForm(f => ({ ...f, catalogNumber: e.target.value }))} />
+            <input className="admin-suggest-input" placeholder="NDC" value={suggestForm.ndc} onChange={e => setSuggestForm(f => ({ ...f, ndc: e.target.value }))} />
             <button
               className="admin-suggest-add-btn"
               onClick={handleAddSuggest}
@@ -349,6 +361,10 @@ export default function AdminTab() {
                     </select>
                     <input className="admin-suggest-input" placeholder="出版社" value={editForm.publisher} onChange={e => setEditForm(f => ({ ...f, publisher: e.target.value }))} />
                     <input className="admin-suggest-input admin-suggest-pages" placeholder="ページ数" type="number" min="0" value={editForm.totalPages} onChange={e => setEditForm(f => ({ ...f, totalPages: e.target.value }))} />
+                    <input className="admin-suggest-input" placeholder="ISBN" value={editForm.isbn} onChange={e => setEditForm(f => ({ ...f, isbn: e.target.value }))} />
+                    <input className="admin-suggest-input" placeholder="Cコード" value={editForm.ccode} onChange={e => setEditForm(f => ({ ...f, ccode: e.target.value }))} />
+                    <input className="admin-suggest-input" placeholder="整理番号" value={editForm.catalogNumber} onChange={e => setEditForm(f => ({ ...f, catalogNumber: e.target.value }))} />
+                    <input className="admin-suggest-input" placeholder="NDC" value={editForm.ndc} onChange={e => setEditForm(f => ({ ...f, ndc: e.target.value }))} />
                   </div>
                   <div className="admin-suggest-edit-actions">
                     <button className="admin-suggest-add-btn" onClick={() => handleEditSave(sb.id)} disabled={!editForm.title.trim() || !editForm.author.trim()}><IconDeviceFloppy size={15} /> 保存</button>
