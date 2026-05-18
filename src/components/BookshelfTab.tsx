@@ -26,6 +26,7 @@ import { useAuth } from '../auth/AuthContext'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
 import { getReading } from '../lib/japanese'
+import { normalize } from '../suggestBooks'
 import HelpModal from './HelpModal'
 
 const BOOKSHELF_HELP = [
@@ -430,19 +431,19 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     return <IconCheck size={16} />
   }
 
-  const q = searchQuery.trim().toLowerCase()
+  const q = normalize(searchQuery)
   const statusFiltered = filterStatus === 'all' ? books : books.filter(b => b.status === filterStatus)
   const displayBooks = q
     ? statusFiltered.filter(b => {
         if (
-          b.title.toLowerCase().includes(q) ||
-          b.author.toLowerCase().includes(q) ||
-          (b.publisher ?? '').toLowerCase().includes(q) ||
-          b.genre.toLowerCase().includes(q) ||
-          (b.isbn ?? '').toLowerCase().includes(q) ||
-          (b.ccode ?? '').toLowerCase().includes(q) ||
-          (b.catalogNumber ?? '').toLowerCase().includes(q) ||
-          (b.ndc ?? '').toLowerCase().includes(q)
+          normalize(b.title).includes(q) ||
+          normalize(b.author).includes(q) ||
+          normalize(b.publisher ?? '').includes(q) ||
+          normalize(b.genre).includes(q) ||
+          normalize(b.isbn ?? '').includes(q) ||
+          normalize(b.ccode ?? '').includes(q) ||
+          normalize(b.catalogNumber ?? '').includes(q) ||
+          normalize(b.ndc ?? '').includes(q)
         ) return true
         const tr = getReading(b.title)
         const ar = getReading(b.author)
