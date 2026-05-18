@@ -700,7 +700,7 @@ export default function StatsTab({ books, sessions }: Props) {
         <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
           <LineChart data={weeklyData} margin={{ top: 5, right: 16, left: 4, bottom: isMobile ? 24 : 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-            <XAxis dataKey="date" tick={isMobile ? { fontSize: 11, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 20, right: 20 }} />
+            <XAxis dataKey="date" tick={(isMobile ? { fontSize: 11, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }) as any} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 20, right: 20 }} />
             <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={34} />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="セッション" stroke="#534AB7" strokeWidth={2} dot={{ r: 4, fill: '#534AB7' }} activeDot={{ r: 6 }} />
@@ -717,7 +717,7 @@ export default function StatsTab({ books, sessions }: Props) {
           <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 16, left: 4, bottom: isMobile ? 24 : 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis dataKey="month" tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 8, right: 8 }} />
+              <XAxis dataKey="month" tick={(isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }) as any} axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30} padding={{ left: 8, right: 8 }} />
               <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} width={40} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="集中時間" fill="#534AB7" radius={[4, 4, 0, 0]} maxBarSize={40} />
@@ -744,7 +744,7 @@ export default function StatsTab({ books, sessions }: Props) {
               <XAxis
                 dataKey="label"
                 interval={cumulativeData.length > 16 ? Math.ceil(cumulativeData.length / 8) - 1 : cumulativeData.length > 8 ? 1 : 0}
-                tick={isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }}
+                tick={(isMobile ? { fontSize: 10, fill: 'var(--color-text-muted)', angle: -45, textAnchor: 'end', dy: 4 } : { fontSize: 12, fill: 'var(--color-text-muted)' }) as any}
                 axisLine={{ stroke: 'var(--color-border)' }} tickLine={false} height={isMobile ? 44 : 30}
                 padding={{ left: 20, right: 20 }}
               />
