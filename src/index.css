@@ -1284,6 +1284,9 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .field-error-msg { font-size: 0.75rem; color: #e53e3e; margin-top: 2px; display: block; }
 .admin-suggest-error { flex-basis: 100%; }
 .admin-suggest-edit-card { flex-direction: column; align-items: stretch; gap: 8px; }
+.admin-seed-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--accent-dim); border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 8px; flex-wrap: wrap; }
+.admin-seed-hint { font-size: 12px; color: var(--color-text-muted); flex: 1; }
+.admin-seed-progress { font-size: 12px; color: var(--accent); }
 .admin-suggest-edit-fields { display: flex; flex-wrap: wrap; gap: 8px; }
 .admin-suggest-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
 

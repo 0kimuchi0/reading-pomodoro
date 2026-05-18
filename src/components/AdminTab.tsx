@@ -3,7 +3,7 @@ import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, Ico
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
-import { setAdminBooksCache } from '../suggestBooks'
+import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
 import ConfirmDialog from './ConfirmDialog'
@@ -137,6 +137,8 @@ export default function AdminTab() {
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [suggestAdding, setSuggestAdding] = useState(false)
+  const [seeding, setSeeding] = useState(false)
+  const [seedProgress, setSeedProgress] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
   const [suggestSearch, setSuggestSearch] = useState('')
@@ -235,8 +237,30 @@ export default function AdminTab() {
     })
   }
 
+  const handleSeedSuggests = async () => {
+    setSeeding(true)
+    setSeedProgress('投入中...')
+    let count = 0
+    for (const book of SUGGEST_BOOKS) {
+      await addSuggestBook({
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        publisher: book.publisher,
+        totalPages: book.totalPages,
+      })
+      count++
+      setSeedProgress(`${count} / ${SUGGEST_BOOKS.length} 件処理中...`)
+    }
+    const sb = await getSuggestBooks()
+    setSuggestBooks(sb)
+    setAdminBooksCache(sb)
+    setSeedProgress(null)
+    setSeeding(false)
+  }
+
   const handleAddSuggest = async () => {
-    if (!suggestForm.title.trim() || !suggestForm.author.trim()) return
+    if (!suggestForm.title.trim() || !suggestForm.author.trim() || !suggestForm.publisher.trim()) return
     const errs = validateBookFields(suggestForm)
     setSuggestAddErrors(errs)
     if (hasErrors(errs)) return
@@ -457,7 +481,7 @@ export default function AdminTab() {
             </select>
             <input
               className="admin-suggest-input"
-              placeholder="出版社"
+              placeholder="出版社 *"
               value={suggestForm.publisher}
               onChange={e => setSuggestForm(f => ({ ...f, publisher: e.target.value }))}
             />
@@ -488,11 +512,20 @@ export default function AdminTab() {
             <button
               className="admin-suggest-add-btn"
               onClick={handleAddSuggest}
-              disabled={suggestAdding || !suggestForm.title.trim() || !suggestForm.author.trim()}
+              disabled={suggestAdding || !suggestForm.title.trim() || !suggestForm.author.trim() || !suggestForm.publisher.trim()}
             >
               <IconPlus size={15} /> 追加
             </button>
           </div>
+          {suggestBooks.length < SUGGEST_BOOKS.length && (
+            <div className="admin-seed-row">
+              <span className="admin-seed-hint">初期サジェスト（{SUGGEST_BOOKS.length}件）がDBに未登録です</span>
+              <button className="admin-suggest-add-btn" onClick={handleSeedSuggests} disabled={seeding}>
+                <IconPlus size={15} /> 初期データを投入
+              </button>
+              {seedProgress && <span className="admin-seed-progress">{seedProgress}</span>}
+            </div>
+          )}
           <div className="bookshelf-search-wrap" style={{ margin: '8px 0' }}>
             <IconSearch size={15} className="bookshelf-search-icon" />
             <input
@@ -554,7 +587,7 @@ export default function AdminTab() {
                     </div>
                   </div>
                   <div className="admin-suggest-edit-actions">
-                    <button className="admin-suggest-add-btn" onClick={() => handleEditSave(sb.id)} disabled={!editForm.title.trim() || !editForm.author.trim()}><IconDeviceFloppy size={15} /> 保存</button>
+                    <button className="admin-suggest-add-btn" onClick={() => handleEditSave(sb.id)} disabled={!editForm.title.trim() || !editForm.author.trim() || !editForm.publisher.trim()}><IconDeviceFloppy size={15} /> 保存</button>
                     <button className="admin-ban-btn" onClick={() => setEditingId(null)}><IconX size={15} /> キャンセル</button>
                   </div>
                 </div>
