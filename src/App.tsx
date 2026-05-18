@@ -12,7 +12,8 @@ import AuthModal from './auth/AuthModal'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import type { Book, Session } from './types'
 import { getBooks, saveBook, saveAllBooks, deleteBook, getSessions, saveSession, getSuggestBooks } from './lib/db'
-import { setAdminBooksCache } from './suggestBooks'
+import { setAdminBooksCache, SUGGEST_BOOKS, getUserSuggestions } from './suggestBooks'
+import { buildReadingIndex } from './lib/japanese'
 
 type Tab = 'timer' | 'bookshelf' | 'stats' | 'settings' | 'admin'
 export type Theme = 'light' | 'dark' | 'system'
@@ -64,6 +65,11 @@ function AppInner() {
         setSyncState('synced')
         setDataLoaded(true)
         if (shouldShowTutorial()) setShowTutorial(true)
+        const allTexts = [
+          ...[...SUGGEST_BOOKS, ...getUserSuggestions(), ...sb].flatMap(x => [x.title, x.author]),
+          ...b.flatMap(x => [x.title, x.author]),
+        ]
+        buildReadingIndex(allTexts)
       })
       .catch(() => { clearTimeout(timeout); setSyncState('offline'); setDataLoaded(true) })
   }, [authLoading, user])

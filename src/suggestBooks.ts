@@ -1,4 +1,5 @@
 import type { SuggestBookDB } from './types'
+import { getReading } from './lib/japanese'
 
 export interface SuggestBook {
   title: string
@@ -182,7 +183,10 @@ export function searchSuggestions(query: string): SuggestBook[] {
   if (!query.trim()) return []
   const q = normalize(query)
   const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions(), ..._adminBooks]
-  return allBooks.filter(
-    b => normalize(b.title).includes(q) || normalize(b.author).includes(q)
-  ).slice(0, 6)
+  return allBooks.filter(b => {
+    if (normalize(b.title).includes(q) || normalize(b.author).includes(q)) return true
+    const titleReading = getReading(b.title)
+    const authorReading = getReading(b.author)
+    return (titleReading?.includes(q) ?? false) || (authorReading?.includes(q) ?? false)
+  }).slice(0, 6)
 }

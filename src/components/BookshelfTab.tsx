@@ -25,6 +25,7 @@ import { addSuggestBook } from '../lib/db'
 import { useAuth } from '../auth/AuthContext'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
+import { getReading } from '../lib/japanese'
 import HelpModal from './HelpModal'
 
 const BOOKSHELF_HELP = [
@@ -432,16 +433,21 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
   const q = searchQuery.trim().toLowerCase()
   const statusFiltered = filterStatus === 'all' ? books : books.filter(b => b.status === filterStatus)
   const displayBooks = q
-    ? statusFiltered.filter(b =>
-        b.title.toLowerCase().includes(q) ||
-        b.author.toLowerCase().includes(q) ||
-        (b.publisher ?? '').toLowerCase().includes(q) ||
-        b.genre.toLowerCase().includes(q) ||
-        (b.isbn ?? '').toLowerCase().includes(q) ||
-        (b.ccode ?? '').toLowerCase().includes(q) ||
-        (b.catalogNumber ?? '').toLowerCase().includes(q) ||
-        (b.ndc ?? '').toLowerCase().includes(q)
-      )
+    ? statusFiltered.filter(b => {
+        if (
+          b.title.toLowerCase().includes(q) ||
+          b.author.toLowerCase().includes(q) ||
+          (b.publisher ?? '').toLowerCase().includes(q) ||
+          b.genre.toLowerCase().includes(q) ||
+          (b.isbn ?? '').toLowerCase().includes(q) ||
+          (b.ccode ?? '').toLowerCase().includes(q) ||
+          (b.catalogNumber ?? '').toLowerCase().includes(q) ||
+          (b.ndc ?? '').toLowerCase().includes(q)
+        ) return true
+        const tr = getReading(b.title)
+        const ar = getReading(b.author)
+        return (tr?.includes(q) ?? false) || (ar?.includes(q) ?? false)
+      })
     : statusFiltered
 
   return (
