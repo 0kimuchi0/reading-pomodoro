@@ -340,24 +340,31 @@ export default function AdminTab() {
     }, ...prev])
   }
 
-  const handleDeleteSuggest = async (id: string) => {
+  const handleDeleteSuggest = (id: string) => {
     const book = suggestBooks.find(b => b.id === id)
     const title = book?.title ?? ''
-    await deleteSuggestBook(id)
-    await logAdminAction(user?.id ?? '', 'suggest_delete', title, '', '')
-    const sb = await getSuggestBooks()
-    setSuggestBooks(sb)
-    setAdminBooksCache(sb)
-    setActions(prev => [{
-      id: crypto.randomUUID(),
-      adminId: user?.id ?? '',
-      targetUserId: user?.id ?? '',
-      actionType: 'suggest_delete',
-      previousValue: title,
-      newValue: '',
-      reason: '',
-      createdAt: new Date().toISOString(),
-    }, ...prev])
+    confirm({
+      message: `サジェスト「${title}」を削除しますか？`,
+      confirmLabel: '削除する',
+      danger: true,
+      onConfirm: async (reason) => {
+        await deleteSuggestBook(id)
+        await logAdminAction(user?.id ?? '', 'suggest_delete', title, '', reason)
+        const sb = await getSuggestBooks()
+        setSuggestBooks(sb)
+        setAdminBooksCache(sb)
+        setActions(prev => [{
+          id: crypto.randomUUID(),
+          adminId: user?.id ?? '',
+          targetUserId: user?.id ?? '',
+          actionType: 'suggest_delete',
+          previousValue: title,
+          newValue: '',
+          reason,
+          createdAt: new Date().toISOString(),
+        }, ...prev])
+      },
+    })
   }
 
   const totalSessions = sessions.length
