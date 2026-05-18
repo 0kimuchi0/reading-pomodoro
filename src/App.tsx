@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { IconClock, IconBooks, IconChartBar, IconSettings, IconShield } from '@tabler/icons-react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import TimerTab from './components/TimerTab'
 import BookshelfTab from './components/BookshelfTab'
 import StatsTab from './components/StatsTab'
@@ -241,6 +242,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppInner />
+      <SpeedInsights />
     </AuthProvider>
   )
 }
