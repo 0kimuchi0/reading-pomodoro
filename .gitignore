@@ -13,3 +13,8 @@ android/.gradle/
 android/app/build/
 android/.idea/
 android/local.properties
+
+# Capacitor iOS build artifacts
+ios/App/Pods/
+ios/App/App.xcworkspace/xcuserdata/
+ios/.xcode.env.local
