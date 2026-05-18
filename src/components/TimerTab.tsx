@@ -164,6 +164,8 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
   const [showHelp, setShowHelp] = useState(false)
   const [focusMin, setFocusMin] = useState(25)
   const [breakMin, setBreakMin] = useState(5)
+  const [inputFocusMin, setInputFocusMin] = useState(25)
+  const [inputBreakMin, setInputBreakMin] = useState(5)
   const [phase, setPhase] = useState<Phase>('focus')
   const [secondsLeft, setSecondsLeft] = useState(focusMin * 60)
   const [running, setRunning] = useState(false)
@@ -268,11 +270,21 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
     setSecondsLeft(focusMin * 60)
   }
 
+  const openSettings = () => {
+    setInputFocusMin(focusMin)
+    setInputBreakMin(breakMin)
+    setShowSettings(true)
+  }
+
   const applySettings = () => {
+    const newFocus = Math.max(1, Math.min(90, inputFocusMin))
+    const newBreak = Math.max(1, Math.min(30, inputBreakMin))
+    setFocusMin(newFocus)
+    setBreakMin(newBreak)
     setShowSettings(false)
     setRunning(false)
     setPhase('focus')
-    setSecondsLeft(focusMin * 60)
+    setSecondsLeft(newFocus * 60)
   }
 
   const minutes = Math.floor(secondsLeft / 60).toString().padStart(2, '0')
@@ -322,7 +334,7 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
           <button className="btn-ghost" onClick={handleStop}>
             <IconPlayerStop size={20} />
           </button>
-          <button className="btn-ghost" onClick={() => setShowSettings(!showSettings)}>
+          <button className="btn-ghost" onClick={() => showSettings ? setShowSettings(false) : openSettings()}>
             <IconSettings size={20} />
           </button>
         </div>
@@ -332,15 +344,15 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
             <div className="settings-row">
               <label>集中時間（分）</label>
               <input
-                type="number" min={1} max={90} value={focusMin}
-                onChange={e => setFocusMin(Number(e.target.value))}
+                type="number" min={1} max={90} value={inputFocusMin}
+                onChange={e => setInputFocusMin(Number(e.target.value))}
               />
             </div>
             <div className="settings-row">
               <label>休憩時間（分）</label>
               <input
-                type="number" min={1} max={30} value={breakMin}
-                onChange={e => setBreakMin(Number(e.target.value))}
+                type="number" min={1} max={30} value={inputBreakMin}
+                onChange={e => setInputBreakMin(Number(e.target.value))}
               />
             </div>
             <button className="btn-primary" onClick={applySettings}>適用</button>
