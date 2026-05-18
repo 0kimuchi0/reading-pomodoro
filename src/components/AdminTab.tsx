@@ -111,30 +111,28 @@ const ADMIN_HELP: HelpItem[] = [
     desc: 'ロール変更・BAN操作・サジェスト操作の履歴を確認・巻き戻せます',
     detail: 'ユーザー管理で行ったロール変更・BAN・BAN解除、およびサジェストの追加・編集・削除の操作が時系列で記録されます。ユーザー管理操作は「巻き戻し」ボタンで直前の状態に戻すことができます。巻き戻し操作も新たな履歴として記録されます。',
     image: (
-      <svg viewBox="0 0 280 178" xmlns="http://www.w3.org/2000/svg" width="280" height="178">
-        <rect width="280" height="178" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="154" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
+      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
         <text x="24" y="31" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
-        <line x1="20" y1="38" x2="260" y2="38" stroke="#E2E1F0" strokeWidth="1"/>
-        {[
-          { desc: 'ロール変更: 一般 → 管理者', sub: '理由: 昇格申請', date: '05/18 12:34', revert: true,  accent: '#534AB7' },
-          { desc: 'BAN: banned@ex.com',          sub: '理由: 規約違反',  date: '05/17 09:00', revert: true,  accent: '#EF4444' },
-          { desc: 'サジェスト追加: こころ',        sub: '05/16 15:22',    date: '',            revert: false, accent: '#10B981' },
-        ].map(({ desc, sub, date, revert, accent }, i) => (
-          <g key={i} transform={`translate(0, ${46 + i * 38})`}>
-            <rect x="20" y="0" width="240" height="32" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <rect x="20" y="0" width="3" height="32" rx="1.5" fill={accent}/>
-            <text x="32" y="13" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{desc}</text>
-            <text x="32" y="26" fontSize="8" fill="#8888AA" fontFamily="sans-serif">{sub}</text>
-            {date && <text x="258" y="26" textAnchor="end" fontSize="7.5" fill="#B0B0C8" fontFamily="sans-serif">{date}</text>}
-            {revert && (
-              <g>
-                <rect x="198" y="6" width="54" height="18" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
-                <text x="225" y="19" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
-              </g>
-            )}
-          </g>
-        ))}
+        <line x1="20" y1="37" x2="260" y2="37" stroke="#E2E1F0" strokeWidth="1"/>
+        {/* 行1: ロール変更（紫） */}
+        <rect x="20" y="44" width="240" height="28" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+        <rect x="20" y="44" width="3" height="28" rx="1.5" fill="#534AB7"/>
+        <text x="32" y="62" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">ロール変更: 一般 → 管理者</text>
+        <rect x="188" y="50" width="64" height="16" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
+        <text x="220" y="62" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
+        {/* 行2: BAN（赤） */}
+        <rect x="20" y="79" width="240" height="28" rx="5" fill="#FFF5F5" stroke="#FECACA" strokeWidth="1"/>
+        <rect x="20" y="79" width="3" height="28" rx="1.5" fill="#EF4444"/>
+        <text x="32" y="97" fontSize="9" fontWeight="600" fill="#C53030" fontFamily="sans-serif">BAN: banned@ex.com</text>
+        <rect x="188" y="85" width="64" height="16" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
+        <text x="220" y="97" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
+        {/* 行3: サジェスト（緑） */}
+        <rect x="20" y="114" width="240" height="28" rx="5" fill="#F0FFF4" stroke="#BBF7D0" strokeWidth="1"/>
+        <rect x="20" y="114" width="3" height="28" rx="1.5" fill="#10B981"/>
+        <text x="32" y="132" fontSize="9" fontWeight="600" fill="#065F46" fontFamily="sans-serif">サジェスト追加: こころ</text>
+        <text x="255" y="132" textAnchor="end" fontSize="8" fill="#9CA3AF" fontFamily="sans-serif">05/16 15:22</text>
       </svg>
     ),
   },
