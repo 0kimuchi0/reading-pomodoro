@@ -7,3 +7,9 @@ dist
 .claude/
 supabase/.temp/
 public/dict/
+
+# Capacitor Android build artifacts
+android/.gradle/
+android/app/build/
+android/.idea/
+android/local.properties

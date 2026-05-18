@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "cp -r node_modules/kuromoji/dict public/dict && tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android": "npm run build && npx cap sync android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "@supabase/supabase-js": "^2.105.4",
     "@tabler/icons-react": "^3.19.0",
     "@types/kuromoji": "^0.1.3",
