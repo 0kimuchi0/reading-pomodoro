@@ -1,3 +1,5 @@
+import type { SuggestBookDB } from './types'
+
 export interface SuggestBook {
   title: string
   author: string
@@ -107,6 +109,12 @@ export const SUGGEST_BOOKS: SuggestBook[] = [
 
 const USER_SUGGEST_KEY = 'pr_user_suggestions'
 
+let _adminBooks: SuggestBookDB[] = []
+
+export function setAdminBooksCache(books: SuggestBookDB[]): void {
+  _adminBooks = books
+}
+
 /** 表記揺れ正規化 */
 export function normalize(s: string): string {
   return s
@@ -152,7 +160,7 @@ export function isDuplicate(title: string, author: string, publisher?: string): 
   const nt = normalize(title)
   const na = normalize(author)
   const np = normalize(publisher ?? '')
-  const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions()]
+  const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions(), ..._adminBooks]
   return allBooks.some(b =>
     normalize(b.title) === nt &&
     normalize(b.author) === na &&
@@ -169,7 +177,7 @@ export function addUserSuggestion(book: SuggestBook): void {
 export function searchSuggestions(query: string): SuggestBook[] {
   if (!query.trim()) return []
   const q = normalize(query)
-  const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions()]
+  const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions(), ..._adminBooks]
   return allBooks.filter(
     b => normalize(b.title).includes(q) || normalize(b.author).includes(q)
   ).slice(0, 6)

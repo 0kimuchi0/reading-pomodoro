@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp } from '@tabler/icons-react'
-import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction } from '../lib/db'
-import type { Profile, UserRole, Book, Session } from '../types'
+import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash } from '@tabler/icons-react'
+import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, deleteSuggestBook } from '../lib/db'
+import { setAdminBooksCache } from '../suggestBooks'
+import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
 import type { AdminAction } from '../types'
 import ConfirmDialog from './ConfirmDialog'
 
@@ -18,16 +19,21 @@ export default function AdminTab() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [actions, setActions] = useState<AdminAction[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history'>('users')
+  const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests'>('users')
+  const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
+  const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
+  const [suggestAdding, setSuggestAdding] = useState(false)
   const [pending, setPending] = useState<PendingAction | null>(null)
 
   const load = async () => {
     setLoading(true)
-    const [p, b, s, a] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions()])
+    const [p, b, s, a, sb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks()])
     setProfiles(p)
     setBooks(b)
     setSessions(s)
     setActions(a)
+    setSuggestBooks(sb)
+    setAdminBooksCache(sb)
     setLoading(false)
   }
 
@@ -107,6 +113,30 @@ export default function AdminTab() {
     })
   }
 
+  const handleAddSuggest = async () => {
+    if (!suggestForm.title.trim() || !suggestForm.author.trim()) return
+    setSuggestAdding(true)
+    await addSuggestBook({
+      title: suggestForm.title.trim(),
+      author: suggestForm.author.trim(),
+      genre: suggestForm.genre,
+      publisher: suggestForm.publisher.trim(),
+      totalPages: Number(suggestForm.totalPages) || 0,
+    })
+    const sb = await getSuggestBooks()
+    setSuggestBooks(sb)
+    setAdminBooksCache(sb)
+    setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '' })
+    setSuggestAdding(false)
+  }
+
+  const handleDeleteSuggest = async (id: string) => {
+    await deleteSuggestBook(id)
+    const sb = await getSuggestBooks()
+    setSuggestBooks(sb)
+    setAdminBooksCache(sb)
+  }
+
   const totalSessions = sessions.length
   const totalMinutes = sessions.reduce((sum, s) => sum + s.duration, 0)
   const totalBooks = books.length
@@ -144,6 +174,9 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => setActiveSection('history')}>
           <IconHistory size={16} /> 操作履歴
           {actions.length > 0 && <span className="admin-history-badge">{actions.length}</span>}
+        </button>
+        <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
+          <IconBookmark size={16} /> サジェスト
         </button>
       </div>
 
@@ -207,7 +240,7 @@ export default function AdminTab() {
               ))}
           </div>
         </div>
-      ) : (
+      ) : activeSection === 'history' ? (
         <div className="admin-section">
           {actions.length === 0 ? (
             <p className="admin-empty">操作履歴はありません</p>
@@ -227,6 +260,75 @@ export default function AdminTab() {
                   >
                     <IconArrowBackUp size={15} />
                     巻き戻し
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="admin-section">
+          <div className="admin-suggest-form">
+            <input
+              className="admin-suggest-input"
+              placeholder="タイトル *"
+              value={suggestForm.title}
+              onChange={e => setSuggestForm(f => ({ ...f, title: e.target.value }))}
+            />
+            <input
+              className="admin-suggest-input"
+              placeholder="著者 *"
+              value={suggestForm.author}
+              onChange={e => setSuggestForm(f => ({ ...f, author: e.target.value }))}
+            />
+            <select
+              className="admin-role-select"
+              value={suggestForm.genre}
+              onChange={e => setSuggestForm(f => ({ ...f, genre: e.target.value }))}
+            >
+              {['小説', 'ビジネス', '自己啓発', '技術', '歴史', 'その他'].map(g => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+            <input
+              className="admin-suggest-input"
+              placeholder="出版社"
+              value={suggestForm.publisher}
+              onChange={e => setSuggestForm(f => ({ ...f, publisher: e.target.value }))}
+            />
+            <input
+              className="admin-suggest-input admin-suggest-pages"
+              placeholder="ページ数"
+              type="number"
+              min="0"
+              value={suggestForm.totalPages}
+              onChange={e => setSuggestForm(f => ({ ...f, totalPages: e.target.value }))}
+            />
+            <button
+              className="admin-suggest-add-btn"
+              onClick={handleAddSuggest}
+              disabled={suggestAdding || !suggestForm.title.trim() || !suggestForm.author.trim()}
+            >
+              <IconPlus size={15} /> 追加
+            </button>
+          </div>
+          <p className="admin-count">{suggestBooks.length} 件（管理者追加分）</p>
+          {suggestBooks.length === 0 ? (
+            <p className="admin-empty">管理者が追加したサジェストはありません</p>
+          ) : (
+            <div className="admin-user-list">
+              {suggestBooks.map(sb => (
+                <div key={sb.id} className="admin-user-card">
+                  <div className="admin-user-info">
+                    <span className="admin-user-email">{sb.title}</span>
+                    <span className="admin-user-meta">{sb.author} · {sb.genre}{sb.publisher ? ` · ${sb.publisher}` : ''}{sb.totalPages ? ` · ${sb.totalPages}p` : ''}</span>
+                  </div>
+                  <button
+                    className="admin-ban-btn"
+                    onClick={() => handleDeleteSuggest(sb.id)}
+                    title="削除"
+                  >
+                    <IconTrash size={15} /> 削除
                   </button>
                 </div>
               ))}
