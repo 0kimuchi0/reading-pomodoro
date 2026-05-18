@@ -22,7 +22,12 @@ function validateIsbn(raw: string): string | undefined {
 }
 
 function validateCcode(s: string): string | undefined {
-  if (!/^C\d{4}$/.test(s)) return 'CコードはC＋4桁数字の形式です（例：C0093）'
+  if (!/^C\d{4}$/.test(s)) return 'Cコードは4桁数字で入力してください（例：0093）'
+}
+
+export function formatCcode(raw: string): string {
+  const digits = raw.replace(/^[Cc]/, '').replace(/\D/g, '')
+  return digits ? 'C' + digits : ''
 }
 
 function validateNdc(s: string): string | undefined {

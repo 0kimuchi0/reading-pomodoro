@@ -23,7 +23,7 @@ import type { Book, BookStatus, Genre } from '../types'
 import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
 import { addSuggestBook } from '../lib/db'
 import { useAuth } from '../auth/AuthContext'
-import { validateBookFields, hasErrors } from '../lib/validate'
+import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
 import HelpModal from './HelpModal'
 
@@ -548,8 +548,8 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
               <label>Cコード</label>
               <input
                 value={details.ccode}
-                onChange={e => { setDetails({ ...details, ccode: e.target.value }); setAddErrors(p => ({ ...p, ccode: undefined })) }}
-                placeholder="C0193"
+                onChange={e => { setDetails({ ...details, ccode: formatCcode(e.target.value) }); setAddErrors(p => ({ ...p, ccode: undefined })) }}
+                placeholder="0193"
                 className={addErrors.ccode ? 'field-error' : ''}
               />
               {addErrors.ccode && <span className="field-error-msg">{addErrors.ccode}</span>}
@@ -680,7 +680,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                         </div>
                         <div className="form-field">
                           <label>Cコード</label>
-                          <input value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: e.target.value })); setEditErrors(p => ({ ...p, ccode: undefined })) }} placeholder="C0193" className={editErrors.ccode ? 'field-error' : ''} />
+                          <input value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: formatCcode(e.target.value) })); setEditErrors(p => ({ ...p, ccode: undefined })) }} placeholder="0193" className={editErrors.ccode ? 'field-error' : ''} />
                           {editErrors.ccode && <span className="field-error-msg">{editErrors.ccode}</span>}
                         </div>
                         <div className="form-field">

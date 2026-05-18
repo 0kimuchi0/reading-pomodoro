@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
-import { validateBookFields, hasErrors } from '../lib/validate'
+import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
@@ -352,7 +352,7 @@ export default function AdminTab() {
               {suggestAddErrors.isbn && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.isbn}</span>}
             </div>
             <div style={{ display: 'contents' }}>
-              <input className={`admin-suggest-input${suggestAddErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード" value={suggestForm.ccode} onChange={e => { setSuggestForm(f => ({ ...f, ccode: e.target.value })); setSuggestAddErrors(p => ({ ...p, ccode: undefined })) }} />
+              <input className={`admin-suggest-input${suggestAddErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード（例：0093）" value={suggestForm.ccode} onChange={e => { setSuggestForm(f => ({ ...f, ccode: formatCcode(e.target.value) })); setSuggestAddErrors(p => ({ ...p, ccode: undefined })) }} />
               {suggestAddErrors.ccode && <span className="field-error-msg admin-suggest-error">{suggestAddErrors.ccode}</span>}
             </div>
             <div style={{ display: 'contents' }}>
@@ -433,7 +433,7 @@ export default function AdminTab() {
                       {suggestEditErrors.isbn && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.isbn}</span>}
                     </div>
                     <div style={{ display: 'contents' }}>
-                      <input className={`admin-suggest-input${suggestEditErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード" value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: e.target.value })); setSuggestEditErrors(p => ({ ...p, ccode: undefined })) }} />
+                      <input className={`admin-suggest-input${suggestEditErrors.ccode ? ' field-error' : ''}`} placeholder="Cコード（例：0093）" value={editForm.ccode} onChange={e => { setEditForm(f => ({ ...f, ccode: formatCcode(e.target.value) })); setSuggestEditErrors(p => ({ ...p, ccode: undefined })) }} />
                       {suggestEditErrors.ccode && <span className="field-error-msg admin-suggest-error">{suggestEditErrors.ccode}</span>}
                     </div>
                     <div style={{ display: 'contents' }}>
