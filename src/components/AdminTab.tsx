@@ -76,28 +76,29 @@ const ADMIN_HELP: HelpItem[] = [
         <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">サジェスト管理</text>
         {/* 検索バー */}
         <rect x="20" y="38" width="240" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <text x="32" y="53" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">タイトル・著者・出版社で検索...</text>
+        <text x="32" y="53" fontSize="9" fill="#C0C0D8" fontFamily="sans-serif">タイトル・著者・出版社で検索...</text>
         {/* サジェストカード */}
         {[['こころ', '夏目漱石 · 小説 · 岩波書店'],['坊っちゃん', '夏目漱石 · 小説 · 岩波書店']].map(([title, meta], i) => (
-          <g key={i} transform={`translate(0, ${i * 36})`}>
-            <rect x="20" y="66" width="240" height="30" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <text x="30" y="83" fontSize="10" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{title}</text>
-            <text x="30" y="93" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{meta}</text>
-            {/* 編集ボタン（鉛筆アイコン） */}
-            <rect x="210" y="71" width="22" height="18" rx="4" fill="#F7F7FB" stroke="#534AB7" strokeWidth="1"/>
-            <g transform="translate(221,80)" stroke="#534AB7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none">
-              <path d="M-4,3 L2,-3 L5,0 L-1,6 Z"/>
-              <line x1="1" y1="-2" x2="4" y2="1"/>
-              <line x1="-4" y1="3" x2="-5" y2="6"/>
+          <g key={i} transform={`translate(0, ${i * 38})`}>
+            <rect x="20" y="66" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
+            <text x="30" y="80" fontSize="10" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{title}</text>
+            <text x="30" y="92" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{meta}</text>
+            {/* 編集ボタン */}
+            <rect x="196" y="71" width="28" height="20" rx="4" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
+            {/* 鉛筆アイコン（塗りつぶし） */}
+            <g transform="translate(210,81)">
+              <path d="M-5 3 L3 -5 L6 -2 L-2 6 Z" fill="#534AB7"/>
+              <path d="M-5 3 L-2 6 L-7 7 Z" fill="#534AB7"/>
             </g>
-            {/* 削除ボタン（ゴミ箱アイコン） */}
-            <rect x="234" y="71" width="22" height="18" rx="4" fill="#FFF0F0" stroke="#FEB2B2" strokeWidth="1"/>
-            <g transform="translate(245,80)" stroke="#E53E3E" strokeWidth="1.2" strokeLinecap="round" fill="none">
-              <line x1="-5" y1="-4" x2="5" y2="-4"/>
-              <rect x="-4" y="-3" width="8" height="8" rx="1"/>
-              <line x1="-1.5" y1="-1" x2="-1.5" y2="3"/>
-              <line x1="1.5" y1="-1" x2="1.5" y2="3"/>
-              <line x1="-2" y1="-6" x2="2" y2="-6"/>
+            {/* 削除ボタン */}
+            <rect x="228" y="71" width="28" height="20" rx="4" fill="#FFF0F0" stroke="#EF4444" strokeWidth="1"/>
+            {/* ゴミ箱アイコン */}
+            <g transform="translate(242,81)" stroke="#EF4444" fill="none" strokeWidth="1.4" strokeLinecap="round">
+              <line x1="-6" y1="-4" x2="6" y2="-4"/>
+              <path d="M-4,-3 L-3,6 L3,6 L4,-3"/>
+              <line x1="-1.5" y1="-1" x2="-2" y2="4"/>
+              <line x1="1.5" y1="-1" x2="2" y2="4"/>
+              <path d="M-2,-4 L-2,-6 L2,-6 L2,-4"/>
             </g>
           </g>
         ))}
