@@ -93,7 +93,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signIn = async (email: string, password: string): Promise<string | null> => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const timeout = new Promise<{ error: { message: string } }>(resolve =>
+      setTimeout(() => resolve({ error: { message: 'タイムアウトしました。再度お試しください' } }), 15000)
+    )
+    const { error } = await Promise.race([
+      supabase.auth.signInWithPassword({ email, password }),
+      timeout,
+    ])
     return error?.message ?? null
   }
 
