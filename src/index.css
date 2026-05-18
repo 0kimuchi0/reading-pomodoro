@@ -1227,7 +1227,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .account-email { font-size: 0.95rem; color: var(--color-text); word-break: break-all; }
 .account-desc { font-size: 0.83rem; color: var(--color-text-muted); }
 .account-signout, .account-login {
-  align-self: flex-start; display: flex; align-items: center; gap: 6px;
+  align-self: flex-end; display: flex; align-items: center; gap: 6px;
   font-size: 0.88rem;
 }
 
