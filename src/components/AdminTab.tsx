@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX } from '@tabler/icons-react'
+import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { setAdminBooksCache } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
@@ -25,6 +25,7 @@ export default function AdminTab() {
   const [suggestAdding, setSuggestAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
+  const [suggestSearch, setSuggestSearch] = useState('')
   const [pending, setPending] = useState<PendingAction | null>(null)
 
   const load = async () => {
@@ -346,12 +347,44 @@ export default function AdminTab() {
               <IconPlus size={15} /> 追加
             </button>
           </div>
-          <p className="admin-count">{suggestBooks.length} 件</p>
+          <div className="bookshelf-search-wrap" style={{ margin: '8px 0' }}>
+            <IconSearch size={15} className="bookshelf-search-icon" />
+            <input
+              className="bookshelf-search-input"
+              value={suggestSearch}
+              onChange={e => setSuggestSearch(e.target.value)}
+              placeholder="タイトル・著者・出版社で検索..."
+              autoComplete="off"
+            />
+            {suggestSearch && (
+              <button className="bookshelf-search-clear" onClick={() => setSuggestSearch('')} title="クリア">
+                <IconX size={13} />
+              </button>
+            )}
+          </div>
+          {(() => {
+            const q = suggestSearch.trim().toLowerCase()
+            const filtered = q ? suggestBooks.filter(sb =>
+              sb.title.toLowerCase().includes(q) ||
+              sb.author.toLowerCase().includes(q) ||
+              sb.publisher.toLowerCase().includes(q)
+            ) : suggestBooks
+            return <p className="admin-count">{filtered.length} / {suggestBooks.length} 件</p>
+          })()}
           {suggestBooks.length === 0 ? (
             <p className="admin-empty">サジェストはありません</p>
-          ) : (
+          ) : (() => {
+            const q = suggestSearch.trim().toLowerCase()
+            const filtered = q ? suggestBooks.filter(sb =>
+              sb.title.toLowerCase().includes(q) ||
+              sb.author.toLowerCase().includes(q) ||
+              sb.publisher.toLowerCase().includes(q)
+            ) : suggestBooks
+            return filtered.length === 0 ? (
+              <p className="admin-empty">「{suggestSearch}」に一致するサジェストが見つかりません</p>
+            ) : (
             <div className="admin-user-list">
-              {suggestBooks.map(sb => editingId === sb.id ? (
+              {filtered.map(sb => editingId === sb.id ? (
                 <div key={sb.id} className="admin-user-card admin-suggest-edit-card">
                   <div className="admin-suggest-edit-fields">
                     <input className="admin-suggest-input" placeholder="タイトル *" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} />
@@ -384,7 +417,8 @@ export default function AdminTab() {
                 </div>
               ))}
             </div>
-          )}
+            )
+          })()}
         </div>
       )}
 
