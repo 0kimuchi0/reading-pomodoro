@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Reading Pomodoro',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
+    url: 'https://pomread.vercel.app',
+    cleartext: false,
   },
 };
 
