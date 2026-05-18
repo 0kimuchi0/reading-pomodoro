@@ -317,8 +317,12 @@ export default function AdminTab() {
         <button className="admin-refresh-btn" onClick={load} title="更新">
           <IconRefresh size={16} />
         </button>
-        <button className="help-btn" onClick={() => setShowHelp(true)} title="ヘルプ">
-          <IconQuestionMark size={16} />
+      </div>
+
+      <div className="tab-help-row">
+        <button className="help-btn" onClick={() => setShowHelp(true)}>
+          <IconQuestionMark size={15} />
+          使い方
         </button>
       </div>
 
