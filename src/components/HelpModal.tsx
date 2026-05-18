@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { IconX, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 
 export interface HelpItem {
@@ -38,7 +39,7 @@ export default function HelpModal({ title, items, onClose }: Props) {
 
   const active = items[activeIndex]
 
-  return (
+  return createPortal(
     <div className="help-overlay" onClick={onClose}>
       <div className="help-modal-v2" onClick={e => e.stopPropagation()}>
         {/* ヘッダー */}
@@ -102,6 +103,7 @@ export default function HelpModal({ title, items, onClose }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
