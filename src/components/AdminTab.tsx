@@ -83,10 +83,22 @@ const ADMIN_HELP: HelpItem[] = [
             <rect x="20" y="66" width="240" height="30" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
             <text x="30" y="83" fontSize="10" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{title}</text>
             <text x="30" y="93" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{meta}</text>
-            <rect x="210" y="71" width="22" height="18" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <text x="221" y="83" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">編</text>
+            {/* 編集ボタン（鉛筆アイコン） */}
+            <rect x="210" y="71" width="22" height="18" rx="4" fill="#F7F7FB" stroke="#534AB7" strokeWidth="1"/>
+            <g transform="translate(221,80)" stroke="#534AB7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none">
+              <path d="M-4,3 L2,-3 L5,0 L-1,6 Z"/>
+              <line x1="1" y1="-2" x2="4" y2="1"/>
+              <line x1="-4" y1="3" x2="-5" y2="6"/>
+            </g>
+            {/* 削除ボタン（ゴミ箱アイコン） */}
             <rect x="234" y="71" width="22" height="18" rx="4" fill="#FFF0F0" stroke="#FEB2B2" strokeWidth="1"/>
-            <text x="245" y="83" textAnchor="middle" fontSize="9" fill="#E53E3E" fontFamily="sans-serif">削</text>
+            <g transform="translate(245,80)" stroke="#E53E3E" strokeWidth="1.2" strokeLinecap="round" fill="none">
+              <line x1="-5" y1="-4" x2="5" y2="-4"/>
+              <rect x="-4" y="-3" width="8" height="8" rx="1"/>
+              <line x1="-1.5" y1="-1" x2="-1.5" y2="3"/>
+              <line x1="1.5" y1="-1" x2="1.5" y2="3"/>
+              <line x1="-2" y1="-6" x2="2" y2="-6"/>
+            </g>
           </g>
         ))}
       </svg>
