@@ -465,6 +465,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                 className="quick-add-input"
                 value={quickTitle}
                 onChange={e => handleTitleChange(e.target.value)}
+                onCompositionUpdate={e => setSuggestions(searchSuggestions((e.target as HTMLInputElement).value))}
                 onKeyDown={handleKeyDown}
                 onBlur={() => setTimeout(() => setSuggestions([]), 150)}
                 placeholder="タイトル *"
