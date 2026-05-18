@@ -265,6 +265,7 @@ export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<v
     .select('id')
     .eq('title', book.title)
     .eq('author', book.author)
+    .eq('publisher', book.publisher)
     .maybeSingle()
   if (existing) return
   await supabase.from('suggest_books').insert({
