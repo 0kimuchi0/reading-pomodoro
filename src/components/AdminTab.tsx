@@ -17,124 +17,28 @@ const ADMIN_HELP: HelpItem[] = [
     title: 'ユーザー管理',
     desc: 'ロール変更・BAN・BAN解除を行えます',
     detail: 'ユーザー一覧でロール（一般/管理者）の変更、BAN（利用停止）・BAN解除ができます。変更時には必ず理由の入力が必要で、操作は履歴に記録されます。BANされたユーザーは次回ログイン時に強制サインアウトされます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">ユーザー管理</text>
-        {/* ユーザーカード1 */}
-        <rect x="20" y="40" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <text x="30" y="60" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">user@example.com</text>
-        <rect x="168" y="46" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <text x="175" y="60" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">一般 ▾</text>
-        <rect x="216" y="46" width="36" height="20" rx="4" fill="#FFF0F0" stroke="#E53E3E" strokeWidth="1"/>
-        <text x="226" y="60" fontSize="9" fill="#E53E3E" fontFamily="sans-serif">BAN</text>
-        {/* ユーザーカード2（BAN済み） */}
-        <rect x="20" y="78" width="240" height="32" rx="6" fill="#FFF5F5" stroke="#FEB2B2" strokeWidth="1"/>
-        <text x="30" y="98" fontSize="10" fill="#C53030" fontFamily="sans-serif">banned@example.com</text>
-        <rect x="168" y="84" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <text x="175" y="98" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">一般 ▾</text>
-        <rect x="216" y="84" width="36" height="20" rx="4" fill="#E53E3E"/>
-        <text x="221" y="98" fontSize="9" fill="#fff" fontFamily="sans-serif">解除</text>
-        {/* 件数 */}
-        <text x="24" y="128" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">2 アカウント</text>
-      </svg>
-    ),
+    image: <img src="/help/admin-users.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconChartBar size={18} />,
     title: '全体統計',
     desc: '全ユーザーの読書状況をまとめて確認できます',
     detail: '総ユーザー数・登録冊数・読了冊数・セッション数・総集中時間・平均セッション数を一覧表示します。ユーザー別アクティビティでは各ユーザーの登録冊数とセッション数を多い順に確認できます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">全体統計</text>
-        {[
-          ['総ユーザー', '12'],['登録冊数', '87'],['読了冊数', '34'],
-          ['セッション', '256'],['集中時間(分)', '6400'],['平均/人', '21'],
-        ].map(([label, val], i) => (
-          <g key={i} transform={`translate(${20 + (i % 3) * 82}, ${42 + Math.floor(i / 3) * 54})`}>
-            <rect width="74" height="44" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <text x="37" y="20" textAnchor="middle" fontSize="14" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">{val}</text>
-            <text x="37" y="36" textAnchor="middle" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{label}</text>
-          </g>
-        ))}
-      </svg>
-    ),
+    image: <img src="/help/admin-stats.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconBookmark size={18} />,
     title: 'サジェスト管理',
     desc: '全ユーザーの検索候補に表示される本を追加・インライン編集・削除できます',
     detail: '管理者が追加したサジェストは全ユーザーのタイトル入力候補として表示されます。タイトル・著者・出版社・ジャンル・ページ数・ISBN・Cコード・NDC・整理番号を登録できます。検索バーで絞り込み、各行の「編集」ボタンでインライン編集が可能です。削除時は理由の入力が必須で、すべての操作が操作履歴に記録されます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="32" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">サジェスト管理</text>
-        {/* 検索バー */}
-        <rect x="20" y="38" width="240" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <text x="32" y="53" fontSize="9" fill="#C0C0D8" fontFamily="sans-serif">タイトル・著者・出版社で検索...</text>
-        {/* サジェストカード */}
-        {[['こころ', '夏目漱石 · 小説 · 岩波書店'],['坊っちゃん', '夏目漱石 · 小説 · 岩波書店']].map(([title, meta], i) => (
-          <g key={i} transform={`translate(0, ${i * 38})`}>
-            <rect x="20" y="66" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-            <text x="30" y="80" fontSize="10" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">{title}</text>
-            <text x="30" y="92" fontSize="8" fill="#6B6B8A" fontFamily="sans-serif">{meta}</text>
-            {/* 編集ボタン */}
-            <rect x="196" y="71" width="28" height="20" rx="4" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
-            {/* 鉛筆アイコン（塗りつぶし） */}
-            <g transform="translate(210,81)">
-              <path d="M-5 3 L3 -5 L6 -2 L-2 6 Z" fill="#534AB7"/>
-              <path d="M-5 3 L-2 6 L-7 7 Z" fill="#534AB7"/>
-            </g>
-            {/* 削除ボタン */}
-            <rect x="228" y="71" width="28" height="20" rx="4" fill="#FFF0F0" stroke="#EF4444" strokeWidth="1"/>
-            {/* ゴミ箱アイコン */}
-            <g transform="translate(242,81)" stroke="#EF4444" fill="none" strokeWidth="1.4" strokeLinecap="round">
-              <line x1="-6" y1="-4" x2="6" y2="-4"/>
-              <path d="M-4,-3 L-3,6 L3,6 L4,-3"/>
-              <line x1="-1.5" y1="-1" x2="-2" y2="4"/>
-              <line x1="1.5" y1="-1" x2="2" y2="4"/>
-              <path d="M-2,-4 L-2,-6 L2,-6 L2,-4"/>
-            </g>
-          </g>
-        ))}
-      </svg>
-    ),
+    image: <img src="/help/admin-suggest.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconHistory size={18} />,
     title: '操作履歴',
     desc: 'ロール変更・BAN操作・サジェスト操作の履歴を確認・巻き戻せます',
     detail: 'ユーザー管理で行ったロール変更・BAN・BAN解除、およびサジェストの追加・編集・削除の操作が時系列で記録されます。ユーザー管理操作は「巻き戻し」ボタンで直前の状態に戻すことができます。巻き戻し操作も新たな履歴として記録されます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
-        <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" strokeWidth="1.5"/>
-        <text x="24" y="31" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">操作履歴</text>
-        <line x1="20" y1="37" x2="260" y2="37" stroke="#E2E1F0" strokeWidth="1"/>
-        {/* 行1: ロール変更（紫） */}
-        <rect x="20" y="44" width="240" height="28" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1"/>
-        <rect x="20" y="44" width="3" height="28" rx="1.5" fill="#534AB7"/>
-        <text x="32" y="62" fontSize="9" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">ロール変更: 一般 → 管理者</text>
-        <rect x="188" y="50" width="64" height="16" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
-        <text x="220" y="62" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
-        {/* 行2: BAN（赤） */}
-        <rect x="20" y="79" width="240" height="28" rx="5" fill="#FFF5F5" stroke="#FECACA" strokeWidth="1"/>
-        <rect x="20" y="79" width="3" height="28" rx="1.5" fill="#EF4444"/>
-        <text x="32" y="97" fontSize="9" fontWeight="600" fill="#C53030" fontFamily="sans-serif">BAN: banned@ex.com</text>
-        <rect x="188" y="85" width="64" height="16" rx="3" fill="#EEEDFA" stroke="#534AB7" strokeWidth="1"/>
-        <text x="220" y="97" textAnchor="middle" fontSize="8" fill="#534AB7" fontFamily="sans-serif">巻き戻し</text>
-        {/* 行3: サジェスト（緑） */}
-        <rect x="20" y="114" width="240" height="28" rx="5" fill="#F0FFF4" stroke="#BBF7D0" strokeWidth="1"/>
-        <rect x="20" y="114" width="3" height="28" rx="1.5" fill="#10B981"/>
-        <text x="32" y="132" fontSize="9" fontWeight="600" fill="#065F46" fontFamily="sans-serif">サジェスト追加: こころ</text>
-        <text x="255" y="132" textAnchor="end" fontSize="8" fill="#9CA3AF" fontFamily="sans-serif">05/16 15:22</text>
-      </svg>
-    ),
+    image: <img src="/help/admin-history.svg" width="280" height="160" alt="" />,
   },
 ]
 

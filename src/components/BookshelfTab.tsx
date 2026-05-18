@@ -35,200 +35,49 @@ const BOOKSHELF_HELP = [
     title: '本の追加',
     desc: 'タイトルと著者名を入力して「＋」ボタンで登録。Enterキーでも追加できます',
     detail: 'タイトルと著者名を入力して「＋」ボタン（またはEnterキー）で本を登録します。有名な作品はタイトル入力中に候補が自動表示されます。選択すると著者・ジャンルが自動入力されます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* quick-add-card */}
-        <rect x="12" y="8" width="256" height="144" rx="10" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
-        {/* ヘッダー「本を追加」 */}
-        <text x="24" y="26" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">本を追加</text>
-        {/* タイトル入力（横） */}
-        <rect x="24" y="32" width="96" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="32" y="50" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">タイトル *</text>
-        {/* 著者入力（横並び） */}
-        <rect x="124" y="32" width="80" height="28" rx="6" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="132" y="50" fontSize="10" fill="#C0C0D8" fontFamily="sans-serif">著者名 *</text>
-        {/* ＋ボタン */}
-        <rect x="208" y="32" width="48" height="28" rx="6" fill="#534AB7" />
-        <text x="232" y="50" textAnchor="middle" fontSize="18" fontWeight="300" fill="#FFFFFF" fontFamily="sans-serif">＋</text>
-        {/* オートコンプリート候補（タイトル＋著者入力の幅） */}
-        <rect x="24" y="62" width="180" height="20" rx="4" fill="#EEEDfA" />
-        <text x="30" y="76" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▶ 吾輩は猫である — 夏目漱石</text>
-        <rect x="24" y="82" width="180" height="20" rx="0" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="0.5" />
-        <text x="30" y="96" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">　 坊っちゃん — 夏目漱石</text>
-        {/* 区切り線 */}
-        <line x1="24" y1="110" x2="256" y2="110" stroke="#E2E1F0" strokeWidth="1" />
-        {/* 詳細設定トグル */}
-        <text x="32" y="128" fontSize="10" fill="#534AB7" fontFamily="sans-serif">▼ 詳細設定（出版社・ページ数・ジャンル）</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-add.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconSettings size={18} />,
     title: '詳細設定',
     desc: '「詳細設定」を開くと出版社・ページ数・ジャンル・ISBN・Cコード・NDC・整理番号なども設定できます',
     detail: '「詳細設定」を開くと出版社・総ページ数・ジャンル・初期ステータスを設定できます。総ページ数を設定するとプログレスバーと進捗スライダーが表示されます。さらにISBN・Cコード・NDC・整理番号などの書誌情報も登録でき、本棚の検索対象にもなります。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* 詳細パネル */}
-        <rect x="20" y="20" width="240" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        {/* フィールド：出版社 */}
-        <text x="34" y="44" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">出版社</text>
-        <rect x="34" y="48" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="44" y="63" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">岩波書店</text>
-        {/* フィールド：総ページ数 */}
-        <text x="136" y="44" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">総ページ数</text>
-        <rect x="136" y="48" width="106" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="146" y="63" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">320</text>
-        {/* フィールド：ジャンル */}
-        <text x="34" y="88" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">ジャンル</text>
-        <rect x="34" y="92" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="44" y="107" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">小説  ▾</text>
-        {/* フィールド：ステータス */}
-        <text x="136" y="88" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">ステータス</text>
-        <rect x="136" y="92" width="106" height="22" rx="5" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1" />
-        <text x="146" y="107" fontSize="10" fill="#534AB7" fontFamily="sans-serif">読みたい</text>
-        {/* 詳細設定トグル */}
-        <rect x="34" y="122" width="120" height="10" rx="5" fill="#EEEDfA" />
-        <text x="44" y="131" fontSize="9" fill="#534AB7" fontFamily="sans-serif">▲ 詳細設定（折りたたむ）</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-detail.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconTags size={18} />,
     title: 'ステータス管理',
     desc: '読みたい・読書中・読了の3段階で本の状態を管理できます',
     detail: '各本には「読みたい」「読書中」「読了」の3つのステータスがあります。本カードのバッジをクリックするか、ドロップダウンから変更できます。タイマーで使用できるのは「読みたい」と「読書中」の本のみです。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* status-pick-btn: 読みたい */}
-        <rect x="12" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        {/* ブックマークアイコン */}
-        <path d="M44,38 L62,38 L62,62 L53,55 L44,62 Z" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinejoin="round" />
-        <text x="53" y="86" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読みたい</text>
-        <text x="53" y="100" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">積読・予定</text>
-        <text x="53" y="114" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">タブ使用可</text>
-        {/* status-pick-btn: 読書中（active） */}
-        <rect x="99" y="16" width="82" height="128" rx="10" fill="#EEEDfA" stroke="#534AB7" strokeWidth="2" />
-        {/* 本アイコン */}
-        <path d="M127,36 L140,41 L153,36 L153,60 L140,65 L127,60 Z" fill="none" stroke="#534AB7" strokeWidth="1.5" strokeLinejoin="round" />
-        <line x1="140" y1="41" x2="140" y2="65" stroke="#534AB7" strokeWidth="1" />
-        <text x="140" y="86" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">読書中</text>
-        <text x="140" y="100" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">現在読んでいる</text>
-        <text x="140" y="114" textAnchor="middle" fontSize="9" fill="#7C75D4" fontFamily="sans-serif">タイマー選択可</text>
-        {/* status-pick-btn: 読了 */}
-        <rect x="186" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        {/* チェックアイコン */}
-        <circle cx="227" cy="54" r="12" fill="none" stroke="#6B6B8A" strokeWidth="1.5" />
-        <path d="M221,54 L225,59 L234,48" fill="none" stroke="#6B6B8A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="227" y="86" textAnchor="middle" fontSize="11" fontWeight="600" fill="#6B6B8A" fontFamily="sans-serif">読了</text>
-        <text x="227" y="100" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">読み終えた</text>
-        <text x="227" y="114" textAnchor="middle" fontSize="9" fill="#A0A0B8" fontFamily="sans-serif">履歴に保存</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-status.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconRuler size={18} />,
     title: '読書進捗の記録',
     desc: 'ページ数を設定した本はスライダーや数値クリックで現在ページを記録できます',
     detail: '総ページ数を設定した本では現在ページを記録できます。ページ数の数値をクリックすると直接入力できます。スライダーで大まかに調整することも可能です。進捗はプログレスバーで視覚的に確認できます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* ヘッダー */}
-        <text x="34" y="42" fontSize="11" fill="#6B6B8A" fontFamily="sans-serif">進捗</text>
-        <text x="210" y="42" fontSize="11" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">160 / 320p</text>
-        {/* プログレスバー */}
-        <rect x="34" y="52" width="212" height="16" rx="8" fill="#E2E1F0" />
-        <rect x="34" y="52" width="106" height="16" rx="8" fill="#534AB7" />
-        <text x="87" y="64" textAnchor="middle" fontSize="10" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">50%</text>
-        {/* スライダー */}
-        <rect x="34" y="80" width="212" height="4" rx="2" fill="#E2E1F0" />
-        <rect x="34" y="80" width="106" height="4" rx="2" fill="#534AB7" />
-        <circle cx="140" cy="82" r="9" fill="#534AB7" stroke="#FFFFFF" strokeWidth="2" />
-        {/* ページ入力説明 */}
-        <rect x="90" y="106" width="100" height="28" rx="8" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1.5" />
-        <text x="140" y="117" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">クリックで直接入力</text>
-        <text x="140" y="129" textAnchor="middle" fontSize="12" fontWeight="700" fill="#534AB7" fontFamily="sans-serif">160</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-progress.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconSearch size={18} />,
     title: '本の検索',
     desc: 'タイトル・著者・出版社・ISBN など全フィールドを横断検索。ひらがなで漢字タイトルも検索できます',
     detail: '本棚上部の検索バーにキーワードを入力すると、タイトル・著者名・出版社・ジャンル・ISBN・Cコード・NDC・整理番号が一致する本をリアルタイムで絞り込みます。ひらがなで入力すると漢字タイトルも検索できます（例：「なつめ」→「夏目漱石」の本がヒット）。ステータスフィルターや並び替えと組み合わせて使用できます。入力欄右端の × ボタンで検索をクリアできます。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* 検索バー */}
-        <rect x="20" y="12" width="240" height="28" rx="8" fill="#FFFFFF" stroke="#534AB7" strokeWidth="1.5" />
-        <circle cx="35" cy="26" r="5" fill="none" stroke="#534AB7" strokeWidth="1.5" />
-        <line x1="39" y1="30" x2="42" y2="33" stroke="#534AB7" strokeWidth="1.5" strokeLinecap="round" />
-        <text x="50" y="31" fontSize="11" fill="#534AB7" fontFamily="sans-serif">夏目</text>
-        <circle cx="246" cy="26" r="7" fill="#E2E1F0" />
-        <text x="246" y="30" textAnchor="middle" fontSize="9" fill="#6B6B8A" fontFamily="sans-serif">×</text>
-        {/* カード1 */}
-        <rect x="20" y="48" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="34" y="65" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">吾輩は猫である</text>
-        <text x="252" y="65" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
-        {/* カード2 */}
-        <rect x="20" y="80" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="34" y="97" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">坊っちゃん</text>
-        <text x="252" y="97" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
-        {/* カード3 */}
-        <rect x="20" y="112" width="240" height="26" rx="6" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1" />
-        <text x="34" y="129" fontSize="11" fontWeight="600" fill="#1A1A2E" fontFamily="sans-serif">こころ</text>
-        <text x="252" y="129" textAnchor="end" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">夏目漱石</text>
-        {/* ヒット数 */}
-        <text x="140" y="152" textAnchor="middle" fontSize="9" fill="#534AB7" fontFamily="sans-serif">3件ヒット</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-search.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconArrowsSort size={18} />,
     title: '並び替え',
     desc: '登録日・タイトル・セッション数・進捗で昇順/降順に並び替えられます',
     detail: '本棚上部の並び替えボタンで登録日・タイトル・セッション数・進捗（ページ）の4種類のキーで並び替えられます。同じキーを再度クリックすると昇順・降順が切り替わります。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        {/* ソートセレクト */}
-        <rect x="30" y="30" width="140" height="30" rx="8" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="44" y="50" fontSize="12" fill="#1A1A2E" fontFamily="sans-serif">登録日  ▾</text>
-        {/* 昇順/降順ボタン */}
-        <rect x="180" y="30" width="68" height="30" rx="8" fill="#EEEDfA" stroke="#534AB7" strokeWidth="1.5" />
-        <text x="214" y="50" textAnchor="middle" fontSize="12" fill="#534AB7" fontFamily="sans-serif">↑ 降順</text>
-        {/* 4つのオプション一覧 */}
-        {[['登録日', true], ['タイトル', false], ['セッション数', false], ['進捗', false]].map(([label, active], i) => (
-          <g key={i}>
-            <rect x="30" y={76 + i * 20} width="218" height="18" rx="4" fill={active ? '#EEEDfA' : '#FFFFFF'} stroke="#E2E1F0" strokeWidth="0.5" />
-            <text x="44" y={89 + i * 20} fontSize="10" fill={active ? '#534AB7' : '#6B6B8A'} fontFamily="sans-serif" fontWeight={active ? '600' : '400'}>{label as string}</text>
-            {active && <text x="234" y={89 + i * 20} textAnchor="end" fontSize="10" fill="#534AB7" fontFamily="sans-serif">✓</text>}
-          </g>
-        ))}
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-sort.svg" width="280" height="160" alt="" />,
   },
   {
     icon: <IconPencil size={18} />,
     title: 'メモ',
     desc: '各本に読書メモ・感想を自由に記録できます',
     detail: '本カードの編集モード（鉛筆アイコン）を開くとメモ欄が表示されます。読書中の気づきや感想などを自由に入力でき、保存後は本カードにそのまま表示されます。メモは検索対象外です。',
-    image: (
-      <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
-        <rect width="280" height="160" fill="#F7F7FB" rx="8" />
-        <rect x="20" y="16" width="240" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" strokeWidth="1.5" />
-        <text x="34" y="40" fontSize="10" fill="#6B6B8A" fontFamily="sans-serif">メモ</text>
-        <rect x="34" y="46" width="212" height="60" rx="6" fill="#F7F7FB" stroke="#534AB7" strokeWidth="1.5" />
-        <text x="44" y="66" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">第一章がとても面白かった。</text>
-        <text x="44" y="82" fontSize="10" fill="#1A1A2E" fontFamily="sans-serif">主人公の心情描写が秀逸。</text>
-        <rect x="34" y="118" width="80" height="20" rx="6" fill="#534AB7" />
-        <text x="74" y="132" textAnchor="middle" fontSize="10" fontWeight="600" fill="#FFFFFF" fontFamily="sans-serif">保存</text>
-      </svg>
-    ),
+    image: <img src="/help/bookshelf-memo.svg" width="280" height="160" alt="" />,
   },
 ]
 

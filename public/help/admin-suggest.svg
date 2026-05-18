@@ -1,0 +1,45 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" stroke-width="1.5"/>
+  <text x="24" y="32" font-size="11" font-weight="700" fill="#534AB7" font-family="sans-serif">サジェスト管理</text>
+  <rect x="20" y="38" width="240" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="32" y="53" font-size="9" fill="#C0C0D8" font-family="sans-serif">タイトル・著者・出版社で検索...</text>
+  <!-- card 0 -->
+  <g transform="translate(0,0)">
+    <rect x="20" y="66" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+    <text x="30" y="80" font-size="10" font-weight="600" fill="#1A1A2E" font-family="sans-serif">こころ</text>
+    <text x="30" y="92" font-size="8" fill="#6B6B8A" font-family="sans-serif">夏目漱石 · 小説 · 岩波書店</text>
+    <rect x="196" y="71" width="28" height="20" rx="4" fill="#EEEDFA" stroke="#534AB7" stroke-width="1"/>
+    <g transform="translate(210,81)">
+      <path d="M-5 3 L3 -5 L6 -2 L-2 6 Z" fill="#534AB7"/>
+      <path d="M-5 3 L-2 6 L-7 7 Z" fill="#534AB7"/>
+    </g>
+    <rect x="228" y="71" width="28" height="20" rx="4" fill="#FFF0F0" stroke="#EF4444" stroke-width="1"/>
+    <g transform="translate(242,81)" stroke="#EF4444" fill="none" stroke-width="1.4" stroke-linecap="round">
+      <line x1="-6" y1="-4" x2="6" y2="-4"/>
+      <path d="M-4,-3 L-3,6 L3,6 L4,-3"/>
+      <line x1="-1.5" y1="-1" x2="-2" y2="4"/>
+      <line x1="1.5" y1="-1" x2="2" y2="4"/>
+      <path d="M-2,-4 L-2,-6 L2,-6 L2,-4"/>
+    </g>
+  </g>
+  <!-- card 1 -->
+  <g transform="translate(0,38)">
+    <rect x="20" y="66" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+    <text x="30" y="80" font-size="10" font-weight="600" fill="#1A1A2E" font-family="sans-serif">坊っちゃん</text>
+    <text x="30" y="92" font-size="8" fill="#6B6B8A" font-family="sans-serif">夏目漱石 · 小説 · 岩波書店</text>
+    <rect x="196" y="71" width="28" height="20" rx="4" fill="#EEEDFA" stroke="#534AB7" stroke-width="1"/>
+    <g transform="translate(210,81)">
+      <path d="M-5 3 L3 -5 L6 -2 L-2 6 Z" fill="#534AB7"/>
+      <path d="M-5 3 L-2 6 L-7 7 Z" fill="#534AB7"/>
+    </g>
+    <rect x="228" y="71" width="28" height="20" rx="4" fill="#FFF0F0" stroke="#EF4444" stroke-width="1"/>
+    <g transform="translate(242,81)" stroke="#EF4444" fill="none" stroke-width="1.4" stroke-linecap="round">
+      <line x1="-6" y1="-4" x2="6" y2="-4"/>
+      <path d="M-4,-3 L-3,6 L3,6 L4,-3"/>
+      <line x1="-1.5" y1="-1" x2="-2" y2="4"/>
+      <line x1="1.5" y1="-1" x2="2" y2="4"/>
+      <path d="M-2,-4 L-2,-6 L2,-6 L2,-4"/>
+    </g>
+  </g>
+</svg>
