@@ -1,0 +1,18 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="12" y="12" width="256" height="136" rx="10" fill="#fff" stroke="#E2E1F0" stroke-width="1.5"/>
+  <text x="24" y="32" font-size="11" font-weight="700" fill="#534AB7" font-family="sans-serif">ユーザー管理</text>
+  <rect x="20" y="40" width="240" height="32" rx="6" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="30" y="60" font-size="10" fill="#1A1A2E" font-family="sans-serif">user@example.com</text>
+  <rect x="168" y="46" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="175" y="60" font-size="9" fill="#6B6B8A" font-family="sans-serif">一般 ▾</text>
+  <rect x="216" y="46" width="36" height="20" rx="4" fill="#FFF0F0" stroke="#E53E3E" stroke-width="1"/>
+  <text x="226" y="60" font-size="9" fill="#E53E3E" font-family="sans-serif">BAN</text>
+  <rect x="20" y="78" width="240" height="32" rx="6" fill="#FFF5F5" stroke="#FEB2B2" stroke-width="1"/>
+  <text x="30" y="98" font-size="10" fill="#C53030" font-family="sans-serif">banned@example.com</text>
+  <rect x="168" y="84" width="44" height="20" rx="4" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="175" y="98" font-size="9" fill="#6B6B8A" font-family="sans-serif">一般 ▾</text>
+  <rect x="216" y="84" width="36" height="20" rx="4" fill="#E53E3E"/>
+  <text x="221" y="98" font-size="9" fill="#fff" font-family="sans-serif">解除</text>
+  <text x="24" y="128" font-size="10" fill="#6B6B8A" font-family="sans-serif">2 アカウント</text>
+</svg>

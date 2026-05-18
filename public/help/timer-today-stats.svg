@@ -1,0 +1,11 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="20" y="24" width="112" height="112" rx="14" fill="#FFFFFF" stroke="#E2E1F0" stroke-width="1.5"/>
+  <text x="76" y="78" text-anchor="middle" font-size="36" font-weight="700" fill="#534AB7" font-family="sans-serif">3</text>
+  <text x="76" y="100" text-anchor="middle" font-size="10" fill="#6B6B8A" font-family="sans-serif">今日の</text>
+  <text x="76" y="114" text-anchor="middle" font-size="10" fill="#6B6B8A" font-family="sans-serif">セッション</text>
+  <rect x="148" y="24" width="112" height="112" rx="14" fill="#FFFFFF" stroke="#E2E1F0" stroke-width="1.5"/>
+  <text x="204" y="78" text-anchor="middle" font-size="36" font-weight="700" fill="#534AB7" font-family="sans-serif">75</text>
+  <text x="204" y="100" text-anchor="middle" font-size="10" fill="#6B6B8A" font-family="sans-serif">今日の集中</text>
+  <text x="204" y="114" text-anchor="middle" font-size="10" fill="#6B6B8A" font-family="sans-serif">（分）</text>
+</svg>

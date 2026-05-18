@@ -1,0 +1,20 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="12" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" stroke-width="1.5"/>
+  <path d="M44,38 L62,38 L62,62 L53,55 L44,62 Z" fill="none" stroke="#6B6B8A" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="53" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#6B6B8A" font-family="sans-serif">読みたい</text>
+  <text x="53" y="100" text-anchor="middle" font-size="9" fill="#A0A0B8" font-family="sans-serif">積読・予定</text>
+  <text x="53" y="114" text-anchor="middle" font-size="9" fill="#A0A0B8" font-family="sans-serif">タブ使用可</text>
+  <rect x="99" y="16" width="82" height="128" rx="10" fill="#EEEDfA" stroke="#534AB7" stroke-width="2"/>
+  <path d="M127,36 L140,41 L153,36 L153,60 L140,65 L127,60 Z" fill="none" stroke="#534AB7" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="140" y1="41" x2="140" y2="65" stroke="#534AB7" stroke-width="1"/>
+  <text x="140" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#534AB7" font-family="sans-serif">読書中</text>
+  <text x="140" y="100" text-anchor="middle" font-size="9" fill="#7C75D4" font-family="sans-serif">現在読んでいる</text>
+  <text x="140" y="114" text-anchor="middle" font-size="9" fill="#7C75D4" font-family="sans-serif">タイマー選択可</text>
+  <rect x="186" y="16" width="82" height="128" rx="10" fill="#FFFFFF" stroke="#E2E1F0" stroke-width="1.5"/>
+  <circle cx="227" cy="54" r="12" fill="none" stroke="#6B6B8A" stroke-width="1.5"/>
+  <path d="M221,54 L225,59 L234,48" fill="none" stroke="#6B6B8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="227" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#6B6B8A" font-family="sans-serif">読了</text>
+  <text x="227" y="100" text-anchor="middle" font-size="9" fill="#A0A0B8" font-family="sans-serif">読み終えた</text>
+  <text x="227" y="114" text-anchor="middle" font-size="9" fill="#A0A0B8" font-family="sans-serif">履歴に保存</text>
+</svg>

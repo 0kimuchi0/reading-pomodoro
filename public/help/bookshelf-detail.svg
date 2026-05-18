@@ -1,0 +1,18 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="20" y="20" width="240" height="120" rx="10" fill="#FFFFFF" stroke="#E2E1F0" stroke-width="1.5"/>
+  <text x="34" y="44" font-size="10" fill="#6B6B8A" font-family="sans-serif">出版社</text>
+  <rect x="34" y="48" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="44" y="63" font-size="10" fill="#1A1A2E" font-family="sans-serif">岩波書店</text>
+  <text x="136" y="44" font-size="10" fill="#6B6B8A" font-family="sans-serif">総ページ数</text>
+  <rect x="136" y="48" width="106" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="146" y="63" font-size="10" fill="#1A1A2E" font-family="sans-serif">320</text>
+  <text x="34" y="88" font-size="10" fill="#6B6B8A" font-family="sans-serif">ジャンル</text>
+  <rect x="34" y="92" width="90" height="22" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="44" y="107" font-size="10" fill="#1A1A2E" font-family="sans-serif">小説  ▾</text>
+  <text x="136" y="88" font-size="10" fill="#6B6B8A" font-family="sans-serif">ステータス</text>
+  <rect x="136" y="92" width="106" height="22" rx="5" fill="#EEEDfA" stroke="#534AB7" stroke-width="1"/>
+  <text x="146" y="107" font-size="10" fill="#534AB7" font-family="sans-serif">読みたい</text>
+  <rect x="34" y="122" width="120" height="10" rx="5" fill="#EEEDfA"/>
+  <text x="44" y="131" font-size="9" fill="#534AB7" font-family="sans-serif">▲ 詳細設定（折りたたむ）</text>
+</svg>

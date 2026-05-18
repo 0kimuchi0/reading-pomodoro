@@ -1,0 +1,14 @@
+<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" width="280" height="160">
+  <rect width="280" height="160" fill="#F7F7FB" rx="8"/>
+  <rect x="30" y="60" width="80" height="40" rx="10" fill="#534AB7"/>
+  <text x="70" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF" font-family="sans-serif">集中</text>
+  <text x="70" y="92" text-anchor="middle" font-size="10" fill="#C8C4F0" font-family="sans-serif">25:00</text>
+  <path d="M118 80 L145 80" stroke="#534AB7" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="143,75 152,80 143,85" fill="#534AB7"/>
+  <rect x="158" y="60" width="80" height="40" rx="10" fill="#EEEDfA" stroke="#534AB7" stroke-width="1.5"/>
+  <text x="198" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#534AB7" font-family="sans-serif">休憩</text>
+  <text x="198" y="92" text-anchor="middle" font-size="10" fill="#7C75D4" font-family="sans-serif">05:00</text>
+  <path d="M198 108 Q198 130 140 130 Q82 130 70 108" stroke="#C8C4F0" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="4 3"/>
+  <polygon points="70,101 65,109 75,109" fill="#C8C4F0"/>
+  <text x="140" y="148" text-anchor="middle" font-size="10" fill="#6B6B8A" font-family="sans-serif">自動切り替え</text>
+</svg>
