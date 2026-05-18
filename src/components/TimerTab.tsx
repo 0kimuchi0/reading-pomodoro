@@ -229,7 +229,6 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
   }, [running, phase])
 
   const handlePhaseEnd = useCallback(() => {
-    setRunning(false)
     if (phase === 'focus') {
       if (selectedBookId) {
         const book = books.find(b => b.id === selectedBookId)
