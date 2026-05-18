@@ -146,14 +146,17 @@ export default function AdminTab() {
 
   const load = async () => {
     setLoading(true)
-    const [p, b, s, a, sb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks()])
-    setProfiles(p)
-    setBooks(b)
-    setSessions(s)
-    setActions(a)
-    setSuggestBooks(sb)
-    setAdminBooksCache(sb)
-    setLoading(false)
+    try {
+      const [p, b, s, a, sb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks()])
+      setProfiles(p)
+      setBooks(b)
+      setSessions(s)
+      setActions(a)
+      setSuggestBooks(sb)
+      setAdminBooksCache(sb)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -517,27 +520,13 @@ export default function AdminTab() {
               (sb.catalogNumber ?? '').toLowerCase().includes(q) ||
               (sb.ndc ?? '').toLowerCase().includes(q)
             ) : suggestBooks
-            return <p className="admin-count">{filtered.length} / {suggestBooks.length} 件</p>
-          })()}
-          {suggestBooks.length === 0 ? (
-            <p className="admin-empty">サジェストはありません</p>
-          ) : (() => {
-            const q = suggestSearch.trim().toLowerCase()
-            const filtered = q ? suggestBooks.filter(sb =>
-              sb.title.toLowerCase().includes(q) ||
-              sb.author.toLowerCase().includes(q) ||
-              sb.publisher.toLowerCase().includes(q) ||
-              sb.genre.toLowerCase().includes(q) ||
-              (sb.isbn ?? '').toLowerCase().includes(q) ||
-              (sb.ccode ?? '').toLowerCase().includes(q) ||
-              (sb.catalogNumber ?? '').toLowerCase().includes(q) ||
-              (sb.ndc ?? '').toLowerCase().includes(q)
-            ) : suggestBooks
-            return filtered.length === 0 ? (
-              <p className="admin-empty">「{suggestSearch}」に一致するサジェストが見つかりません</p>
-            ) : (
-            <div className="admin-user-list">
-              {filtered.map(sb => editingId === sb.id ? (
+            if (suggestBooks.length === 0) return <p className="admin-empty">サジェストはありません</p>
+            if (filtered.length === 0) return <p className="admin-empty">「{suggestSearch}」に一致するサジェストが見つかりません</p>
+            return (
+              <>
+                <p className="admin-count">{filtered.length} / {suggestBooks.length} 件</p>
+                <div className="admin-user-list">
+                  {filtered.map(sb => editingId === sb.id ? (
                 <div key={sb.id} className="admin-user-card admin-suggest-edit-card">
                   <div className="admin-suggest-edit-fields">
                     <input className="admin-suggest-input" placeholder="タイトル *" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} />
@@ -581,7 +570,8 @@ export default function AdminTab() {
                   </div>
                 </div>
               ))}
-            </div>
+                </div>
+              </>
             )
           })()}
         </div>
