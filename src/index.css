@@ -1237,6 +1237,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .admin-tab { display: flex; flex-direction: column; gap: 16px; }
 .admin-header { display: flex; align-items: center; gap: 8px; }
 .admin-header h2 { font-size: 1.1rem; font-weight: 700; flex: 1; }
+.admin-header-actions { display: flex; align-items: center; gap: 6px; }
 .admin-refresh-btn { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 4px; border-radius: 6px; display: flex; }
 .admin-refresh-btn:hover { background: var(--color-border); color: var(--color-text); }
 .admin-nav { display: flex; gap: 6px; }
