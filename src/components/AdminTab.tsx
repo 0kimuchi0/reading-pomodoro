@@ -214,12 +214,12 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'stats' ? ' active' : ''}`} onClick={() => setActiveSection('stats')}>
           <IconChartBar size={16} /> 全体統計
         </button>
+        <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
+          <IconBookmark size={16} /> サジェスト
+        </button>
         <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => setActiveSection('history')}>
           <IconHistory size={16} /> 操作履歴
           {actions.length > 0 && <span className="admin-history-badge">{actions.length}</span>}
-        </button>
-        <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
-          <IconBookmark size={16} /> サジェスト
         </button>
       </div>
 
