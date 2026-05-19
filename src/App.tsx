@@ -146,7 +146,7 @@ function AppInner() {
             <line x1="21" y1="34" x2="27" y2="33.5" stroke="#534AB7" strokeWidth="1.2" opacity="0.25" strokeLinecap="round"/>
           </svg>
         </div>
-        <h1 className="app-splash-title">PomRead</h1>
+        <h1 className="app-splash-title">PomoRead</h1>
         <p className="app-splash-sub">読書ポモドーロタイマー</p>
       </div>
     )
@@ -155,7 +155,7 @@ function AppInner() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1 className="app-title">PomRead</h1>
+        <h1 className="app-title">PomoRead</h1>
         <SyncIndicator state={syncState} isLoggedIn={!!user} />
       </header>
 

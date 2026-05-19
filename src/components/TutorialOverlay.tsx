@@ -18,7 +18,7 @@ interface Step {
 const STEPS: Step[] = [
   {
     icon: <IconSparkles size={18} />,
-    title: 'PomRead へようこそ！',
+    title: 'PomoRead へようこそ！',
     desc: [
       '読書に特化したポモドーロタイマーアプリです。',
       '本棚・タイマー・統計の3つの機能で、読書習慣をサポートします。',
