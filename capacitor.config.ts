@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.readingpomodoro.app',
-  appName: 'Reading Pomodoro',
+  appName: 'PomoRead',
   webDir: 'dist',
   server: {
     url: 'https://pomread.vercel.app',
