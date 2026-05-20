@@ -1328,11 +1328,23 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .admin-feedback-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .admin-feedback-sender { font-size: 0.82rem; font-weight: 600; color: var(--color-accent); }
 .admin-feedback-content { font-size: 0.9rem; color: var(--color-text); white-space: pre-wrap; line-height: 1.5; }
-.admin-feedback-status { font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1.5px solid; cursor: pointer; align-self: flex-start; background: none; }
-.admin-feedback-status--pending { color: #888; border-color: #ccc; }
-.admin-feedback-status--in_progress { color: #d97706; border-color: #d97706; }
-.admin-feedback-status--done { color: #16a34a; border-color: #16a34a; }
-.admin-feedback-status--rejected { color: #dc2626; border-color: #dc2626; }
+.feedback-status-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+.feedback-status-btn { font-size: 0.78rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-muted); cursor: pointer; opacity: 0.5; transition: all 0.15s; }
+.feedback-status-btn:hover, .feedback-status-btn.active { opacity: 1; }
+.feedback-status-btn--pending.active, .feedback-status-btn--pending:hover   { border-color: #9ca3af; background: #f3f4f6; color: #374151; }
+.feedback-status-btn--in_progress.active, .feedback-status-btn--in_progress:hover { border-color: #d97706; background: #fffbeb; color: #92400e; }
+.feedback-status-btn--done.active, .feedback-status-btn--done:hover         { border-color: #10b981; background: #ecfdf5; color: #065f46; }
+.feedback-status-btn--rejected.active, .feedback-status-btn--rejected:hover { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+[data-theme="dark"] .feedback-status-btn--pending.active, [data-theme="dark"] .feedback-status-btn--pending:hover     { background: #1f2937; color: #d1d5db; }
+[data-theme="dark"] .feedback-status-btn--in_progress.active, [data-theme="dark"] .feedback-status-btn--in_progress:hover { background: #2d1f00; color: #fcd34d; }
+[data-theme="dark"] .feedback-status-btn--done.active, [data-theme="dark"] .feedback-status-btn--done:hover           { background: #022c22; color: #34d399; }
+[data-theme="dark"] .feedback-status-btn--rejected.active, [data-theme="dark"] .feedback-status-btn--rejected:hover   { background: #3b0000; color: #fca5a5; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .feedback-status-btn--pending.active, :root:not([data-theme="light"]) .feedback-status-btn--pending:hover     { background: #1f2937; color: #d1d5db; }
+  :root:not([data-theme="light"]) .feedback-status-btn--in_progress.active, :root:not([data-theme="light"]) .feedback-status-btn--in_progress:hover { background: #2d1f00; color: #fcd34d; }
+  :root:not([data-theme="light"]) .feedback-status-btn--done.active, :root:not([data-theme="light"]) .feedback-status-btn--done:hover           { background: #022c22; color: #34d399; }
+  :root:not([data-theme="light"]) .feedback-status-btn--rejected.active, :root:not([data-theme="light"]) .feedback-status-btn--rejected:hover   { background: #3b0000; color: #fca5a5; }
+}
 .admin-suggest-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 12px; }
 .admin-suggest-input { flex: 1; min-width: 120px; padding: 6px 10px; font-size: 0.85rem; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); }
 .admin-suggest-input:focus { outline: none; border-color: var(--accent); }
