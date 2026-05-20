@@ -1236,7 +1236,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .feedback-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.45);
-  display: flex; align-items: flex-end; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 16px;
 }
 .feedback-modal {
