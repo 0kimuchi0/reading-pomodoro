@@ -480,19 +480,28 @@ export default function AdminTab() {
         </div>
       ) : activeSection === 'feedback' ? (
         <div className="admin-section">
+          {(() => {
+            const unreadCount = Math.max(0, feedbackList.length - feedbackViewedCount)
+            const unreadItems = feedbackList.slice(0, unreadCount)
+            const getUnread = (val: FeedbackStatus | 'all') =>
+              val === 'all' ? unreadCount : unreadItems.filter(f => f.status === val).length
+            return (
           <div className="feedback-filter-row">
-            {([['all', 'すべて'], ['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus | 'all', string][]).map(([val, label]) => (
+            {([['all', 'すべて'], ['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus | 'all', string][]).map(([val, label]) => {
+              const unread = getUnread(val)
+              return (
               <button
                 key={val}
                 className={`feedback-filter-btn${feedbackFilter === val ? ' active' : ''}${val !== 'all' ? ` feedback-filter-btn--${val}` : ''}`}
                 onClick={() => setFeedbackFilter(val)}
               >
                 {label}
-                <span className="feedback-filter-count">
-                  {val === 'all' ? feedbackList.length : feedbackList.filter(f => f.status === val).length}
-                </span>
+                {unread > 0 && <span className="feedback-filter-count">{unread}</span>}
               </button>
-            ))}
+            )})}
+          </div>
+            )
+          })()}
           </div>
           {feedbackList.length === 0 ? (
             <p className="admin-empty">フィードバックはありません</p>
