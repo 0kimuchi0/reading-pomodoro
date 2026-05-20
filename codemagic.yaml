@@ -16,33 +16,35 @@ workflows:
         script: npm run build
       - name: Sync Capacitor
         script: npx cap sync ios
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files \
+            com.readingpomodoro.app \
+            --type IOS_APP_STORE \
+            --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
+            --create
+          keychain add-certificates
       - name: Build iOS
         script: |
-          AUTH_KEY_PATH="${APP_STORE_CONNECT_PRIVATE_KEY#@file:}"
-          echo "Auth key path: $AUTH_KEY_PATH"
-          echo "File exists: $(test -f "$AUTH_KEY_PATH" && echo YES || echo NO)"
-          echo "File size: $(wc -c < "$AUTH_KEY_PATH" 2>/dev/null || echo 'N/A')"
-          echo "First line: $(head -1 "$AUTH_KEY_PATH" 2>/dev/null || echo 'N/A')"
+          PROFILE=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
+          echo "Profile: $PROFILE"
+          PROFILE_UUID=$(security cms -D -i "$PROFILE" | plutil -extract UUID raw -)
+          echo "Profile UUID: $PROFILE_UUID"
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Release \
             -archivePath /tmp/App.xcarchive \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$AUTH_KEY_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
             archive
           xcodebuild \
             -exportArchive \
             -archivePath /tmp/App.xcarchive \
             -exportPath build/ios/ipa \
-            -exportOptionsPlist ios/ExportOptions.plist \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$AUTH_KEY_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
+            -exportOptionsPlist ios/ExportOptions.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
