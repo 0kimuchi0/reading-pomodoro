@@ -1,5 +1,5 @@
 import type { SuggestBookDB } from './types'
-import { getReading } from './lib/japanese'
+import { getReading, buildReadingIndex } from './lib/japanese'
 
 export interface SuggestBook {
   title: string
@@ -123,6 +123,7 @@ export function setAdminBooksCache(books: SuggestBookDB[]): void {
 export function addToAdminBooksCache(book: SuggestBook): void {
   if (isDuplicate(book.title, book.author, book.publisher)) return
   _adminBooks = [..._adminBooks, { ...book, id: crypto.randomUUID() }]
+  buildReadingIndex([book.title, book.author])
 }
 
 /** 表記揺れ正規化 */
