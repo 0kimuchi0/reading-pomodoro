@@ -32,6 +32,9 @@ workflows:
             --create
           keychain add-certificates
           xcode-project use-profiles
+      - name: Set build number
+        script: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "ios/App/App/Info.plist"
       - name: Build iOS
         script: |
           PROFILE=$(find ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles -name "*.mobileprovision" 2>/dev/null | head -1)
