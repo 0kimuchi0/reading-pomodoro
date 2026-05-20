@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { IconAlertTriangle } from '@tabler/icons-react'
 
 interface Props {
@@ -32,7 +33,7 @@ export default function ConfirmDialog({
 
   const canConfirm = !requireReason || reason.trim().length > 0
 
-  return (
+  return createPortal(
     <div className="confirm-overlay" onClick={onCancel}>
       <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
         <div className="confirm-icon">
@@ -63,6 +64,7 @@ export default function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

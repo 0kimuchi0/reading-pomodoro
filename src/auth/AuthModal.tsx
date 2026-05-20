@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { IconX, IconBrandGoogle, IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
 import { useAuth } from './AuthContext'
 
@@ -63,7 +64,7 @@ export default function AuthModal({ onClose }: Props) {
     await signInWithGoogle()
   }
 
-  return (
+  return createPortal(
     <div className="auth-overlay" onClick={onClose}>
       <div className="auth-modal" onClick={e => e.stopPropagation()}>
         {done ? (
@@ -171,7 +172,8 @@ export default function AuthModal({ onClose }: Props) {
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
