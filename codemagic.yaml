@@ -18,14 +18,7 @@ workflows:
         script: npx cap sync ios
       - name: Set up code signing
         script: |
-          keychain initialize
-          app-store-connect fetch-signing-files \
-            com.readingpomodoro.app \
-            --type IOS_APP_STORE \
-            --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
-            --create
-          keychain add-certificates
-          xcode-project use-profiles
+          printf '%b' "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/AuthKey.p8
       - name: Build iOS
         script: |
           xcodebuild \
@@ -33,12 +26,20 @@ workflows:
             -scheme App \
             -configuration Release \
             -archivePath /tmp/App.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             archive
           xcodebuild \
             -exportArchive \
             -archivePath /tmp/App.xcarchive \
             -exportPath build/ios/ipa \
-            -exportOptionsPlist ios/ExportOptions.plist
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
