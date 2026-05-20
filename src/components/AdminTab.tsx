@@ -193,7 +193,7 @@ export default function AdminTab() {
     const newTitle = suggestForm.title.trim()
     await addSuggestBook({
       title: newTitle,
-      author: suggestForm.author.trim(),
+      author: formatAuthor(suggestForm.author.trim()),
       genre: suggestForm.genre,
       publisher: suggestForm.publisher.trim(),
       totalPages: Number(suggestForm.totalPages) || 0,
@@ -236,7 +236,7 @@ export default function AdminTab() {
     await updateSuggestBook({
       id,
       title: newTitle,
-      author: editForm.author.trim(),
+      author: formatAuthor(editForm.author.trim()),
       genre: editForm.genre,
       publisher: editForm.publisher.trim(),
       totalPages: Number(editForm.totalPages) || 0,

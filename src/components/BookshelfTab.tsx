@@ -239,6 +239,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
       id: crypto.randomUUID(),
       title: quickTitle.trim(),
       ...details,
+      author: formatAuthor(details.author.trim()),
       currentPage: 0,
       sessions: 0,
       createdAt: new Date().toISOString(),
@@ -289,7 +290,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     const errs = validateBookFields(editForm)
     setEditErrors(errs)
     if (hasErrors(errs)) return
-    onUpdate({ ...book, ...editForm, title: editForm.title.trim(), author: editForm.author.trim(), publisher: editForm.publisher.trim() })
+    onUpdate({ ...book, ...editForm, title: editForm.title.trim(), author: formatAuthor(editForm.author.trim()), publisher: editForm.publisher.trim() })
     setEditingBookId(null)
     setEditErrors({})
   }
