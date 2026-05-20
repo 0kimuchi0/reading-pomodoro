@@ -75,6 +75,7 @@ export default function AdminTab() {
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
   const [viewedCount, setViewedCount] = useState(0)
+  const [feedbackViewedCount, setFeedbackViewedCount] = useState(0)
 
   const load = useCallback(async () => {
     if (loadingRef.current) return
@@ -91,6 +92,7 @@ export default function AdminTab() {
       setAdminBooksCache(sb)
       setFeedbackList(fb)
       setViewedCount(prev => Math.min(prev, a.length))
+      setFeedbackViewedCount(prev => Math.min(prev, fb.length))
     } catch {
       setLoadError(true)
     } finally {
@@ -357,9 +359,9 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => setActiveSection('feedback')}>
+        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => { setActiveSection('feedback'); setFeedbackViewedCount(feedbackList.length) }}>
           <IconMessage size={16} /> フィードバック
-          {feedbackList.length > 0 && <span className="admin-history-badge">{feedbackList.length}</span>}
+          {feedbackList.length > feedbackViewedCount && <span className="admin-history-badge">{feedbackList.length - feedbackViewedCount}</span>}
         </button>
         <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
           <IconHistory size={16} /> 操作履歴
