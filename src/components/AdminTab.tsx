@@ -72,6 +72,7 @@ export default function AdminTab() {
   const [suggestAddErrors, setSuggestAddErrors] = useState<FieldErrors>({})
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
+  const [historyViewed, setHistoryViewed] = useState(false)
 
   const load = useCallback(async () => {
     if (loadingRef.current) return
@@ -86,6 +87,7 @@ export default function AdminTab() {
       setActions(a)
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
+      setHistoryViewed(false)
     } catch {
       setLoadError(true)
     } finally {
@@ -352,9 +354,9 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => setActiveSection('history')}>
+        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setHistoryViewed(true) }}>
           <IconHistory size={16} /> 操作履歴
-          {actions.length > 0 && <span className="admin-history-badge">{actions.length}</span>}
+          {!historyViewed && actions.length > 0 && <span className="admin-history-badge">{actions.length}</span>}
         </button>
       </div>
 
