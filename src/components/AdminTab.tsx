@@ -485,20 +485,19 @@ export default function AdminTab() {
                         <span className="admin-action-date">{formatDate(f.createdAt)}</span>
                       </div>
                       <p className="admin-feedback-content">{f.content}</p>
-                      <select
-                        className={`admin-feedback-status admin-feedback-status--${f.status}`}
-                        value={f.status}
-                        onChange={async e => {
-                          const newStatus = e.target.value as FeedbackStatus
-                          await updateFeedbackStatus(f.id, newStatus)
-                          setFeedbackList(prev => prev.map(x => x.id === f.id ? { ...x, status: newStatus } : x))
-                        }}
-                      >
-                        <option value="pending">未着手</option>
-                        <option value="in_progress">対応中</option>
-                        <option value="done">完了</option>
-                        <option value="rejected">却下</option>
-                      </select>
+                      <div className="feedback-status-picker">
+                        {([['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus, string][]).map(([val, label]) => (
+                          <button
+                            key={val}
+                            className={`feedback-status-btn feedback-status-btn--${val}${f.status === val ? ' active' : ''}`}
+                            onClick={async () => {
+                              if (f.status === val) return
+                              await updateFeedbackStatus(f.id, val)
+                              setFeedbackList(prev => prev.map(x => x.id === f.id ? { ...x, status: val } : x))
+                            }}
+                          >{label}</button>
+                        ))}
+                      </div>
                     </div>
                   )
                 })}
