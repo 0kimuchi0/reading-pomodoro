@@ -74,8 +74,8 @@ export default function AdminTab() {
   const [suggestAddErrors, setSuggestAddErrors] = useState<FieldErrors>({})
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
-  const [viewedCount, setViewedCount] = useState(0)
-  const [feedbackViewedCount, setFeedbackViewedCount] = useState(0)
+  const [viewedCount, setViewedCount] = useState(() => Number(localStorage.getItem('admin_history_viewed') ?? 0))
+  const [feedbackViewedCount, setFeedbackViewedCount] = useState(() => Number(localStorage.getItem('admin_feedback_viewed') ?? 0))
 
   const load = useCallback(async () => {
     if (loadingRef.current) return
@@ -91,8 +91,8 @@ export default function AdminTab() {
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
       setFeedbackList(fb)
-      setViewedCount(prev => Math.min(prev, a.length))
-      setFeedbackViewedCount(prev => Math.min(prev, fb.length))
+      setViewedCount(prev => { const v = Math.min(prev, a.length); localStorage.setItem('admin_history_viewed', String(v)); return v })
+      setFeedbackViewedCount(prev => { const v = Math.min(prev, fb.length); localStorage.setItem('admin_feedback_viewed', String(v)); return v })
     } catch {
       setLoadError(true)
     } finally {
@@ -359,11 +359,11 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => { setActiveSection('feedback'); setFeedbackViewedCount(feedbackList.length) }}>
+        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => { setActiveSection('feedback'); setFeedbackViewedCount(feedbackList.length); localStorage.setItem('admin_feedback_viewed', String(feedbackList.length)) }}>
           <IconMessage size={16} /> フィードバック
           {feedbackList.length > feedbackViewedCount && <span className="admin-history-badge">{feedbackList.length - feedbackViewedCount}</span>}
         </button>
-        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
+        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length); localStorage.setItem('admin_history_viewed', String(actions.length)) }}>
           <IconHistory size={16} /> 操作履歴
           {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
