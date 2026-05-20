@@ -16,26 +16,31 @@
   <rect x="166" y="42" width="28" height="13" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
   <text x="180" y="52" text-anchor="middle" font-size="7" fill="#991B1B" font-family="sans-serif">却下</text>
 
-  <!-- フィードバックカード1 -->
-  <rect x="20" y="62" width="240" height="40" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
-  <text x="28" y="74" font-size="8" font-weight="700" fill="#534AB7" font-family="sans-serif">user@example.com</text>
-  <text x="252" y="74" text-anchor="end" font-size="7" fill="#9CA3AF" font-family="sans-serif">05/20 19:00</text>
-  <text x="28" y="85" font-size="8" fill="#374151" font-family="sans-serif">本の検索機能がとても使いやすいです</text>
-  <!-- ステータスボタン -->
-  <rect x="28" y="90" width="30" height="9" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="0.8"/>
-  <text x="43" y="97" text-anchor="middle" font-size="6" fill="#6B7280" font-family="sans-serif">未着手</text>
-  <rect x="62" y="90" width="30" height="9" rx="4" fill="#FFFBEB" stroke="#D97706" stroke-width="0.8"/>
-  <text x="77" y="97" text-anchor="middle" font-size="6" fill="#92400E" font-family="sans-serif">対応中</text>
-  <rect x="96" y="90" width="24" height="9" rx="4" fill="#ECFDF5" stroke="#10B981" stroke-width="1.2"/>
-  <text x="108" y="97" text-anchor="middle" font-size="6" font-weight="700" fill="#065F46" font-family="sans-serif">完了</text>
-  <rect x="124" y="90" width="24" height="9" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="0.8"/>
-  <text x="136" y="97" text-anchor="middle" font-size="6" fill="#991B1B" font-family="sans-serif">却下</text>
+  <!-- フィードバックカード1 (y=60〜101) -->
+  <rect x="20" y="60" width="240" height="41" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="28" y="72" font-size="8" font-weight="700" fill="#534AB7" font-family="sans-serif">user@example.com</text>
+  <text x="252" y="72" text-anchor="end" font-size="7" fill="#9CA3AF" font-family="sans-serif">05/20 19:00</text>
+  <text x="28" y="83" font-size="8" fill="#374151" font-family="sans-serif">本の検索機能がとても使いやすいです</text>
+  <rect x="28" y="88" width="30" height="10" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="0.8"/>
+  <text x="43" y="96" text-anchor="middle" font-size="6" fill="#6B7280" font-family="sans-serif">未着手</text>
+  <rect x="62" y="88" width="30" height="10" rx="4" fill="#FFFBEB" stroke="#D97706" stroke-width="0.8"/>
+  <text x="77" y="96" text-anchor="middle" font-size="6" fill="#92400E" font-family="sans-serif">対応中</text>
+  <rect x="96" y="88" width="26" height="10" rx="4" fill="#ECFDF5" stroke="#10B981" stroke-width="1.2"/>
+  <text x="109" y="96" text-anchor="middle" font-size="6" font-weight="700" fill="#065F46" font-family="sans-serif">完了</text>
+  <rect x="126" y="88" width="26" height="10" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="0.8"/>
+  <text x="139" y="96" text-anchor="middle" font-size="6" fill="#991B1B" font-family="sans-serif">却下</text>
 
-  <!-- フィードバックカード2 -->
-  <rect x="20" y="108" width="240" height="33" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
-  <text x="28" y="120" font-size="8" font-weight="700" fill="#9CA3AF" font-family="sans-serif">匿名</text>
-  <text x="252" y="120" text-anchor="end" font-size="7" fill="#9CA3AF" font-family="sans-serif">05/20 18:30</text>
-  <text x="28" y="131" font-size="8" fill="#374151" font-family="sans-serif">ダークモードに対応してほしいです</text>
-  <rect x="28" y="135" width="30" height="9" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.2"/>
-  <text x="43" y="142" text-anchor="middle" font-size="6" font-weight="700" fill="#374151" font-family="sans-serif">未着手</text>
+  <!-- フィードバックカード2 (y=105〜144) -->
+  <rect x="20" y="105" width="240" height="39" rx="5" fill="#F7F7FB" stroke="#E2E1F0" stroke-width="1"/>
+  <text x="28" y="117" font-size="8" font-weight="700" fill="#9CA3AF" font-family="sans-serif">匿名</text>
+  <text x="252" y="117" text-anchor="end" font-size="7" fill="#9CA3AF" font-family="sans-serif">05/20 18:30</text>
+  <text x="28" y="128" font-size="8" fill="#374151" font-family="sans-serif">ダークモードに対応してほしいです</text>
+  <rect x="28" y="132" width="30" height="10" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.2"/>
+  <text x="43" y="140" text-anchor="middle" font-size="6" font-weight="700" fill="#374151" font-family="sans-serif">未着手</text>
+  <rect x="62" y="132" width="30" height="10" rx="4" fill="#FFFBEB" stroke="#D97706" stroke-width="0.8"/>
+  <text x="77" y="140" text-anchor="middle" font-size="6" fill="#92400E" font-family="sans-serif">対応中</text>
+  <rect x="96" y="132" width="26" height="10" rx="4" fill="#ECFDF5" stroke="#10B981" stroke-width="0.8"/>
+  <text x="109" y="140" text-anchor="middle" font-size="6" fill="#065F46" font-family="sans-serif">完了</text>
+  <rect x="126" y="132" width="26" height="10" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="0.8"/>
+  <text x="139" y="140" text-anchor="middle" font-size="6" fill="#991B1B" font-family="sans-serif">却下</text>
 </svg>
