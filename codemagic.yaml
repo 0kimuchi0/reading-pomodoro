@@ -22,7 +22,7 @@ workflows:
             --bundle-id com.readingpomodoro.app \
             --create
           keychain add-certificates
-          xcode-project use-profiles
+          xcode-project use-profiles --xcode-project ios/App/App.xcodeproj
       - name: Build iOS
         script: |
           xcode-project build-ipa \
