@@ -31,20 +31,18 @@ workflows:
             --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
             --create
           keychain add-certificates
+          xcode-project use-profiles
       - name: Build iOS
         script: |
-          PROFILE=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
-          echo "Profile: $PROFILE"
-          PROFILE_UUID=$(security cms -D -i "$PROFILE" | plutil -extract UUID raw -)
-          echo "Profile UUID: $PROFILE_UUID"
+          echo "=== Provisioning profiles ==="
+          find ~ -name "*.mobileprovision" 2>/dev/null
+          echo "============================="
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Release \
             -archivePath /tmp/App.xcarchive \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            PROVISIONING_PROFILE="$PROFILE_UUID" \
             archive
           xcodebuild \
             -exportArchive \
