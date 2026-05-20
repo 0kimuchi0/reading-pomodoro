@@ -16,21 +16,16 @@ workflows:
         script: npm run build
       - name: Sync Capacitor
         script: npx cap sync ios
-      - name: Set up code signing
-        script: |
-          echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 --decode > /tmp/AuthKey.p8 2>/dev/null \
-            || printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/AuthKey.p8
-          echo "Key file size: $(wc -c < /tmp/AuthKey.p8) bytes"
-          head -1 /tmp/AuthKey.p8
       - name: Build iOS
         script: |
+          AUTH_KEY_PATH="${APP_STORE_CONNECT_PRIVATE_KEY#@file:}"
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Release \
             -archivePath /tmp/App.xcarchive \
             -allowProvisioningUpdates \
-            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyPath "$AUTH_KEY_PATH" \
             -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             archive
@@ -40,7 +35,7 @@ workflows:
             -exportPath build/ios/ipa \
             -exportOptionsPlist ios/ExportOptions.plist \
             -allowProvisioningUpdates \
-            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyPath "$AUTH_KEY_PATH" \
             -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
     artifacts:
