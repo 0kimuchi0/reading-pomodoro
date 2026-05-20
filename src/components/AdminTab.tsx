@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark } from '@tabler/icons-react'
-import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
+import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark, IconMessage } from '@tabler/icons-react'
+import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook, getFeedbackList } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import { formatAuthor } from '../lib/format'
 import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
-import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
+import type { Profile, UserRole, Book, Session, SuggestBookDB, Feedback } from '../types'
 import type { AdminAction } from '../types'
 import { useAuth } from '../auth/AuthContext'
 import ConfirmDialog from './ConfirmDialog'
@@ -59,7 +59,8 @@ export default function AdminTab() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const loadingRef = useRef(false)
-  const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests'>('users')
+  const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests' | 'feedback'>('users')
+  const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
   const [showHelp, setShowHelp] = useState(false)
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
@@ -80,13 +81,14 @@ export default function AdminTab() {
     setLoading(true)
     setLoadError(false)
     try {
-      const [p, b, s, a, sb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks()])
+      const [p, b, s, a, sb, fb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks(), getFeedbackList()])
       setProfiles(p)
       setBooks(b)
       setSessions(s)
       setActions(a)
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
+      setFeedbackList(fb)
       setViewedCount(prev => Math.min(prev, a.length))
     } catch {
       setLoadError(true)
@@ -358,6 +360,10 @@ export default function AdminTab() {
           <IconHistory size={16} /> 操作履歴
           {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
+        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => setActiveSection('feedback')}>
+          <IconMessage size={16} /> フィードバック
+          {feedbackList.length > 0 && <span className="admin-history-badge">{feedbackList.length}</span>}
+        </button>
       </div>
 
       {loading ? (
@@ -461,6 +467,30 @@ export default function AdminTab() {
               </>
             )
           })()}
+        </div>
+      ) : activeSection === 'feedback' ? (
+        <div className="admin-section">
+          {feedbackList.length === 0 ? (
+            <p className="admin-empty">フィードバックはありません</p>
+          ) : (
+            <>
+              <p className="admin-count">{feedbackList.length} 件</p>
+              <div className="admin-action-list">
+                {feedbackList.map(f => {
+                  const sender = f.userId ? profiles.find(p => p.id === f.userId)?.email ?? f.userId : '匿名'
+                  return (
+                    <div key={f.id} className="admin-feedback-card">
+                      <div className="admin-feedback-meta">
+                        <span className="admin-feedback-sender">{sender}</span>
+                        <span className="admin-action-date">{formatDate(f.createdAt)}</span>
+                      </div>
+                      <p className="admin-feedback-content">{f.content}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <div className="admin-section">
