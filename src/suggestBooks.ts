@@ -118,6 +118,7 @@ let _adminBooks: SuggestBookDB[] = []
 
 export function setAdminBooksCache(books: SuggestBookDB[]): void {
   _adminBooks = books
+  buildReadingIndex(books.flatMap(b => [b.title, b.author]))
 }
 
 export function addToAdminBooksCache(book: SuggestBook): void {
