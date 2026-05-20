@@ -502,7 +502,6 @@ export default function AdminTab() {
           </div>
             )
           })()}
-          </div>
           {feedbackList.length === 0 ? (
             <p className="admin-empty">フィードバックはありません</p>
           ) : (() => {
