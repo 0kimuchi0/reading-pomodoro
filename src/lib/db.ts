@@ -322,7 +322,7 @@ export async function getFeedbackList(): Promise<Feedback[]> {
     .from('feedback')
     .select('*')
     .order('created_at', { ascending: false })
-  if (error) throw error
+  if (error) return []
   return (data ?? []).map(r => ({
     id: r.id as string,
     userId: r.user_id as string | null,
