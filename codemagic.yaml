@@ -19,6 +19,10 @@ workflows:
       - name: Build iOS
         script: |
           AUTH_KEY_PATH="${APP_STORE_CONNECT_PRIVATE_KEY#@file:}"
+          echo "Auth key path: $AUTH_KEY_PATH"
+          echo "File exists: $(test -f "$AUTH_KEY_PATH" && echo YES || echo NO)"
+          echo "File size: $(wc -c < "$AUTH_KEY_PATH" 2>/dev/null || echo 'N/A')"
+          echo "First line: $(head -1 "$AUTH_KEY_PATH" 2>/dev/null || echo 'N/A')"
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
