@@ -72,7 +72,7 @@ export default function AdminTab() {
   const [suggestAddErrors, setSuggestAddErrors] = useState<FieldErrors>({})
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
-  const [historyViewed, setHistoryViewed] = useState(false)
+  const [viewedCount, setViewedCount] = useState(0)
 
   const load = useCallback(async () => {
     if (loadingRef.current) return
@@ -87,7 +87,7 @@ export default function AdminTab() {
       setActions(a)
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
-      setHistoryViewed(false)
+      setViewedCount(prev => Math.min(prev, a.length))
     } catch {
       setLoadError(true)
     } finally {
@@ -354,9 +354,9 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setHistoryViewed(true) }}>
+        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
           <IconHistory size={16} /> 操作履歴
-          {!historyViewed && actions.length > 0 && <span className="admin-history-badge">{actions.length}</span>}
+          {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
       </div>
 
@@ -429,27 +429,38 @@ export default function AdminTab() {
         <div className="admin-section">
           {actions.length === 0 ? (
             <p className="admin-empty">操作履歴はありません</p>
-          ) : (
-            <div className="admin-action-list">
-              {actions.map(a => (
-                <div key={a.id} className="admin-action-card">
-                  <div className="admin-action-info">
-                    <span className="admin-action-desc">{actionLabel(a)}</span>
-                    {a.actionType !== 'suggest_add' && <span className="admin-action-reason">理由: {a.reason}</span>}
-                    <span className="admin-action-date">{formatDate(a.createdAt)}</span>
-                  </div>
-                  <button
-                    className="admin-revert-btn"
-                    onClick={() => handleRevert(a)}
-                    title="この変更を巻き戻す"
-                  >
-                    <IconArrowBackUp size={15} />
-                    巻き戻し
-                  </button>
+          ) : (() => {
+            const unread = actions.slice(0, actions.length - viewedCount)
+            const read = actions.slice(actions.length - viewedCount)
+            const renderCard = (a: AdminAction) => (
+              <div key={a.id} className="admin-action-card">
+                <div className="admin-action-info">
+                  <span className="admin-action-desc">{actionLabel(a)}</span>
+                  {a.actionType !== 'suggest_add' && <span className="admin-action-reason">理由: {a.reason}</span>}
+                  <span className="admin-action-date">{formatDate(a.createdAt)}</span>
                 </div>
-              ))}
-            </div>
-          )}
+                <button className="admin-revert-btn" onClick={() => handleRevert(a)} title="この変更を巻き戻す">
+                  <IconArrowBackUp size={15} />巻き戻し
+                </button>
+              </div>
+            )
+            return (
+              <>
+                {unread.length > 0 && (
+                  <>
+                    <p className="admin-history-section-label unread">未確認 {unread.length}件</p>
+                    <div className="admin-action-list">{unread.map(renderCard)}</div>
+                  </>
+                )}
+                {read.length > 0 && (
+                  <>
+                    <p className="admin-history-section-label">{unread.length > 0 ? '確認済み' : `全 ${read.length}件`}</p>
+                    <div className="admin-action-list">{read.map(renderCard)}</div>
+                  </>
+                )}
+              </>
+            )
+          })()}
         </div>
       ) : (
         <div className="admin-section">
