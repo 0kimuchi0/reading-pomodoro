@@ -190,35 +190,43 @@ export default function AdminTab() {
     setSuggestAddErrors(errs)
     if (hasErrors(errs)) return
     setSuggestAdding(true)
-    const newTitle = suggestForm.title.trim()
-    await addSuggestBook({
-      title: newTitle,
-      author: formatAuthor(suggestForm.author.trim()),
-      genre: suggestForm.genre,
-      publisher: suggestForm.publisher.trim(),
-      totalPages: Number(suggestForm.totalPages) || 0,
-      isbn: suggestForm.isbn.trim() || undefined,
-      ccode: suggestForm.ccode.trim() || undefined,
-      catalogNumber: suggestForm.catalogNumber.trim() || undefined,
-      ndc: suggestForm.ndc.trim() || undefined,
-    })
-    await logAdminAction(user?.id ?? '', 'suggest_add', '', newTitle, '')
-    const sb = await getSuggestBooks()
-    setSuggestBooks(sb)
-    setAdminBooksCache(sb)
-    setActions(prev => [{
-      id: crypto.randomUUID(),
-      adminId: user?.id ?? '',
-      targetUserId: user?.id ?? '',
-      actionType: 'suggest_add',
-      previousValue: '',
-      newValue: newTitle,
-      reason: '',
-      createdAt: new Date().toISOString(),
-    }, ...prev])
-    setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
-    setSuggestAddErrors({})
-    setSuggestAdding(false)
+    try {
+      const newTitle = suggestForm.title.trim()
+      await addSuggestBook({
+        title: newTitle,
+        author: formatAuthor(suggestForm.author.trim()),
+        genre: suggestForm.genre,
+        publisher: suggestForm.publisher.trim(),
+        totalPages: Number(suggestForm.totalPages) || 0,
+        isbn: suggestForm.isbn.trim() || undefined,
+        ccode: suggestForm.ccode.trim() || undefined,
+        catalogNumber: suggestForm.catalogNumber.trim() || undefined,
+        ndc: suggestForm.ndc.trim() || undefined,
+      })
+      if (user?.id) {
+        await logAdminAction(user.id, 'suggest_add', '', newTitle, '')
+      }
+      const sb = await getSuggestBooks()
+      setSuggestBooks(sb)
+      setAdminBooksCache(sb)
+      setActions(prev => [{
+        id: crypto.randomUUID(),
+        adminId: user?.id ?? '',
+        targetUserId: user?.id ?? '',
+        actionType: 'suggest_add',
+        previousValue: '',
+        newValue: newTitle,
+        reason: '',
+        createdAt: new Date().toISOString(),
+      }, ...prev])
+      setSuggestForm({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
+      setSuggestAddErrors({})
+    } catch (e) {
+      console.error('サジェスト追加エラー:', e)
+      alert(`追加に失敗しました: ${e instanceof Error ? e.message : String(e)}`)
+    } finally {
+      setSuggestAdding(false)
+    }
   }
 
   const handleEditStart = (sb: SuggestBookDB) => {

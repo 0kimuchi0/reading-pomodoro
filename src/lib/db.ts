@@ -272,7 +272,7 @@ export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<v
     .eq('publisher', book.publisher)
     .maybeSingle()
   if (existing) return
-  await supabase.from('suggest_books').insert({
+  const { error } = await supabase.from('suggest_books').insert({
     title: book.title,
     author: book.author,
     genre: book.genre,
@@ -283,10 +283,11 @@ export async function addSuggestBook(book: Omit<SuggestBookDB, 'id'>): Promise<v
     catalog_number: book.catalogNumber || null,
     ndc: book.ndc || null,
   })
+  if (error) throw new Error(error.message)
 }
 
 export async function updateSuggestBook(book: SuggestBookDB): Promise<void> {
-  await supabase.from('suggest_books').update({
+  const { error } = await supabase.from('suggest_books').update({
     title: book.title,
     author: book.author,
     genre: book.genre,
@@ -297,6 +298,7 @@ export async function updateSuggestBook(book: SuggestBookDB): Promise<void> {
     catalog_number: book.catalogNumber || null,
     ndc: book.ndc || null,
   }).eq('id', book.id)
+  if (error) throw new Error(error.message)
 }
 
 export async function deleteSuggestBook(id: string): Promise<void> {
