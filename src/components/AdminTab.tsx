@@ -364,10 +364,6 @@ export default function AdminTab() {
           <IconHistory size={16} /> 操作履歴
           {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
-        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => setActiveSection('feedback')}>
-          <IconMessage size={16} /> フィードバック
-          {feedbackList.length > 0 && <span className="admin-history-badge">{feedbackList.length}</span>}
-        </button>
       </div>
 
       {loading ? (
