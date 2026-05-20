@@ -1,4 +1,4 @@
-import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType, SuggestBookDB } from '../types'
+import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType, SuggestBookDB, Feedback } from '../types'
 import { getBooks as lsGetBooks, saveBooks as lsSaveBooks, getSessions as lsGetSessions, saveSessions as lsSaveSessions } from '../storage'
 import { supabase } from './supabase'
 
@@ -305,6 +305,30 @@ export async function updateSuggestBook(book: SuggestBookDB): Promise<void> {
 
 export async function deleteSuggestBook(id: string): Promise<void> {
   await supabase.from('suggest_books').delete().eq('id', id)
+}
+
+// ---- feedback ----
+
+export async function submitFeedback(content: string, userId: string | null): Promise<void> {
+  const { error } = await supabase.from('feedback').insert({
+    user_id: userId ?? null,
+    content,
+  })
+  if (error) throw error
+}
+
+export async function getFeedbackList(): Promise<Feedback[]> {
+  const { data, error } = await supabase
+    .from('feedback')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []).map(r => ({
+    id: r.id as string,
+    userId: r.user_id as string | null,
+    content: r.content as string,
+    createdAt: r.created_at as string,
+  }))
 }
 
 // ---- migration ----

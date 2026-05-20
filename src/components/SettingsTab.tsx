@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend } from '@tabler/icons-react'
 import type { User } from '@supabase/supabase-js'
 import type { Theme } from '../App'
 import { useAuth } from '../auth/AuthContext'
+import { submitFeedback } from '../lib/db'
 
 interface Props {
   theme: Theme
@@ -22,13 +24,30 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
   const { signOut } = useAuth()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [feedbackText, setFeedbackText] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
 
-  const handleSendFeedback = () => {
-    const subject = encodeURIComponent('PomoRead フィードバック')
-    const body = encodeURIComponent(feedbackText)
-    window.open(`mailto:koyama.daiki.190710@outlook.jp?subject=${subject}&body=${body}`)
-    setFeedbackText('')
-    setFeedbackOpen(false)
+  useEffect(() => {
+    if (!feedbackOpen) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setFeedbackOpen(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [feedbackOpen])
+
+  const handleSendFeedback = async () => {
+    if (!feedbackText.trim()) return
+    setSending(true)
+    try {
+      await submitFeedback(feedbackText.trim(), user?.id ?? null)
+      setSent(true)
+      setFeedbackText('')
+      setTimeout(() => {
+        setSent(false)
+        setFeedbackOpen(false)
+      }, 1500)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -84,7 +103,7 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
         </button>
       </section>
 
-      {feedbackOpen && (
+      {feedbackOpen && createPortal(
         <div className="feedback-overlay" onClick={() => setFeedbackOpen(false)}>
           <div className="feedback-modal" onClick={e => e.stopPropagation()}>
             <div className="feedback-modal-header">
@@ -93,28 +112,36 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
                 <IconX size={18} />
               </button>
             </div>
-            <p className="feedback-modal-desc">ご意見・ご要望・不具合などをお知らせください</p>
-            <textarea
-              className="feedback-textarea"
-              placeholder="フィードバックを入力してください..."
-              value={feedbackText}
-              onChange={e => setFeedbackText(e.target.value)}
-              rows={6}
-              autoFocus
-            />
-            <div className="feedback-actions">
-              <button className="btn-ghost" onClick={() => setFeedbackOpen(false)}>キャンセル</button>
-              <button
-                className="btn-primary feedback-send"
-                onClick={handleSendFeedback}
-                disabled={!feedbackText.trim()}
-              >
-                <IconSend size={16} />
-                メールで送信
-              </button>
-            </div>
+            {sent ? (
+              <p className="feedback-sent-msg">送信しました！ありがとうございます</p>
+            ) : (
+              <>
+                <p className="feedback-modal-desc">ご意見・ご要望・不具合などをお知らせください</p>
+                <textarea
+                  className="feedback-textarea"
+                  placeholder="フィードバックを入力してください..."
+                  value={feedbackText}
+                  onChange={e => setFeedbackText(e.target.value)}
+                  rows={6}
+                  autoFocus
+                  disabled={sending}
+                />
+                <div className="feedback-actions">
+                  <button className="btn-ghost" onClick={() => setFeedbackOpen(false)} disabled={sending}>キャンセル</button>
+                  <button
+                    className="btn-primary feedback-send"
+                    onClick={handleSendFeedback}
+                    disabled={!feedbackText.trim() || sending}
+                  >
+                    <IconSend size={16} />
+                    {sending ? '送信中...' : '送信'}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
