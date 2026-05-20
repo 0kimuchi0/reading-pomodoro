@@ -1,7 +1,10 @@
-import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin } from '@tabler/icons-react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend } from '@tabler/icons-react'
 import type { User } from '@supabase/supabase-js'
 import type { Theme } from '../App'
 import { useAuth } from '../auth/AuthContext'
+import { submitFeedback } from '../lib/db'
 
 interface Props {
   theme: Theme
@@ -19,6 +22,33 @@ const THEMES: { value: Theme; label: string; icon: React.ReactNode; desc: string
 
 export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: Props) {
   const { signOut } = useAuth()
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [feedbackText, setFeedbackText] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  useEffect(() => {
+    if (!feedbackOpen) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setFeedbackOpen(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [feedbackOpen])
+
+  const handleSendFeedback = async () => {
+    if (!feedbackText.trim()) return
+    setSending(true)
+    try {
+      await submitFeedback(feedbackText.trim(), user?.id ?? null)
+      setSent(true)
+      setFeedbackText('')
+      setTimeout(() => {
+        setSent(false)
+        setFeedbackOpen(false)
+      }, 1500)
+    } finally {
+      setSending(false)
+    }
+  }
 
   return (
     <div className="settings-tab">
@@ -63,6 +93,56 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
           ))}
         </div>
       </section>
+
+      <section className="settings-section">
+        <h2 className="settings-section-title">フィードバック</h2>
+        <p className="account-desc">ご意見・ご要望・不具合報告をお送りください</p>
+        <button className="btn-ghost feedback-btn" onClick={() => setFeedbackOpen(true)}>
+          <IconMessage size={16} />
+          フィードバックを送る
+        </button>
+      </section>
+
+      {feedbackOpen && createPortal(
+        <div className="feedback-overlay" onClick={() => setFeedbackOpen(false)}>
+          <div className="feedback-modal" onClick={e => e.stopPropagation()}>
+            <div className="feedback-modal-header">
+              <h3 className="feedback-modal-title">フィードバック</h3>
+              <button className="feedback-close" onClick={() => setFeedbackOpen(false)}>
+                <IconX size={18} />
+              </button>
+            </div>
+            {sent ? (
+              <p className="feedback-sent-msg">送信しました！ありがとうございます</p>
+            ) : (
+              <>
+                <p className="feedback-modal-desc">ご意見・ご要望・不具合などをお知らせください</p>
+                <textarea
+                  className="feedback-textarea"
+                  placeholder="フィードバックを入力してください..."
+                  value={feedbackText}
+                  onChange={e => setFeedbackText(e.target.value)}
+                  rows={6}
+                  autoFocus
+                  disabled={sending}
+                />
+                <div className="feedback-actions">
+                  <button className="btn-ghost" onClick={() => setFeedbackOpen(false)} disabled={sending}>キャンセル</button>
+                  <button
+                    className="btn-primary feedback-send"
+                    onClick={handleSendFeedback}
+                    disabled={!feedbackText.trim() || sending}
+                  >
+                    <IconSend size={16} />
+                    {sending ? '送信中...' : '送信'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
