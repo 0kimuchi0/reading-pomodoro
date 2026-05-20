@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
@@ -57,6 +57,8 @@ export default function AdminTab() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [actions, setActions] = useState<AdminAction[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const loadingRef = useRef(false)
   const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests'>('users')
   const [showHelp, setShowHelp] = useState(false)
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
@@ -71,8 +73,11 @@ export default function AdminTab() {
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
 
-  const load = async () => {
+  const load = useCallback(async () => {
+    if (loadingRef.current) return
+    loadingRef.current = true
     setLoading(true)
+    setLoadError(false)
     try {
       const [p, b, s, a, sb] = await Promise.all([getAllProfiles(), getAllBooksAdmin(), getAllSessionsAdmin(), getAdminActions(), getSuggestBooks()])
       setProfiles(p)
@@ -81,12 +86,15 @@ export default function AdminTab() {
       setActions(a)
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
+    } catch {
+      setLoadError(true)
     } finally {
       setLoading(false)
+      loadingRef.current = false
     }
-  }
+  }, [])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   const confirm = (action: PendingAction) => setPending(action)
   const handleCancel = () => setPending(null)
@@ -352,6 +360,11 @@ export default function AdminTab() {
 
       {loading ? (
         <div className="admin-loading">読み込み中...</div>
+      ) : loadError ? (
+        <div className="admin-load-error">
+          <p>データの読み込みに失敗しました</p>
+          <button className="admin-refresh-btn" onClick={load}><IconRefresh size={14} /> 再試行</button>
+        </div>
       ) : activeSection === 'users' ? (
         <div className="admin-section">
           <p className="admin-count">{profiles.length} アカウント</p>

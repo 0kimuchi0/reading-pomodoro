@@ -160,7 +160,7 @@ export async function getMyProfile(userId?: string): Promise<Profile | null> {
 
 export async function getAllProfiles(): Promise<Profile[]> {
   const { data, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: true })
-  if (error) return []
+  if (error) throw new Error(error.message)
   return (data ?? []).map(r => profileFromRow(r as Record<string, unknown>))
 }
 
@@ -174,13 +174,13 @@ export async function updateUserBanned(userId: string, banned: boolean): Promise
 
 export async function getAllBooksAdmin(): Promise<Book[]> {
   const { data, error } = await supabase.from('books').select('*').order('created_at', { ascending: true })
-  if (error) return []
+  if (error) throw new Error(error.message)
   return (data ?? []).map(r => fromRow(r as Record<string, unknown>))
 }
 
 export async function getAllSessionsAdmin(): Promise<Session[]> {
   const { data, error } = await supabase.from('sessions').select('*').order('date', { ascending: true })
-  if (error) return []
+  if (error) throw new Error(error.message)
   return (data ?? []).map(r => sessionFromRow(r as Record<string, unknown>))
 }
 
@@ -223,7 +223,7 @@ export async function getAdminActions(): Promise<AdminAction[]> {
     .from('admin_actions')
     .select('*')
     .order('created_at', { ascending: false })
-  if (error) return []
+  if (error) throw new Error(error.message)
   return (data ?? []).map(r => adminActionFromRow(r as Record<string, unknown>))
 }
 
