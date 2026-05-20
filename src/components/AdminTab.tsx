@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark } from '@tabler/icons-react'
 import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
+import { formatAuthor } from '../lib/format'
 import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
 import type { Profile, UserRole, Book, Session, SuggestBookDB } from '../types'
@@ -567,7 +568,7 @@ export default function AdminTab() {
                 <div key={sb.id} className="admin-user-card">
                   <div className="admin-user-info">
                     <span className="admin-user-email">{sb.title}</span>
-                    <span className="admin-user-meta">{sb.author.replace(/[・/]\s*/g, ', ')} / {sb.genre}{sb.publisher ? ` / ${sb.publisher}` : ''}{sb.totalPages ? ` / ${sb.totalPages}p` : ''}</span>
+                    <span className="admin-user-meta">{formatAuthor(sb.author)} / {sb.genre}{sb.publisher ? ` / ${sb.publisher}` : ''}{sb.totalPages ? ` / ${sb.totalPages}p` : ''}</span>
                   </div>
                   <div className="admin-user-actions">
                     <button className="admin-edit-btn" onClick={() => handleEditStart(sb)} title="編集"><IconPencil size={15} /> 編集</button>

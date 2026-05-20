@@ -93,7 +93,7 @@ const STATUS_LABELS: Record<BookStatus, string> = {
   done: '読了',
 }
 
-const formatAuthor = (name: string) => name.replace(/[ 　]+/g, '・')
+import { formatAuthor } from '../lib/format'
 
 interface Props {
   books: Book[]
