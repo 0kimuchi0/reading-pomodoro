@@ -5,6 +5,12 @@ workflows:
     instance_type: mac_mini_m2
     integrations:
       app_store_connect: Codemagic
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: master
+          include: true
     environment:
       node: latest
       groups:
