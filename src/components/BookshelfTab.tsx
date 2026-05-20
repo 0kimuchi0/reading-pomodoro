@@ -93,6 +93,8 @@ const STATUS_LABELS: Record<BookStatus, string> = {
   done: '読了',
 }
 
+const formatAuthor = (name: string) => name.replace(/[ 　]+/g, '・')
+
 interface Props {
   books: Book[]
   onAdd: (book: Book) => void
@@ -355,7 +357,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                       onMouseDown={() => applySuggestion(i)}
                     >
                       <span className="suggest-title">{s.title}</span>
-                      <span className="suggest-meta">{s.author}{s.publisher ? ` / ${s.publisher}` : ''}</span>
+                      <span className="suggest-meta">{formatAuthor(s.author)}{s.publisher ? ` / ${s.publisher}` : ''}</span>
                     </li>
                   ))}
                 </ul>
@@ -595,7 +597,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                         {STATUS_LABELS[book.status]}
                       </span>
                       <h3>{book.title}</h3>
-                      {book.author && <p className="author">{book.author}{book.publisher ? ` / ${book.publisher}` : ''}</p>}
+                      {book.author && <p className="author">{formatAuthor(book.author)}{book.publisher ? ` / ${book.publisher}` : ''}</p>}
                     </>
                   )}
                 </div>
