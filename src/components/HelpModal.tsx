@@ -7,7 +7,7 @@ export interface HelpItem {
   title: string
   desc: string        // 短い説明（サイドバー用）
   detail: string      // 詳細説明文
-  image: React.ReactNode  // SVGイラスト
+  image?: React.ReactNode  // SVGイラスト
 }
 
 interface Props {
