@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark, IconMessage } from '@tabler/icons-react'
-import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook, getFeedbackList } from '../lib/db'
+import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook, getFeedbackList, updateFeedbackStatus } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import { formatAuthor } from '../lib/format'
 import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
-import type { Profile, UserRole, Book, Session, SuggestBookDB, Feedback } from '../types'
+import type { Profile, UserRole, Book, Session, SuggestBookDB, Feedback, FeedbackStatus } from '../types'
 import type { AdminAction } from '../types'
 import { useAuth } from '../auth/AuthContext'
 import ConfirmDialog from './ConfirmDialog'
@@ -485,6 +485,20 @@ export default function AdminTab() {
                         <span className="admin-action-date">{formatDate(f.createdAt)}</span>
                       </div>
                       <p className="admin-feedback-content">{f.content}</p>
+                      <select
+                        className={`admin-feedback-status admin-feedback-status--${f.status}`}
+                        value={f.status}
+                        onChange={async e => {
+                          const newStatus = e.target.value as FeedbackStatus
+                          await updateFeedbackStatus(f.id, newStatus)
+                          setFeedbackList(prev => prev.map(x => x.id === f.id ? { ...x, status: newStatus } : x))
+                        }}
+                      >
+                        <option value="pending">未着手</option>
+                        <option value="in_progress">対応中</option>
+                        <option value="done">完了</option>
+                        <option value="rejected">却下</option>
+                      </select>
                     </div>
                   )
                 })}
