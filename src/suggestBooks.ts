@@ -120,6 +120,11 @@ export function setAdminBooksCache(books: SuggestBookDB[]): void {
   _adminBooks = books
 }
 
+export function addToAdminBooksCache(book: SuggestBook): void {
+  if (isDuplicate(book.title, book.author, book.publisher)) return
+  _adminBooks = [..._adminBooks, { ...book, id: crypto.randomUUID() }]
+}
+
 /** 表記揺れ正規化 */
 export function normalize(s: string): string {
   return s

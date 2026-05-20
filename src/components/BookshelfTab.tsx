@@ -20,7 +20,7 @@ import {
   IconSearch,
 } from '@tabler/icons-react'
 import type { Book, BookStatus, Genre } from '../types'
-import { searchSuggestions, addUserSuggestion } from '../suggestBooks'
+import { searchSuggestions, addUserSuggestion, addToAdminBooksCache } from '../suggestBooks'
 import { addSuggestBook } from '../lib/db'
 import { useAuth } from '../auth/AuthContext'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
@@ -247,6 +247,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     if (book.publisher && book.totalPages > 0) {
       const suggestion = { title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages, isbn: book.isbn, ccode: book.ccode, catalogNumber: book.catalogNumber, ndc: book.ndc }
       if (user) {
+        addToAdminBooksCache(suggestion)
         addSuggestBook(suggestion).catch(() => {})
       } else {
         addUserSuggestion(suggestion)
