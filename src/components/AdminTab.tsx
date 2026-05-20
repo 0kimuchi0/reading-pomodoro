@@ -420,7 +420,7 @@ export default function AdminTab() {
                 <div key={a.id} className="admin-action-card">
                   <div className="admin-action-info">
                     <span className="admin-action-desc">{actionLabel(a)}</span>
-                    <span className="admin-action-reason">理由: {a.reason}</span>
+                    {a.actionType !== 'suggest_add' && <span className="admin-action-reason">理由: {a.reason}</span>}
                     <span className="admin-action-date">{formatDate(a.createdAt)}</span>
                   </div>
                   <button
