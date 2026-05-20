@@ -90,7 +90,8 @@ export async function saveBook(book: Book): Promise<void> {
     lsSaveBooks(books)
     return
   }
-  await supabase.from('books').upsert(toRow(book, user.id))
+  const { error } = await supabase.from('books').upsert(toRow(book, user.id))
+  if (error) throw new Error(error.message)
 }
 
 export async function saveAllBooks(books: Book[]): Promise<void> {
@@ -99,7 +100,8 @@ export async function saveAllBooks(books: Book[]): Promise<void> {
     lsSaveBooks(books)
     return
   }
-  await supabase.from('books').upsert(books.map(b => toRow(b, user.id)))
+  const { error } = await supabase.from('books').upsert(books.map(b => toRow(b, user.id)))
+  if (error) throw new Error(error.message)
 }
 
 export async function deleteBook(id: string): Promise<void> {

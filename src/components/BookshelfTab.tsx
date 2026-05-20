@@ -247,7 +247,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
     if (book.publisher && book.totalPages > 0) {
       const suggestion = { title: book.title, author: book.author, genre: book.genre, publisher: book.publisher, totalPages: book.totalPages, isbn: book.isbn, ccode: book.ccode, catalogNumber: book.catalogNumber, ndc: book.ndc }
       if (user) {
-        addSuggestBook(suggestion)
+        addSuggestBook(suggestion).catch(() => {})
       } else {
         addUserSuggestion(suggestion)
       }
