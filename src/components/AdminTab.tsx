@@ -61,6 +61,7 @@ export default function AdminTab() {
   const loadingRef = useRef(false)
   const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests' | 'feedback'>('users')
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
+  const [feedbackFilter, setFeedbackFilter] = useState<FeedbackStatus | 'all'>('all')
   const [showHelp, setShowHelp] = useState(false)
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
@@ -470,13 +471,31 @@ export default function AdminTab() {
         </div>
       ) : activeSection === 'feedback' ? (
         <div className="admin-section">
+          <div className="feedback-filter-row">
+            {([['all', 'すべて'], ['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus | 'all', string][]).map(([val, label]) => (
+              <button
+                key={val}
+                className={`feedback-filter-btn${feedbackFilter === val ? ' active' : ''}${val !== 'all' ? ` feedback-filter-btn--${val}` : ''}`}
+                onClick={() => setFeedbackFilter(val)}
+              >
+                {label}
+                <span className="feedback-filter-count">
+                  {val === 'all' ? feedbackList.length : feedbackList.filter(f => f.status === val).length}
+                </span>
+              </button>
+            ))}
+          </div>
           {feedbackList.length === 0 ? (
             <p className="admin-empty">フィードバックはありません</p>
-          ) : (
+          ) : (() => {
+            const filtered = feedbackFilter === 'all' ? feedbackList : feedbackList.filter(f => f.status === feedbackFilter)
+            return filtered.length === 0 ? (
+              <p className="admin-empty">該当するフィードバックはありません</p>
+            ) : (
             <>
-              <p className="admin-count">{feedbackList.length} 件</p>
+              <p className="admin-count">{filtered.length} / {feedbackList.length} 件</p>
               <div className="admin-action-list">
-                {feedbackList.map(f => {
+                {filtered.map(f => {
                   const sender = f.userId ? profiles.find(p => p.id === f.userId)?.email ?? f.userId : '匿名'
                   return (
                     <div key={f.id} className="admin-feedback-card">
@@ -503,7 +522,8 @@ export default function AdminTab() {
                 })}
               </div>
             </>
-          )}
+            )
+          })()}
         </div>
       ) : (
         <div className="admin-section">
