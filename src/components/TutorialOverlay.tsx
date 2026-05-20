@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { IconSparkles, IconClock, IconBooks, IconChartBar, IconSettings } from '@tabler/icons-react'
 
 const TUTORIAL_KEY = 'pr_tutorial_done'
@@ -27,12 +28,12 @@ const STEPS: Step[] = [
   },
   {
     icon: <IconClock size={18} />,
-    title: 'タイマー',
+    title: 'タイマー（ポモドーロ法）',
     desc: [
-      '本を選んで25分の集中タイマーをスタートします。',
-      '本選択ドロップダウン内の検索欄でタイトル・著者名を入力してすばやく絞り込めます。',
-      'タイマー動作中は本棚・統計タブへの移動がロックされます（設定タブは引き続き使用できます）。',
-      'セッション数は統計グラフや本棚の実績に自動で反映されます。',
+      'ポモドーロ法は「25分集中 → 5分休憩」を繰り返す時間管理術です。集中フェーズが終わると自動で休憩タイマーへ切り替わり、4セット終えたら長めの休憩を取りましょう。',
+      '読む本をドロップダウンから選択してスタート。検索欄でタイトル・著者名を入力してすばやく絞り込めます。',
+      '歯車アイコンから集中時間（1〜90分）と休憩時間（1〜30分）を自由に変更できます。',
+      'タイマー動作中は本棚・統計タブへの移動がロックされます。セッション完了ごとに統計と本棚の実績へ自動反映されます。',
     ],
     selector: '.tab-nav > .tab-btn:nth-child(1)',
     tab: 'timer',
@@ -131,7 +132,7 @@ export default function TutorialOverlay({ onDone, onTabChange }: Props) {
     return { top: belowY, left: leftX } as React.CSSProperties
   })()
 
-  return (
+  return createPortal(
     <>
       {/* 背景オーバーレイ（クリックでスキップ） */}
       <div className="tutorial-overlay" onClick={finish} />
@@ -172,6 +173,7 @@ export default function TutorialOverlay({ onDone, onTabChange }: Props) {
           </div>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   )
 }
