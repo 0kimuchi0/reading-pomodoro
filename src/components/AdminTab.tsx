@@ -356,13 +356,13 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
-          <IconHistory size={16} /> 操作履歴
-          {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
-        </button>
         <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => setActiveSection('feedback')}>
           <IconMessage size={16} /> フィードバック
           {feedbackList.length > 0 && <span className="admin-history-badge">{feedbackList.length}</span>}
+        </button>
+        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
+          <IconHistory size={16} /> 操作履歴
+          {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
       </div>
 
