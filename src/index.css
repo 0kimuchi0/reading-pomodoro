@@ -924,7 +924,8 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   min-height: 160px;
   border: 1px solid var(--color-border);
 }
-.help-illustration svg {
+.help-illustration svg,
+.help-illustration img {
   max-width: 100%;
   height: auto;
 }
@@ -1282,7 +1283,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .admin-header-actions { display: flex; align-items: center; gap: 6px; }
 .admin-refresh-btn { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 4px; border-radius: 6px; display: flex; align-items: center; gap: 4px; }
 .admin-refresh-btn:hover { background: var(--color-border); color: var(--color-text); }
-.admin-nav { display: flex; gap: 6px; }
+.admin-nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .admin-nav-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; border: 1.5px solid var(--color-border); border-radius: 999px; background: none; color: var(--color-text-muted); cursor: pointer; transition: all 0.15s; }
 .admin-nav-btn:hover { border-color: var(--accent-light); color: var(--color-text); }
 .admin-nav-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
@@ -1693,7 +1694,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .theme-options { grid-template-columns: repeat(2, 1fr); }
 
   /* ヘルプモーダル：縦積み＋サイドバー横スクロール */
-  .help-modal-v2 { width: 95vw; height: min(560px, 90vh); }
+  .help-modal-v2 { width: 95vw; height: min(660px, 90vh); }
   .help-modal-body { flex-direction: column; }
   .help-sidebar {
     width: 100%;
@@ -1773,4 +1774,13 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   /* 本カード */
   .book-card { padding: 12px; }
   .book-card-top { flex-wrap: wrap; }
+
+  /* 管理タブ */
+  .admin-nav-btn { padding: 5px 10px; font-size: 0.78rem; gap: 4px; }
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-user-card { padding: 10px 12px; }
+  .admin-user-actions { flex-wrap: wrap; gap: 6px; }
+  .admin-action-card { flex-direction: column; gap: 8px; }
+  .admin-revert-btn { align-self: flex-end; }
+  .feedback-filter-btn { padding: 4px 10px; font-size: 0.75rem; }
 }
