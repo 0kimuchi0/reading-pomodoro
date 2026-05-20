@@ -18,7 +18,10 @@ workflows:
         script: npx cap sync ios
       - name: Set up code signing
         script: |
-          printf '%b' "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/AuthKey.p8
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 --decode > /tmp/AuthKey.p8 2>/dev/null \
+            || printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > /tmp/AuthKey.p8
+          echo "Key file size: $(wc -c < /tmp/AuthKey.p8) bytes"
+          head -1 /tmp/AuthKey.p8
       - name: Build iOS
         script: |
           xcodebuild \
