@@ -7,6 +7,8 @@ workflows:
       app_store_connect: Codemagic
     environment:
       node: latest
+      groups:
+        - ios
     scripts:
       - name: Install dependencies
         script: npm install
@@ -17,14 +19,13 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
-          app-store-connect certificates create \
-            --type IOS_DISTRIBUTION \
-            --save
           app-store-connect fetch-signing-files \
             com.readingpomodoro.app \
             --type IOS_APP_STORE \
+            --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
             --create
           keychain add-certificates
+          xcode-project use-profiles
       - name: Build iOS
         script: |
           xcodebuild \
