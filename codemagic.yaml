@@ -34,9 +34,35 @@ workflows:
           xcode-project use-profiles
       - name: Build iOS
         script: |
-          echo "=== Provisioning profiles ==="
-          find ~ -name "*.mobileprovision" 2>/dev/null
-          echo "============================="
+          PROFILE=$(find ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles -name "*.mobileprovision" 2>/dev/null | head -1)
+          echo "Profile: $PROFILE"
+          PROFILE_NAME=$(security cms -D -i "$PROFILE" | plutil -extract Name raw -)
+          echo "Profile Name: $PROFILE_NAME"
+          cat > ios/ExportOptions.plist << PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>teamID</key>
+              <string>DS4N2VZ8SY</string>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>compileBitcode</key>
+              <false/>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.readingpomodoro.app</key>
+                  <string>${PROFILE_NAME}</string>
+              </dict>
+          </dict>
+          </plist>
+          PLIST
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
