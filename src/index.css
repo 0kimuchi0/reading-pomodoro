@@ -488,6 +488,22 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   padding: 6px 10px; border-radius: 0 6px 6px 0;
   margin: 0;
 }
+.book-memo-inline {
+  width: 100%; resize: none; field-sizing: content;
+  min-height: 2.4em;
+  background: var(--color-bg);
+  border: none; border-left: 3px solid var(--color-border);
+  padding: 6px 10px; border-radius: 0 6px 6px 0;
+  font-size: 0.82rem; font-family: inherit;
+  color: var(--color-text-muted); line-height: 1.55;
+  transition: border-color 0.15s;
+}
+.book-memo-inline:focus {
+  outline: none;
+  border-left-color: var(--accent);
+  color: var(--color-text);
+}
+.book-memo-inline::placeholder { opacity: 0.45; }
 .book-memo-input {
   width: 100%; resize: vertical; min-height: 72px;
   background: var(--color-surface); color: var(--color-text);

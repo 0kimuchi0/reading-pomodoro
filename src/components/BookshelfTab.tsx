@@ -178,6 +178,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
   const [searchQuery, setSearchQuery] = useState('')
   const [editingPageId, setEditingPageId] = useState<string | null>(null)
   const [pageInput, setPageInput] = useState('')
+  const [memoInput, setMemoInput] = useState<Record<string, string>>({})
   const [suggestions, setSuggestions] = useState<ReturnType<typeof searchSuggestions>>([])
   const [activeSuggestIdx, setActiveSuggestIdx] = useState(-1)
   const detailsFromSuggestion = useRef(false)
@@ -283,7 +284,9 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
 
   const startEdit = (book: Book) => {
     setEditingBookId(book.id)
-    setEditForm({ title: book.title, author: book.author, publisher: book.publisher ?? '', totalPages: book.totalPages, genre: book.genre, isbn: book.isbn ?? '', ccode: book.ccode ?? '', catalogNumber: book.catalogNumber ?? '', ndc: book.ndc ?? '', memo: book.memo ?? '' })
+    const pendingMemo = memoInput[book.id] !== undefined ? memoInput[book.id] : (book.memo ?? '')
+    setMemoInput(prev => { const n = { ...prev }; delete n[book.id]; return n })
+    setEditForm({ title: book.title, author: book.author, publisher: book.publisher ?? '', totalPages: book.totalPages, genre: book.genre, isbn: book.isbn ?? '', ccode: book.ccode ?? '', catalogNumber: book.catalogNumber ?? '', ndc: book.ndc ?? '', memo: pendingMemo })
   }
 
   const saveEdit = (book: Book) => {
@@ -619,8 +622,20 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
 
               {!isEditing && <span className="genre-tag">{book.genre}</span>}
 
-              {!isEditing && book.memo && (
-                <p className="book-memo-display">{book.memo}</p>
+              {!isEditing && (
+                <textarea
+                  className="book-memo-inline"
+                  value={memoInput[book.id] !== undefined ? memoInput[book.id] : (book.memo ?? '')}
+                  onChange={e => setMemoInput(prev => ({ ...prev, [book.id]: e.target.value }))}
+                  onBlur={() => {
+                    const val = memoInput[book.id]
+                    if (val !== undefined) {
+                      if (val !== (book.memo ?? '')) onUpdate({ ...book, memo: val })
+                      setMemoInput(prev => { const n = { ...prev }; delete n[book.id]; return n })
+                    }
+                  }}
+                  placeholder="読書メモ・感想など..."
+                />
               )}
 
               {!isEditing && book.totalPages > 0 && (
