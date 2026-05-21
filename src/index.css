@@ -70,7 +70,7 @@ body {
 }
 
 /* ===== Layout ===== */
-.app { display: flex; flex-direction: column; min-height: 100%; max-width: 1024px; margin: 0 auto; width: 100%; animation: app-fade-in 0.25s ease both; }
+.app { display: flex; flex-direction: column; min-height: 100%; width: 100%; animation: app-fade-in 0.25s ease both; }
 @keyframes app-fade-in {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
@@ -81,13 +81,10 @@ body {
   top: 0;
   z-index: 100;
   background: var(--color-bg);
-  padding-top: 8px;
 }
 .app-header {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-bottom: none;
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 1px solid var(--color-border);
   padding: 14px 20px;
 }
 .app-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
@@ -95,11 +92,9 @@ body {
 .tab-nav {
   display: flex;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 var(--radius) var(--radius);
+  border-bottom: 1px solid var(--color-border);
   padding: 8px 12px;
   gap: 4px;
-  margin: 0 0 8px;
 }
 .tab-nav-right { margin-left: auto; display: flex; gap: 4px; }
 .tab-btn {
@@ -166,13 +161,13 @@ button { cursor: pointer; font-family: inherit; }
 .btn-danger-ghost:hover { color: var(--color-danger); }
 
 /* ===== Forms ===== */
-input, select {
+input, textarea, select {
   background: var(--color-bg);
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  font-size: 0.9rem;
+  font-size: 1rem; /* 16px以上でiOSの自動ズームを防ぐ */
   font-family: inherit;
   width: 100%;
   transition: border-color 0.15s;
@@ -273,7 +268,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 .book-dropdown-search-input {
   width: 100%; padding: 6px 26px 6px 28px;
-  font-size: 0.82rem;
+  font-size: 1rem;
   background: var(--color-bg);
   border: 1.5px solid var(--color-border);
   border-radius: 6px;
@@ -354,7 +349,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 .bookshelf-search-input {
   width: 100%; padding: 9px 36px 9px 34px;
-  font-size: 0.88rem;
+  font-size: 1rem;
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -398,7 +393,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 }
 .sort-row { display: flex; align-items: center; gap: 8px; }
 .sort-label { font-size: 0.82rem; color: var(--color-text-muted); white-space: nowrap; }
-.sort-select { width: auto; padding: 6px 10px; font-size: 0.82rem; }
+.sort-select { width: auto; padding: 6px 10px; font-size: 1rem; }
 .sort-dir-btn {
   display: flex; align-items: center; justify-content: center;
   padding: 6px 8px;
@@ -502,7 +497,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   background: var(--color-bg);
   border: none; border-left: 3px solid var(--color-border);
   padding: 6px 10px; border-radius: 0 6px 6px 0;
-  font-size: 0.82rem; font-family: inherit;
+  font-size: 1rem; font-family: inherit;
   color: var(--color-text-muted); line-height: 1.55;
   transition: border-color 0.15s;
 }
@@ -516,7 +511,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   width: 100%; resize: vertical; min-height: 72px;
   background: var(--color-surface); color: var(--color-text);
   border: 1px solid var(--color-border); border-radius: 8px;
-  padding: 8px 10px; font-size: 0.875rem; font-family: inherit;
+  padding: 8px 10px; font-size: 1rem; font-family: inherit;
   line-height: 1.5;
 }
 .book-memo-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
@@ -1400,7 +1395,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   :root:not([data-theme="light"]) .feedback-status-btn--rejected.active, :root:not([data-theme="light"]) .feedback-status-btn--rejected:hover   { background: #3b0000; color: #fca5a5; }
 }
 .admin-suggest-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 12px; }
-.admin-suggest-input { flex: 1; min-width: 120px; padding: 6px 10px; font-size: 0.85rem; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); }
+.admin-suggest-input { flex: 1; min-width: 120px; padding: 6px 10px; font-size: 1rem; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); }
 .admin-suggest-input:focus { outline: none; border-color: var(--accent); }
 .admin-suggest-pages { max-width: 90px; }
 .admin-suggest-add-btn { display: flex; align-items: center; gap: 4px; padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
@@ -1418,7 +1413,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 /* ConfirmDialog reason */
 .confirm-reason { width: 100%; }
 .confirm-reason-label { display: block; font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 6px; text-align: left; }
-.confirm-reason-input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); font-size: 0.88rem; resize: vertical; font-family: inherit; box-sizing: border-box; transition: border-color 0.15s; outline: none; }
+.confirm-reason-input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); font-size: 1rem; resize: vertical; font-family: inherit; box-sizing: border-box; transition: border-color 0.15s; outline: none; }
 .confirm-reason-input:focus { border-color: var(--accent); }
 .confirm-ok-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
