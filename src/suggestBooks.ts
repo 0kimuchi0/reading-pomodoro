@@ -190,10 +190,16 @@ export function searchSuggestions(query: string): SuggestBook[] {
   if (!query.trim()) return []
   const q = normalize(query)
   const allBooks = [...SUGGEST_BOOKS, ...getUserSuggestions(), ..._adminBooks]
-  return allBooks.filter(b => {
-    if (normalize(b.title).includes(q) || normalize(b.author).includes(q)) return true
-    const titleReading = getReading(b.title)
-    const authorReading = getReading(b.author)
-    return (titleReading?.includes(q) ?? false) || (authorReading?.includes(q) ?? false)
-  }).slice(0, 6)
+  const seen = new Set<string>()
+  const results: SuggestBook[] = []
+  for (const b of allBooks) {
+    const key = `${normalize(b.title)}|${normalize(b.author)}|${normalize(b.publisher ?? '')}`
+    if (seen.has(key)) continue
+    const matches =
+      normalize(b.title).includes(q) || normalize(b.author).includes(q) ||
+      (getReading(b.title)?.includes(q) ?? false) || (getReading(b.author)?.includes(q) ?? false)
+    if (matches) { seen.add(key); results.push(b) }
+    if (results.length === 6) break
+  }
+  return results
 }
