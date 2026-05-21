@@ -1768,7 +1768,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .settings-row { flex-direction: column; align-items: flex-start; }
 
   /* ヘルプモーダル：縦積みレイアウト */
-  .help-modal-v2 { width: 100vw; height: 100dvh; border-radius: 0; }
+  .help-modal-v2 { width: 100%; height: min(85dvh, 560px); }
   .help-modal-body { flex-direction: column; }
   .help-sidebar {
     width: 100%;
