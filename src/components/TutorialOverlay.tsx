@@ -90,6 +90,13 @@ export default function TutorialOverlay({ onDone, onTabChange }: Props) {
   const current = STEPS[step]
   const isLast = step === STEPS.length - 1
 
+  // チュートリアル中はページスクロールを無効化
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
   const finish = useCallback(() => {
     localStorage.setItem(TUTORIAL_KEY, '1')
     onDone()

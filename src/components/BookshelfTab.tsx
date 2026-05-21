@@ -347,7 +347,6 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                 onKeyDown={handleKeyDown}
                 onBlur={() => setTimeout(() => setSuggestions([]), 150)}
                 placeholder="タイトル *"
-                autoFocus
                 autoComplete="off"
               />
               {suggestions.length > 0 && (

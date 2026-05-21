@@ -816,7 +816,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0, 0, 0, 0.45);
   display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   backdrop-filter: blur(2px);
 }
 .help-modal {
@@ -1111,7 +1111,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
   z-index: 200;
-  padding: 20px;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
 }
 .auth-modal {
   background: var(--color-surface);
@@ -1248,7 +1248,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 .feedback-modal {
   background: var(--color-surface);
@@ -1405,6 +1405,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   display: flex; align-items: center; justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.15s ease;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 .confirm-dialog {
   background: var(--color-surface);
