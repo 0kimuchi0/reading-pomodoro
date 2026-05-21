@@ -68,13 +68,19 @@ body {
   to   { opacity: 1; transform: none; }
 }
 
+.app-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-bg);
+  padding-top: 8px;
+}
 .app-header {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-bottom: none;
   border-radius: var(--radius) var(--radius) 0 0;
   padding: 14px 20px;
-  margin: 8px 0 0;
 }
 .app-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
 
@@ -1719,14 +1725,16 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 @media (max-width: 600px) {
   .tab-btn { padding: 8px 12px; gap: 0; font-size: 0; }
   .tab-btn svg { display: block; }
-  .app-header { padding: 10px 14px; margin: 6px 0 0; }
+  .app-header { padding: 10px 14px; }
+  .app-top { padding-top: 6px; }
   .app-title { font-size: 1.05rem; }
 }
 
 /* モバイル (≤ 480px) */
 @media (max-width: 480px) {
   /* ヘッダー */
-  .app-header { padding: 10px 12px; margin: 4px 0 0; }
+  .app-header { padding: 10px 12px; }
+  .app-top { padding-top: 4px; }
   .app-title { font-size: 1rem; }
 
   /* タブナビ */
