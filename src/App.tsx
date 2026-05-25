@@ -209,7 +209,7 @@ function AppInner() {
 
       <main className="app-main">
         {tab === 'timer' && (
-          <TimerTab books={books} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} onRunningChange={setTimerRunning} />
+          <TimerTab books={books} sessions={sessions} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} onRunningChange={setTimerRunning} />
         )}
         {tab === 'bookshelf' && (
           <BookshelfTab
