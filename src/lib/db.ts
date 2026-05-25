@@ -1,4 +1,4 @@
-import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType, SuggestBookDB, Feedback } from '../types'
+import type { Book, Session, Profile, UserRole, AdminAction, AdminActionType, SuggestBookDB, Feedback, FeedbackStatus } from '../types'
 import { getBooks as lsGetBooks, saveBooks as lsSaveBooks, getSessions as lsGetSessions, saveSessions as lsSaveSessions } from '../storage'
 import { supabase } from './supabase'
 
@@ -310,11 +310,14 @@ export async function deleteSuggestBook(id: string): Promise<void> {
 // ---- feedback ----
 
 export async function submitFeedback(content: string, userId: string | null): Promise<void> {
-  const { error } = await supabase.from('feedback').insert({
+  const insertPromise = supabase.from('feedback').insert({
     user_id: userId ?? null,
     content,
-  })
-  if (error) throw error
+  }).then(({ error }) => { if (error) throw error })
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error('timeout')), 10000)
+  )
+  await Promise.race([insertPromise, timeoutPromise])
 }
 
 export async function getFeedbackList(): Promise<Feedback[]> {
@@ -327,8 +330,14 @@ export async function getFeedbackList(): Promise<Feedback[]> {
     id: r.id as string,
     userId: r.user_id as string | null,
     content: r.content as string,
+    status: (r.status as FeedbackStatus) ?? 'pending',
     createdAt: r.created_at as string,
   }))
+}
+
+export async function updateFeedbackStatus(id: string, status: FeedbackStatus): Promise<void> {
+  const { error } = await supabase.from('feedback').update({ status }).eq('id', id)
+  if (error) throw error
 }
 
 // ---- migration ----

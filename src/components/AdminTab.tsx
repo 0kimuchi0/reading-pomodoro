@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconShield, IconUser, IconBan, IconRefresh, IconChartBar, IconBook, IconHistory, IconArrowBackUp, IconBookmark, IconPlus, IconTrash, IconPencil, IconDeviceFloppy, IconX, IconSearch, IconQuestionMark, IconMessage } from '@tabler/icons-react'
-import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook, getFeedbackList } from '../lib/db'
+import { getAllProfiles, updateUserRole, updateUserBanned, getAllBooksAdmin, getAllSessionsAdmin, logAdminAction, getAdminActions, revertAdminAction, getSuggestBooks, addSuggestBook, updateSuggestBook, deleteSuggestBook, getFeedbackList, updateFeedbackStatus } from '../lib/db'
 import { validateBookFields, hasErrors, formatCcode } from '../lib/validate'
 import { formatAuthor } from '../lib/format'
 import type { FieldErrors } from '../lib/validate'
 import { setAdminBooksCache, SUGGEST_BOOKS } from '../suggestBooks'
-import type { Profile, UserRole, Book, Session, SuggestBookDB, Feedback } from '../types'
+import type { Profile, UserRole, Book, Session, SuggestBookDB, Feedback, FeedbackStatus } from '../types'
 import type { AdminAction } from '../types'
 import { useAuth } from '../auth/AuthContext'
 import ConfirmDialog from './ConfirmDialog'
@@ -35,6 +35,13 @@ const ADMIN_HELP: HelpItem[] = [
     image: <img src="/help/admin-suggest.svg" width="280" height="160" alt="" />,
   },
   {
+    icon: <IconMessage size={18} />,
+    title: 'フィードバック',
+    desc: 'ユーザーから送られたフィードバックを確認・管理できます',
+    detail: 'ユーザーが設定タブから送信したフィードバックを一覧表示します。ステータス（未着手・対応中・完了・却下）で絞り込みができ、各フィードバックのステータスをボタンで変更できます。未確認のフィードバックはナビのバッジで通知され、タブを開くと既読になります。未ログインユーザーからのフィードバックは「匿名」と表示されます。',
+    image: <img src="/help/admin-feedback.svg" width="280" height="160" alt="" />,
+  },
+  {
     icon: <IconHistory size={18} />,
     title: '操作履歴',
     desc: 'ロール変更・BAN操作・サジェスト操作の履歴を確認・巻き戻せます',
@@ -61,6 +68,7 @@ export default function AdminTab() {
   const loadingRef = useRef(false)
   const [activeSection, setActiveSection] = useState<'users' | 'stats' | 'history' | 'suggests' | 'feedback'>('users')
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
+  const [feedbackFilter, setFeedbackFilter] = useState<FeedbackStatus | 'all'>('all')
   const [showHelp, setShowHelp] = useState(false)
   const [suggestBooks, setSuggestBooks] = useState<SuggestBookDB[]>([])
   const [suggestForm, setSuggestForm] = useState({ title: '', author: '', genre: 'その他', publisher: '', totalPages: '', isbn: '', ccode: '', catalogNumber: '', ndc: '' })
@@ -73,7 +81,8 @@ export default function AdminTab() {
   const [suggestAddErrors, setSuggestAddErrors] = useState<FieldErrors>({})
   const [suggestEditErrors, setSuggestEditErrors] = useState<FieldErrors>({})
   const [pending, setPending] = useState<PendingAction | null>(null)
-  const [viewedCount, setViewedCount] = useState(0)
+  const [viewedCount, setViewedCount] = useState(() => Number(localStorage.getItem('admin_history_viewed') ?? 0))
+  const [feedbackViewedCount, setFeedbackViewedCount] = useState(() => Number(localStorage.getItem('admin_feedback_viewed') ?? 0))
 
   const load = useCallback(async () => {
     if (loadingRef.current) return
@@ -89,7 +98,8 @@ export default function AdminTab() {
       setSuggestBooks(sb)
       setAdminBooksCache(sb)
       setFeedbackList(fb)
-      setViewedCount(prev => Math.min(prev, a.length))
+      setViewedCount(prev => { const v = Math.min(prev, a.length); localStorage.setItem('admin_history_viewed', String(v)); return v })
+      setFeedbackViewedCount(prev => { const v = Math.min(prev, fb.length); localStorage.setItem('admin_feedback_viewed', String(v)); return v })
     } catch {
       setLoadError(true)
     } finally {
@@ -356,11 +366,11 @@ export default function AdminTab() {
         <button className={`admin-nav-btn${activeSection === 'suggests' ? ' active' : ''}`} onClick={() => setActiveSection('suggests')}>
           <IconBookmark size={16} /> サジェスト
         </button>
-        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => setActiveSection('feedback')}>
+        <button className={`admin-nav-btn${activeSection === 'feedback' ? ' active' : ''}`} onClick={() => { setActiveSection('feedback'); setFeedbackViewedCount(feedbackList.length); localStorage.setItem('admin_feedback_viewed', String(feedbackList.length)) }}>
           <IconMessage size={16} /> フィードバック
-          {feedbackList.length > 0 && <span className="admin-history-badge">{feedbackList.length}</span>}
+          {feedbackList.length > feedbackViewedCount && <span className="admin-history-badge">{feedbackList.length - feedbackViewedCount}</span>}
         </button>
-        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length) }}>
+        <button className={`admin-nav-btn${activeSection === 'history' ? ' active' : ''}`} onClick={() => { setActiveSection('history'); setViewedCount(actions.length); localStorage.setItem('admin_history_viewed', String(actions.length)) }}>
           <IconHistory size={16} /> 操作履歴
           {actions.length > viewedCount && <span className="admin-history-badge">{actions.length - viewedCount}</span>}
         </button>
@@ -470,13 +480,39 @@ export default function AdminTab() {
         </div>
       ) : activeSection === 'feedback' ? (
         <div className="admin-section">
+          {(() => {
+            const unreadCount = Math.max(0, feedbackList.length - feedbackViewedCount)
+            const unreadItems = feedbackList.slice(0, unreadCount)
+            const getUnread = (val: FeedbackStatus | 'all') =>
+              val === 'all' ? unreadCount : unreadItems.filter(f => f.status === val).length
+            return (
+          <div className="feedback-filter-row">
+            {([['all', 'すべて'], ['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus | 'all', string][]).map(([val, label]) => {
+              const unread = getUnread(val)
+              return (
+              <button
+                key={val}
+                className={`feedback-filter-btn${feedbackFilter === val ? ' active' : ''}${val !== 'all' ? ` feedback-filter-btn--${val}` : ''}`}
+                onClick={() => setFeedbackFilter(val)}
+              >
+                {label}
+                {unread > 0 && <span className="feedback-filter-count">{unread}</span>}
+              </button>
+            )})}
+          </div>
+            )
+          })()}
           {feedbackList.length === 0 ? (
             <p className="admin-empty">フィードバックはありません</p>
-          ) : (
+          ) : (() => {
+            const filtered = feedbackFilter === 'all' ? feedbackList : feedbackList.filter(f => f.status === feedbackFilter)
+            return filtered.length === 0 ? (
+              <p className="admin-empty">該当するフィードバックはありません</p>
+            ) : (
             <>
-              <p className="admin-count">{feedbackList.length} 件</p>
+              <p className="admin-count">{filtered.length} / {feedbackList.length} 件</p>
               <div className="admin-action-list">
-                {feedbackList.map(f => {
+                {filtered.map(f => {
                   const sender = f.userId ? profiles.find(p => p.id === f.userId)?.email ?? f.userId : '匿名'
                   return (
                     <div key={f.id} className="admin-feedback-card">
@@ -485,12 +521,26 @@ export default function AdminTab() {
                         <span className="admin-action-date">{formatDate(f.createdAt)}</span>
                       </div>
                       <p className="admin-feedback-content">{f.content}</p>
+                      <div className="feedback-status-picker">
+                        {([['pending', '未着手'], ['in_progress', '対応中'], ['done', '完了'], ['rejected', '却下']] as [FeedbackStatus, string][]).map(([val, label]) => (
+                          <button
+                            key={val}
+                            className={`feedback-status-btn feedback-status-btn--${val}${f.status === val ? ' active' : ''}`}
+                            onClick={async () => {
+                              if (f.status === val) return
+                              await updateFeedbackStatus(f.id, val)
+                              setFeedbackList(prev => prev.map(x => x.id === f.id ? { ...x, status: val } : x))
+                            }}
+                          >{label}</button>
+                        ))}
+                      </div>
                     </div>
                   )
                 })}
               </div>
             </>
-          )}
+            )
+          })()}
         </div>
       ) : (
         <div className="admin-section">

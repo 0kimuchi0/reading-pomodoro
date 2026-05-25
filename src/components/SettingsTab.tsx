@@ -26,6 +26,7 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
   const [feedbackText, setFeedbackText] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [sendError, setSendError] = useState(false)
 
   useEffect(() => {
     if (!feedbackOpen) return
@@ -37,6 +38,7 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
   const handleSendFeedback = async () => {
     if (!feedbackText.trim()) return
     setSending(true)
+    setSendError(false)
     try {
       await submitFeedback(feedbackText.trim(), user?.id ?? null)
       setSent(true)
@@ -45,6 +47,8 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
         setSent(false)
         setFeedbackOpen(false)
       }, 1500)
+    } catch {
+      setSendError(true)
     } finally {
       setSending(false)
     }
@@ -123,9 +127,9 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
                   value={feedbackText}
                   onChange={e => setFeedbackText(e.target.value)}
                   rows={6}
-                  autoFocus
                   disabled={sending}
                 />
+                {sendError && <p className="feedback-error-msg">送信に失敗しました。時間をおいて再度お試しください。</p>}
                 <div className="feedback-actions">
                   <button className="btn-ghost" onClick={() => setFeedbackOpen(false)} disabled={sending}>キャンセル</button>
                   <button

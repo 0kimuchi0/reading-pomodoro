@@ -52,10 +52,13 @@ export interface SuggestBookDB {
 
 export type AdminActionType = 'role_change' | 'ban' | 'unban' | 'suggest_add' | 'suggest_edit' | 'suggest_delete'
 
+export type FeedbackStatus = 'pending' | 'in_progress' | 'done' | 'rejected'
+
 export interface Feedback {
   id: string
   userId: string | null
   content: string
+  status: FeedbackStatus
   createdAt: string
 }
 

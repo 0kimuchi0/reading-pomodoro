@@ -59,12 +59,13 @@ type Phase = 'focus' | 'break'
 
 interface Props {
   books: Book[]
+  sessions: Session[]
   onSessionComplete: (bookId: string, session: Session) => void
   onStatusChange: (bookId: string, status: Book['status']) => void
   onRunningChange?: (running: boolean) => void
 }
 
-export default function TimerTab({ books, onSessionComplete, onStatusChange, onRunningChange }: Props) {
+export default function TimerTab({ books, sessions, onSessionComplete, onStatusChange, onRunningChange }: Props) {
   const [showHelp, setShowHelp] = useState(false)
   const [focusMin, setFocusMin] = useState(25)
   const [breakMin, setBreakMin] = useState(5)
@@ -79,8 +80,10 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
   const [showSettings, setShowSettings] = useState(false)
   const bookDropdownRef = useRef<HTMLDivElement>(null)
   const bookSearchRef = useRef<HTMLInputElement>(null)
-  const [todaySessions, setTodaySessions] = useState(0)
-  const [totalMinutes, setTotalMinutes] = useState(0)
+  const today = new Date().toISOString().slice(0, 10)
+  const todayBase = sessions.filter(s => s.date === today)
+  const [todaySessions, setTodaySessions] = useState(() => todayBase.length)
+  const [totalMinutes, setTotalMinutes] = useState(() => todayBase.reduce((sum, s) => sum + s.duration, 0))
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const selectableBooks = books.filter(b => b.status !== 'done')
@@ -113,6 +116,13 @@ export default function TimerTab({ books, onSessionComplete, onStatusChange, onR
       setTimeout(() => bookSearchRef.current?.focus(), 30)
     }
   }, [showBookDropdown])
+
+  // sessions ロード後に今日の実績を同期
+  useEffect(() => {
+    const todaySess = sessions.filter(s => s.date === today)
+    setTodaySessions(todaySess.length)
+    setTotalMinutes(todaySess.reduce((sum, s) => sum + s.duration, 0))
+  }, [sessions])
 
   // running 変化を親に通知
   useEffect(() => {

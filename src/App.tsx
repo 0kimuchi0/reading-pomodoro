@@ -154,6 +154,7 @@ function AppInner() {
 
   return (
     <div className="app">
+      <div className="app-top">
       <header className="app-header">
         <h1 className="app-title">PomoRead</h1>
         <SyncIndicator state={syncState} isLoggedIn={!!user} />
@@ -204,10 +205,11 @@ function AppInner() {
           </button>
         </div>
       </nav>
+      </div>
 
       <main className="app-main">
         {tab === 'timer' && (
-          <TimerTab books={books} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} onRunningChange={setTimerRunning} />
+          <TimerTab books={books} sessions={sessions} onSessionComplete={handleSessionComplete} onStatusChange={handleStatusChange} onRunningChange={setTimerRunning} />
         )}
         {tab === 'bookshelf' && (
           <BookshelfTab
