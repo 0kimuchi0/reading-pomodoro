@@ -127,7 +127,6 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
                   value={feedbackText}
                   onChange={e => setFeedbackText(e.target.value)}
                   rows={6}
-                  autoFocus
                   disabled={sending}
                 />
                 {sendError && <p className="feedback-error-msg">送信に失敗しました。時間をおいて再度お試しください。</p>}
