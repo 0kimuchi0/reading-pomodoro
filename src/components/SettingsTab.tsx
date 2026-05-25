@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend } from '@tabler/icons-react'
+import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend, IconShieldLock } from '@tabler/icons-react'
 import type { User } from '@supabase/supabase-js'
 import type { Theme } from '../App'
 import { useAuth } from '../auth/AuthContext'
@@ -105,6 +105,14 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
           <IconMessage size={16} />
           フィードバックを送る
         </button>
+      </section>
+
+      <section className="settings-section">
+        <h2 className="settings-section-title">法的情報</h2>
+        <a className="btn-ghost privacy-link" href="/privacy.html" target="_blank" rel="noopener">
+          <IconShieldLock size={16} />
+          プライバシーポリシー
+        </a>
       </section>
 
       {feedbackOpen && createPortal(
