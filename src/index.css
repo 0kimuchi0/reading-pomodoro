@@ -1715,8 +1715,23 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 
 /* タブレット (≤ 768px) */
 @media (max-width: 768px) {
+  .app-top { padding-top: 0; }
+  .app-header {
+    padding: 12px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tab-nav {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid var(--color-border);
+  }
   .app-main { padding: 16px 12px; }
-  .app-header { padding: 12px 16px; }
   .tab-btn { padding: 8px 14px; font-size: 0.9rem; }
   .sort-filter-row { flex-direction: column; align-items: flex-start; }
   .timer-ring-wrap { width: 220px; height: 220px; }
@@ -1751,7 +1766,6 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .tab-btn { padding: 8px 12px; gap: 0; font-size: 0; }
   .tab-btn svg { display: block; }
   .app-header { padding: 10px 14px; }
-  .app-top { padding-top: 6px; }
   .app-title { font-size: 1.05rem; }
 }
 
@@ -1759,7 +1773,6 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 @media (max-width: 480px) {
   /* ヘッダー */
   .app-header { padding: 10px 12px; }
-  .app-top { padding-top: 4px; }
   .app-title { font-size: 1rem; }
 
   /* タブナビ */
