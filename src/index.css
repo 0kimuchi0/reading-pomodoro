@@ -121,7 +121,7 @@ body {
 
 .app-main {
   flex: 1;
-  padding: 20px 16px;
+  padding: 20px 16px 4px;
   max-width: 780px;
   width: 100%;
   margin: 0 auto;
@@ -1728,7 +1728,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 @media (max-width: 768px) {
   .app-top { padding-top: 0; }
   .app-header { padding: 12px 16px; }
-  .app-main { padding: 16px 12px; }
+  .app-main { padding: 16px 12px 4px; }
   .tab-btn { padding: 8px 14px; font-size: 0.9rem; }
   .sort-filter-row { flex-direction: column; align-items: flex-start; }
   .timer-ring-wrap { width: 220px; height: 220px; }
@@ -1776,7 +1776,7 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   .tab-btn { padding: 8px 10px; }
 
   /* メインコンテンツ */
-  .app-main { padding: 10px 8px; }
+  .app-main { padding: 10px 8px 4px; }
 
   /* タイマー */
   .timer-ring-wrap { width: 190px; height: 190px; }
