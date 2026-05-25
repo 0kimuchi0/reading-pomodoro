@@ -29,7 +29,7 @@ const TIMER_HELP = [
     icon: <IconBook size={18} />,
     title: '本を選んでスタート',
     desc: '読書中・読みたい本を選択してからタイマーを開始できます。ドロップダウン内で検索も可能です',
-    detail: 'タイマー開始前に読む本を選択してください。本選択ドロップダウンを開くと検索欄が自動でフォーカスされ、タイトル・著者名で絞り込めます。「読みたい」ステータスの本を選ぶと、スタート時に自動で「読書中」に変更されます。本を選ばずにスタートすることはできません。',
+    detail: 'タイマー開始前に読む本を選択してください。本選択ドロップダウンを開くと一覧が表示され、検索欄にタップするとタイトル・著者名で絞り込めます。「読みたい」ステータスの本を選ぶと、スタート時に自動で「読書中」に変更されます。本を選ばずにスタートすることはできません。',
     image: <img src="/help/timer-book-select.svg" width="280" height="160" alt="" />,
   },
   {
@@ -109,13 +109,6 @@ export default function TimerTab({ books, sessions, onSessionComplete, onStatusC
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
-
-  // ドロップダウンが開いたら検索欄をフォーカス
-  useEffect(() => {
-    if (showBookDropdown) {
-      setTimeout(() => bookSearchRef.current?.focus(), 30)
-    }
-  }, [showBookDropdown])
 
   // sessions ロード後に今日の実績を同期
   useEffect(() => {
