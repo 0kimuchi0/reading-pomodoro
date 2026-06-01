@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { IconX, IconBrandGoogle, IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
+import { IconX, IconBrandGoogle, IconBrandApple, IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
 import { useAuth } from './AuthContext'
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 type Mode = 'login' | 'signup' | 'reset'
 
 export default function AuthModal({ onClose }: Props) {
-  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
+  const { signIn, signUp, signInWithGoogle, signInWithApple, resetPassword } = useAuth()
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -163,6 +163,10 @@ export default function AuthModal({ onClose }: Props) {
             {mode !== 'reset' && (
               <>
                 <div className="auth-divider"><span>または</span></div>
+                <button className="btn-apple" onClick={() => signInWithApple()}>
+                  <IconBrandApple size={18} />
+                  Apple でログイン
+                </button>
                 <button className="btn-google" onClick={handleGoogle}>
                   <IconBrandGoogle size={18} />
                   Google でログイン
