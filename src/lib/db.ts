@@ -340,6 +340,13 @@ export async function updateFeedbackStatus(id: string, status: FeedbackStatus): 
   if (error) throw error
 }
 
+// ---- account ----
+
+export async function deleteAccount(): Promise<void> {
+  const { error } = await supabase.rpc('delete_user_account')
+  if (error) throw error
+}
+
 // ---- migration ----
 
 export async function migrateLocalDataToSupabase(userId: string): Promise<void> {

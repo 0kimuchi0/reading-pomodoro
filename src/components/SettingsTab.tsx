@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend, IconShieldLock } from '@tabler/icons-react'
+import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend, IconShieldLock, IconTrash } from '@tabler/icons-react'
 import type { User } from '@supabase/supabase-js'
 import type { Theme } from '../App'
 import { useAuth } from '../auth/AuthContext'
@@ -21,8 +21,11 @@ const THEMES: { value: Theme; label: string; icon: React.ReactNode; desc: string
 ]
 
 export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: Props) {
-  const { signOut } = useAuth()
+  const { signOut, deleteAccount } = useAuth()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(false)
   const [feedbackText, setFeedbackText] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -65,10 +68,37 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
               <span className="account-email">{user.email}</span>
             </div>
             <p className="account-desc">データはクラウドに同期されています</p>
-            <button className="btn-ghost account-signout" onClick={signOut}>
-              <IconLogout size={16} />
-              ログアウト
-            </button>
+            <div className="account-actions">
+              <button className="btn-ghost account-signout" onClick={signOut}>
+                <IconLogout size={16} />
+                ログアウト
+              </button>
+              {!deleteConfirm ? (
+                <button className="btn-ghost account-delete-btn" onClick={() => setDeleteConfirm(true)}>
+                  <IconTrash size={16} />
+                  アカウント削除
+                </button>
+              ) : (
+                <div className="account-delete-confirm">
+                  <p className="account-delete-warning">すべてのデータが削除されます。この操作は取り消せません。</p>
+                  {deleteError && <p className="account-delete-error">削除に失敗しました。再度お試しください。</p>}
+                  <div className="account-delete-actions">
+                    <button className="btn-ghost" onClick={() => { setDeleteConfirm(false); setDeleteError(false) }} disabled={deleting}>キャンセル</button>
+                    <button
+                      className="btn-danger"
+                      disabled={deleting}
+                      onClick={async () => {
+                        setDeleting(true)
+                        setDeleteError(false)
+                        try { await deleteAccount() } catch { setDeleting(false); setDeleteError(true) }
+                      }}
+                    >
+                      {deleting ? '削除中...' : '削除する'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div className="account-info">

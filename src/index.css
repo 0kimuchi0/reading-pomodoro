@@ -1242,6 +1242,17 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
 .auth-divider::before, .auth-divider::after {
   content: ''; flex: 1; height: 1px; background: var(--color-border);
 }
+.btn-apple {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 16px;
+  background: #000; color: #fff;
+  border: 1px solid #000;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-apple:hover { opacity: 0.85; }
 .btn-google {
   width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 11px 16px;
@@ -1275,6 +1286,22 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   align-self: flex-end; display: flex; align-items: center; gap: 6px;
   font-size: 0.88rem;
 }
+.account-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.account-delete-btn { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; color: #e05252 !important; }
+.account-delete-btn:hover { background: #fef2f2 !important; }
+.account-delete-confirm { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.account-delete-warning { font-size: 0.83rem; color: #e05252; }
+.account-delete-error { font-size: 0.83rem; color: #e05252; }
+.account-delete-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-danger {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  background: #e05252; color: #fff; border: none;
+  border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-danger:hover { background: #c43c3c; }
+.btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .feedback-btn { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; align-self: flex-start; }
 .privacy-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; text-decoration: none; }
@@ -1690,10 +1717,12 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   :root:not([data-theme="light"]) .confirm-cancel-btn { border-color: #4A4A6A; color: var(--color-text); }
 }
 
-/* Google ログインボタン */
+/* Google / Apple ログインボタン */
 [data-theme="dark"] .btn-google { background: var(--color-surface); border-color: #4A4A6A; }
+[data-theme="dark"] .btn-apple { background: #fff; color: #000; border-color: #fff; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .btn-google { background: var(--color-surface); border-color: #4A4A6A; }
+  :root:not([data-theme="light"]) .btn-apple  { background: #fff; color: #000; border-color: #fff; }
 }
 
 /* admin role select */

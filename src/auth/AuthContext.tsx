@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
-import { migrateLocalDataToSupabase, getMyProfile } from '../lib/db'
+import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
 
 interface AuthContextValue {
@@ -13,7 +13,9 @@ interface AuthContextValue {
   signUp: (email: string, password: string) => Promise<string | null>
   signIn: (email: string, password: string) => Promise<string | null>
   signInWithGoogle: () => Promise<void>
+  signInWithApple: () => Promise<void>
   signOut: () => Promise<void>
+  deleteAccount: () => Promise<void>
   resetPassword: (email: string) => Promise<string | null>
 }
 
@@ -110,8 +112,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  const signInWithApple = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: { redirectTo: window.location.origin },
+    })
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut()
+  }
+
+  const handleDeleteAccount = async () => {
+    await deleteAccount()
+    setUser(null)
+    setRole(null)
   }
 
   const resetPassword = async (email: string): Promise<string | null> => {
@@ -122,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, bannedError, clearBannedError, signUp, signIn, signInWithGoogle, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ user, role, loading, bannedError, clearBannedError, signUp, signIn, signInWithGoogle, signInWithApple, signOut, deleteAccount: handleDeleteAccount, resetPassword }}>
       {children}
     </AuthContext.Provider>
   )
