@@ -1,8 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
+import { Capacitor } from '@capacitor/core'
+import { Browser } from '@capacitor/browser'
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
+
+const NATIVE_REDIRECT = 'com.readingpomodoro.app://login-callback'
 
 interface AuthContextValue {
   user: User | null
@@ -106,10 +110,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin },
-    })
+    if (Capacitor.isNativePlatform()) {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+      })
+      if (data.url) await Browser.open({ url: data.url, windowName: '_self' })
+    } else {
+      await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin },
+      })
+    }
+  }
+
+  const signInWithApple = async () => {
+    if (Capacitor.isNativePlatform()) {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+      })
+      if (data.url) await Browser.open({ url: data.url, windowName: '_self' })
+    } else {
+      await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: { redirectTo: window.location.origin },
+      })
+    }
   }
 
   const signInWithApple = async () => {

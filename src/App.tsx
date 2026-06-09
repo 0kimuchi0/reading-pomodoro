@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 import { IconClock, IconBooks, IconChartBar, IconSettings, IconShield } from '@tabler/icons-react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Capacitor } from '@capacitor/core'
+import { App as CapApp } from '@capacitor/app'
+import { Browser } from '@capacitor/browser'
 import TimerTab from './components/TimerTab'
 import BookshelfTab from './components/BookshelfTab'
 import StatsTab from './components/StatsTab'
@@ -14,6 +17,7 @@ import type { Book, Session } from './types'
 import { getBooks, saveBook, saveAllBooks, deleteBook, getSessions, saveSession, getSuggestBooks } from './lib/db'
 import { setAdminBooksCache, SUGGEST_BOOKS, getUserSuggestions } from './suggestBooks'
 import { buildReadingIndex } from './lib/japanese'
+import { supabase } from './lib/supabase'
 
 type Tab = 'timer' | 'bookshelf' | 'stats' | 'settings' | 'admin'
 export type Theme = 'light' | 'dark' | 'system'
@@ -38,6 +42,27 @@ function AppInner() {
   useEffect(() => {
     const t = setTimeout(() => setSplashDone(true), 2500)
     return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return
+    const listenerPromise = CapApp.addListener('appUrlOpen', async ({ url }) => {
+      if (!url.startsWith('com.readingpomodoro.app://')) return
+      const urlObj = new URL(url)
+      const code = urlObj.searchParams.get('code')
+      if (code) {
+        await supabase.auth.exchangeCodeForSession(code)
+      } else {
+        const hash = new URLSearchParams(urlObj.hash.replace('#', ''))
+        const access_token = hash.get('access_token')
+        const refresh_token = hash.get('refresh_token')
+        if (access_token && refresh_token) {
+          await supabase.auth.setSession({ access_token, refresh_token })
+        }
+      }
+      await Browser.close()
+    })
+    return () => { listenerPromise.then(l => l.remove()) }
   }, [])
 
   // ローディング完了 & 5秒経過したらフェードアウト開始 → 600ms後に非表示

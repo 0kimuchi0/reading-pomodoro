@@ -49,5 +49,16 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.readingpomodoro.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.readingpomodoro.app</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
