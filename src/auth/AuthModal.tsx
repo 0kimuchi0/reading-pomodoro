@@ -61,7 +61,14 @@ export default function AuthModal({ onClose }: Props) {
 
   const handleGoogle = async () => {
     setError(null)
-    await signInWithGoogle()
+    const err = await signInWithGoogle()
+    if (err) setError(translateError(err))
+  }
+
+  const handleApple = async () => {
+    setError(null)
+    const err = await signInWithApple()
+    if (err) setError(translateError(err))
   }
 
   return createPortal(
@@ -163,7 +170,7 @@ export default function AuthModal({ onClose }: Props) {
             {mode !== 'reset' && (
               <>
                 <div className="auth-divider"><span>または</span></div>
-                <button className="btn-apple" onClick={() => signInWithApple()}>
+                <button className="btn-apple" onClick={handleApple}>
                   <IconBrandApple size={18} />
                   Apple でログイン
                 </button>
