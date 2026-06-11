@@ -16,8 +16,8 @@ interface AuthContextValue {
   clearBannedError: () => void
   signUp: (email: string, password: string) => Promise<string | null>
   signIn: (email: string, password: string) => Promise<string | null>
-  signInWithGoogle: () => Promise<void>
-  signInWithApple: () => Promise<void>
+  signInWithGoogle: () => Promise<string | null>
+  signInWithApple: () => Promise<string | null>
   signOut: () => Promise<void>
   deleteAccount: () => Promise<void>
   resetPassword: (email: string) => Promise<string | null>
@@ -109,33 +109,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return error?.message ?? null
   }
 
-  const signInWithGoogle = async () => {
-    if (Capacitor.isNativePlatform()) {
-      const { data } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
-      })
-      if (data.url) await Browser.open({ url: data.url, windowName: '_self' })
-    } else {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin },
-      })
+  const signInWithGoogle = async (): Promise<string | null> => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+        })
+        if (error) return error.message
+        if (data.url) await Browser.open({ url: data.url })
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin },
+        })
+        if (error) return error.message
+      }
+      return null
+    } catch (e) {
+      return e instanceof Error ? e.message : 'Googleログインに失敗しました'
     }
   }
 
-  const signInWithApple = async () => {
-    if (Capacitor.isNativePlatform()) {
-      const { data } = await supabase.auth.signInWithOAuth({
-        provider: 'apple',
-        options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
-      })
-      if (data.url) await Browser.open({ url: data.url, windowName: '_self' })
-    } else {
-      await supabase.auth.signInWithOAuth({
-        provider: 'apple',
-        options: { redirectTo: window.location.origin },
-      })
+  const signInWithApple = async (): Promise<string | null> => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'apple',
+          options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+        })
+        if (error) return error.message
+        if (data.url) await Browser.open({ url: data.url })
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'apple',
+          options: { redirectTo: window.location.origin },
+        })
+        if (error) return error.message
+      }
+      return null
+    } catch (e) {
+      return e instanceof Error ? e.message : 'Appleログインに失敗しました'
     }
   }
 
