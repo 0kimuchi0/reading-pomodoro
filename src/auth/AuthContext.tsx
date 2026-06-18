@@ -1,12 +1,25 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
-import { Browser } from '@capacitor/browser'
+import { SignInWithApple } from '@capacitor-community/apple-sign-in'
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
 
-const NATIVE_REDIRECT = 'com.readingpomodoro.app://login-callback'
+function generateRawNonce(): string {
+  const array = new Uint8Array(16)
+  crypto.getRandomValues(array)
+  return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function sha256(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+}
 
 interface AuthContextValue {
   user: User | null
@@ -30,6 +43,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null)
   const [loading, setLoading] = useState(true)
   const [bannedError, setBannedError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      GoogleAuth.initialize({
+        clientId: '377241006434-b9o4mqdco3ar5mhf25annv9dvvh0d212.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+        grantOfflineAccess: false,
+      }).catch(console.error)
+    }
+  }, [])
 
   const clearBannedError = () => setBannedError(null)
 
@@ -112,44 +135,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async (): Promise<string | null> => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const googleUser = await GoogleAuth.signIn()
+        const idToken = googleUser.authentication.idToken
+        if (!idToken) return 'Google ログインに失敗しました'
+        const { error } = await supabase.auth.signInWithIdToken({
           provider: 'google',
-          options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+          token: idToken,
         })
-        if (error) return error.message
-        if (data.url) await Browser.open({ url: data.url })
+        return error?.message ?? null
       } else {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: { redirectTo: window.location.origin },
         })
-        if (error) return error.message
+        return error?.message ?? null
       }
-      return null
     } catch (e) {
-      return e instanceof Error ? e.message : 'Googleログインに失敗しました'
+      if (e instanceof Error && /cancel|dismiss|interrupt/i.test(e.message)) return null
+      return e instanceof Error ? e.message : 'Google ログインに失敗しました'
     }
   }
 
   const signInWithApple = async (): Promise<string | null> => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'apple',
-          options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true },
+        const rawNonce = generateRawNonce()
+        const hashedNonce = await sha256(rawNonce)
+        const result = await SignInWithApple.authorize({
+          clientId: 'com.readingpomodoro.app',
+          redirectURI: '',
+          scopes: 'email name',
+          nonce: hashedNonce,
         })
-        if (error) return error.message
-        if (data.url) await Browser.open({ url: data.url })
+        const identityToken = result.response.identityToken
+        if (!identityToken) return 'Apple ログインに失敗しました'
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: identityToken,
+          nonce: rawNonce,
+        })
+        return error?.message ?? null
       } else {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'apple',
           options: { redirectTo: window.location.origin },
         })
-        if (error) return error.message
+        return error?.message ?? null
       }
-      return null
     } catch (e) {
-      return e instanceof Error ? e.message : 'Appleログインに失敗しました'
+      if (e instanceof Error && /cancel|1001/i.test(e.message)) return null
+      return e instanceof Error ? e.message : 'Apple ログインに失敗しました'
     }
   }
 

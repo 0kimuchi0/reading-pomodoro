@@ -49,6 +49,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>GIDClientID</key>
+	<string>377241006434-b9o4mqdco3ar5mhf25annv9dvvh0d212.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -57,6 +59,12 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.readingpomodoro.app</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.377241006434-b9o4mqdco3ar5mhf25annv9dvvh0d212</string>
 			</array>
 		</dict>
 	</array>

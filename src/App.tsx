@@ -3,7 +3,7 @@ import { IconClock, IconBooks, IconChartBar, IconSettings, IconShield } from '@t
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapApp } from '@capacitor/app'
-import { Browser } from '@capacitor/browser'
+import { supabase } from './lib/supabase'
 import TimerTab from './components/TimerTab'
 import BookshelfTab from './components/BookshelfTab'
 import StatsTab from './components/StatsTab'
@@ -17,7 +17,6 @@ import type { Book, Session } from './types'
 import { getBooks, saveBook, saveAllBooks, deleteBook, getSessions, saveSession, getSuggestBooks } from './lib/db'
 import { setAdminBooksCache, SUGGEST_BOOKS, getUserSuggestions } from './suggestBooks'
 import { buildReadingIndex } from './lib/japanese'
-import { supabase } from './lib/supabase'
 
 type Tab = 'timer' | 'bookshelf' | 'stats' | 'settings' | 'admin'
 export type Theme = 'light' | 'dark' | 'system'
@@ -60,9 +59,8 @@ function AppInner() {
           await supabase.auth.setSession({ access_token, refresh_token })
         }
       }
-      await Browser.close()
     })
-    return () => { listenerPromise.then(l => l.remove()) }
+    return () => { listenerPromise.then(l => l.remove()).catch(() => {}) }
   }, [])
 
   // ローディング完了 & 5秒経過したらフェードアウト開始 → 600ms後に非表示

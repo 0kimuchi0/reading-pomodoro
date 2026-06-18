@@ -465,6 +465,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
           className="bookshelf-search-input"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
+          onCompositionUpdate={e => setSearchQuery((e.target as HTMLInputElement).value)}
           placeholder="タイトル・著者・出版社で検索..."
           autoComplete="off"
         />
