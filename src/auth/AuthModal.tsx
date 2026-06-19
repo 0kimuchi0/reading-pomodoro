@@ -61,14 +61,20 @@ export default function AuthModal({ onClose }: Props) {
 
   const handleGoogle = async () => {
     setError(null)
+    setLoading(true)
     const err = await signInWithGoogle()
+    setLoading(false)
     if (err) setError(translateError(err))
+    else onClose()
   }
 
   const handleApple = async () => {
     setError(null)
+    setLoading(true)
     const err = await signInWithApple()
+    setLoading(false)
     if (err) setError(translateError(err))
+    else onClose()
   }
 
   return createPortal(
@@ -170,11 +176,11 @@ export default function AuthModal({ onClose }: Props) {
             {mode !== 'reset' && (
               <>
                 <div className="auth-divider"><span>または</span></div>
-                <button className="btn-apple" onClick={handleApple}>
+                <button className="btn-apple" onClick={handleApple} disabled={loading}>
                   <IconBrandApple size={18} />
                   Apple でログイン
                 </button>
-                <button className="btn-google" onClick={handleGoogle}>
+                <button className="btn-google" onClick={handleGoogle} disabled={loading}>
                   <IconBrandGoogle size={18} />
                   Google でログイン
                 </button>
@@ -195,5 +201,9 @@ function translateError(msg: string): string {
   if (msg.includes('Password should be at least')) return 'パスワードは8文字以上にしてください'
   if (msg.includes('email rate limit exceeded')) return 'メール送信の上限に達しました。しばらく待ってから再試行してください'
   if (msg.includes('For security purposes')) return 'セキュリティのため、しばらく待ってから再試行してください'
+  if (msg.includes('nonce')) return 'ログインの認証に失敗しました。再度お試しください'
+  if (msg.includes('expired') || msg.includes('token')) return 'ログインセッションの有効期限が切れました。再度お試しください'
+  if (msg.includes('provider') && msg.includes('not enabled')) return 'このログイン方法は現在利用できません'
+  if (msg.includes('User already exists')) return 'このアカウントは既に別の方法で登録されています'
   return msg
 }

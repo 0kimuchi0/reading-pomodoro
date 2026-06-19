@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       GoogleAuth.initialize({
-        clientId: '377241006434-b9o4mqdco3ar5mhf25annv9dvvh0d212.apps.googleusercontent.com',
+        clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
         scopes: ['profile', 'email'],
         grantOfflineAccess: false,
       }).catch(console.error)

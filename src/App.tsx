@@ -45,7 +45,9 @@ function AppInner() {
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
-    const listenerPromise = CapApp.addListener('appUrlOpen', async ({ url }) => {
+    let handle: { remove: () => void } | null = null
+    let cleanedUp = false
+    CapApp.addListener('appUrlOpen', async ({ url }) => {
       if (!url.startsWith('com.readingpomodoro.app://')) return
       const urlObj = new URL(url)
       const code = urlObj.searchParams.get('code')
@@ -59,8 +61,14 @@ function AppInner() {
           await supabase.auth.setSession({ access_token, refresh_token })
         }
       }
-    })
-    return () => { listenerPromise.then(l => l.remove()).catch(() => {}) }
+    }).then(h => {
+      handle = h
+      if (cleanedUp) h.remove()
+    }).catch(console.error)
+    return () => {
+      cleanedUp = true
+      handle?.remove()
+    }
   }, [])
 
   // ローディング完了 & 5秒経過したらフェードアウト開始 → 600ms後に非表示

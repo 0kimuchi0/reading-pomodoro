@@ -346,7 +346,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
                 className="quick-add-input"
                 value={quickTitle}
                 onChange={e => handleTitleChange(e.target.value)}
-                onCompositionUpdate={e => setSuggestions(searchSuggestions((e.target as HTMLInputElement).value))}
+                onCompositionEnd={e => setSuggestions(searchSuggestions((e.target as HTMLInputElement).value))}
                 onKeyDown={handleKeyDown}
                 onBlur={() => setTimeout(() => setSuggestions([]), 150)}
                 placeholder="タイトル *"
@@ -465,7 +465,7 @@ export default function BookshelfTab({ books, onAdd, onUpdate, onDelete }: Props
           className="bookshelf-search-input"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          onCompositionUpdate={e => setSearchQuery((e.target as HTMLInputElement).value)}
+          onCompositionEnd={e => setSearchQuery((e.target as HTMLInputElement).value)}
           placeholder="タイトル・著者・出版社で検索..."
           autoComplete="off"
         />
