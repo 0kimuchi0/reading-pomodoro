@@ -4,11 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.readingpomodoro.app',
   appName: 'PomoRead',
   webDir: 'dist',
-  plugins: {
-    Keyboard: {
-      resize: 'none',
-    },
-  },
+  plugins: {},
 };
 
 export default config;
