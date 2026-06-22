@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapApp } from '@capacitor/app'
 import { supabase } from './lib/supabase'
+import { APP_URL_SCHEME } from './lib/constants'
 import TimerTab from './components/TimerTab'
 import BookshelfTab from './components/BookshelfTab'
 import StatsTab from './components/StatsTab'
@@ -23,7 +24,7 @@ export type Theme = 'light' | 'dark' | 'system'
 export type SyncState = 'idle' | 'syncing' | 'synced' | 'offline'
 
 function AppInner() {
-  const { user, role, loading: authLoading, bannedError, clearBannedError } = useAuth()
+  const { user, role, loading: authLoading, bannedError, clearBannedError, passwordRecoveryMode, clearPasswordRecoveryMode } = useAuth()
   const [tab, setTab] = useState<Tab>('timer')
   const [books, setBooks] = useState<Book[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
@@ -44,11 +45,18 @@ function AppInner() {
   }, [])
 
   useEffect(() => {
+    if (!passwordRecoveryMode) return
+    setTab('settings')
+    setShowAuthModal(true)
+    clearPasswordRecoveryMode()
+  }, [passwordRecoveryMode, clearPasswordRecoveryMode])
+
+  useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
     let handle: { remove: () => void } | null = null
     let cleanedUp = false
     CapApp.addListener('appUrlOpen', async ({ url }) => {
-      if (!url.startsWith('com.readingpomodoro.app://')) return
+      if (!url.startsWith(APP_URL_SCHEME)) return
       const urlObj = new URL(url)
       const code = urlObj.searchParams.get('code')
       if (code) {

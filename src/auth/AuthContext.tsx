@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
 import { SignInWithApple } from '@capacitor-community/apple-sign-in'
@@ -6,6 +6,7 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
+import { APP_BUNDLE_ID, APP_URL_SCHEME } from '../lib/constants'
 
 function generateRawNonce(): string {
   const array = new Uint8Array(16)
@@ -34,6 +35,8 @@ interface AuthContextValue {
   signOut: () => Promise<void>
   deleteAccount: () => Promise<void>
   resetPassword: (email: string) => Promise<string | null>
+  passwordRecoveryMode: boolean
+  clearPasswordRecoveryMode: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -43,14 +46,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null)
   const [loading, setLoading] = useState(true)
   const [bannedError, setBannedError] = useState<string | null>(null)
+  const [passwordRecoveryMode, setPasswordRecoveryMode] = useState(false)
+  const googleInitError = useRef<Error | null>(null)
+
+  const clearPasswordRecoveryMode = () => setPasswordRecoveryMode(false)
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       GoogleAuth.initialize({
         clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
+        serverClientId: import.meta.env.VITE_GOOGLE_SERVER_CLIENT_ID ?? '',
         scopes: ['profile', 'email'],
-        grantOfflineAccess: false,
-      }).catch(console.error)
+        grantOfflineAccess: true,
+      }).catch((err) => {
+        console.error('[GoogleAuth] initialize failed:', err)
+        googleInitError.current = err instanceof Error ? err : new Error(String(err))
+      })
     }
   }, [])
 
@@ -75,7 +86,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let initialDone = false
 
     // onAuthStateChange で初回セッション取得 + 以降の変化を一本化
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setPasswordRecoveryMode(true)
+        setLoading(false)
+        initialDone = true
+        return
+      }
+
       const newUser = session?.user ?? null
 
       if (!initialDone) {
@@ -135,6 +153,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async (): Promise<string | null> => {
     try {
       if (Capacitor.isNativePlatform()) {
+        if (googleInitError.current) {
+          return 'Google 認証の初期化に失敗しました（設定を確認してください）'
+        }
         const googleUser = await GoogleAuth.signIn()
         const idToken = googleUser.authentication.idToken
         if (!idToken) return 'Google ログインに失敗しました'
@@ -162,7 +183,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const rawNonce = generateRawNonce()
         const hashedNonce = await sha256(rawNonce)
         const result = await SignInWithApple.authorize({
-          clientId: 'com.readingpomodoro.app',
+          clientId: APP_BUNDLE_ID,
           redirectURI: '',
           scopes: 'email name',
           nonce: hashedNonce,
@@ -199,14 +220,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const resetPassword = async (email: string): Promise<string | null> => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin,
-    })
+    const redirectTo = Capacitor.isNativePlatform()
+      ? APP_URL_SCHEME
+      : window.location.origin
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
     return error?.message ?? null
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, bannedError, clearBannedError, signUp, signIn, signInWithGoogle, signInWithApple, signOut, deleteAccount: handleDeleteAccount, resetPassword }}>
+    <AuthContext.Provider value={{ user, role, loading, bannedError, clearBannedError, signUp, signIn, signInWithGoogle, signInWithApple, signOut, deleteAccount: handleDeleteAccount, resetPassword, passwordRecoveryMode, clearPasswordRecoveryMode }}>
       {children}
     </AuthContext.Provider>
   )
