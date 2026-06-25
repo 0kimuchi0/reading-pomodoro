@@ -154,8 +154,8 @@ describe('PASSWORD_RECOVERY と googleInitError', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.googleInitialize.mockResolvedValue(undefined)
-    mocks.onAuthStateChange.mockImplementation((cb: (event: string, session: unknown) => Promise<void>) => {
-      fireAuthState = cb
+    mocks.onAuthStateChange.mockImplementation((...args: unknown[]) => {
+      fireAuthState = args[0] as (event: string, session: unknown) => Promise<void>
       return { data: { subscription: { unsubscribe: vi.fn() } } }
     })
   })

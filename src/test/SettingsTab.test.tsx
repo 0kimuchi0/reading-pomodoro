@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import React from 'react'
 import SettingsTab from '../components/SettingsTab'
 
 const mocks = vi.hoisted(() => ({
@@ -8,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   clearPasswordRecoveryMode: vi.fn(),
   signOut: vi.fn(),
   deleteAccount: vi.fn(),
-  updateUser: vi.fn(() => Promise.resolve({ error: null })),
+  updateUser: vi.fn(() => Promise.resolve({ error: null as { message: string } | null })),
 }))
 
 vi.mock('../auth/AuthContext', () => ({
