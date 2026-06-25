@@ -811,7 +811,26 @@ label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-
   box-shadow: var(--shadow);
   display: flex; flex-direction: column; gap: 14px;
 }
-.settings-section-title { font-size: 0.95rem; font-weight: 700; }
+.settings-section-title { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+/* Password Recovery Form */
+.settings-section--recovery { border-color: var(--accent-light); }
+.recovery-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.recovery-input:focus { border-color: var(--accent); }
+.recovery-success-msg { color: #22c55e; font-size: 0.9rem; font-weight: 600; }
+.recovery-error-msg { color: #ef4444; font-size: 0.85rem; }
+.recovery-submit { align-self: flex-start; }
 
 .theme-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .theme-option {
