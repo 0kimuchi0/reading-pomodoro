@@ -5,9 +5,11 @@ import { AuthProvider, useAuth } from '../auth/AuthContext'
 
 const mocks = vi.hoisted(() => ({
   isNativePlatform: vi.fn(() => false),
-  resetPasswordForEmail: vi.fn(() => Promise.resolve({ error: null })),
+  resetPasswordForEmail: vi.fn(() =>
+    Promise.resolve({ error: null as { message: string } | null })
+  ),
   googleInitialize: vi.fn(() => Promise.resolve()),
-  onAuthStateChange: vi.fn(() => ({
+  onAuthStateChange: vi.fn((..._args: unknown[]) => ({
     data: { subscription: { unsubscribe: vi.fn() } },
   })),
 }))
@@ -133,17 +135,6 @@ describe('GoogleAuth.initialize', () => {
     await vi.waitFor(() => {
       expect(mocks.googleInitialize).toHaveBeenCalledWith(
         expect.objectContaining({ grantOfflineAccess: true })
-      )
-    })
-  })
-
-  it('ネイティブでは serverClientId が渡される', async () => {
-    mocks.isNativePlatform.mockReturnValue(true)
-    renderHook(() => useAuth(), { wrapper })
-
-    await vi.waitFor(() => {
-      expect(mocks.googleInitialize).toHaveBeenCalledWith(
-        expect.objectContaining({ serverClientId: expect.any(String) })
       )
     })
   })

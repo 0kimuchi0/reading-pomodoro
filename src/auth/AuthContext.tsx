@@ -55,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (Capacitor.isNativePlatform()) {
       GoogleAuth.initialize({
         clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
-        serverClientId: import.meta.env.VITE_GOOGLE_SERVER_CLIENT_ID ?? '',
         scopes: ['profile', 'email'],
         grantOfflineAccess: true,
       }).catch((err) => {
