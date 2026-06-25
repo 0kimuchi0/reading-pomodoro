@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend, IconShieldLock, IconTrash } from '@tabler/icons-react'
+import { IconSun, IconMoon, IconDeviceDesktop, IconUser, IconLogout, IconLogin, IconMessage, IconX, IconSend, IconShieldLock, IconTrash, IconKey } from '@tabler/icons-react'
 import type { User } from '@supabase/supabase-js'
 import type { Theme } from '../App'
 import { useAuth } from '../auth/AuthContext'
 import { submitFeedback } from '../lib/db'
+import { supabase } from '../lib/supabase'
 
 interface Props {
   theme: Theme
@@ -21,7 +22,12 @@ const THEMES: { value: Theme; label: string; icon: React.ReactNode; desc: string
 ]
 
 export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: Props) {
-  const { signOut, deleteAccount } = useAuth()
+  const { signOut, deleteAccount, passwordRecoveryMode, clearPasswordRecoveryMode } = useAuth()
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -57,8 +63,69 @@ export default function SettingsTab({ theme, onThemeChange, user, onOpenAuth }: 
     }
   }
 
+  const handleChangePassword = async () => {
+    setPasswordError(null)
+    if (newPassword.length < 8) {
+      setPasswordError('パスワードは8文字以上で入力してください')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('パスワードが一致しません')
+      return
+    }
+    setPasswordSubmitting(true)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    setPasswordSubmitting(false)
+    if (error) {
+      setPasswordError('パスワードの変更に失敗しました')
+      return
+    }
+    setPasswordSuccess(true)
+    clearPasswordRecoveryMode()
+  }
+
   return (
     <div className="settings-tab">
+      {passwordRecoveryMode && (
+        <section className="settings-section settings-section--recovery">
+          <h2 className="settings-section-title">
+            <IconKey size={18} />
+            パスワードを変更
+          </h2>
+          {passwordSuccess ? (
+            <p className="recovery-success-msg">パスワードを変更しました</p>
+          ) : (
+            <>
+              <p className="account-desc">新しいパスワードを設定してください</p>
+              <input
+                type="password"
+                className="recovery-input"
+                placeholder="新しいパスワード（8文字以上）"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                disabled={passwordSubmitting}
+              />
+              <input
+                type="password"
+                className="recovery-input"
+                placeholder="パスワードを再入力"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                disabled={passwordSubmitting}
+              />
+              {passwordError && <p className="recovery-error-msg">{passwordError}</p>}
+              <button
+                className="btn-primary recovery-submit"
+                onClick={handleChangePassword}
+                disabled={passwordSubmitting || !newPassword || !confirmPassword}
+              >
+                {passwordSubmitting ? '変更中...' : 'パスワードを更新'}
+              </button>
+            </>
+          )}
+        </section>
+      )}
+
       <section className="settings-section">
         <h2 className="settings-section-title">アカウント</h2>
         {user ? (
