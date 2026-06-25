@@ -184,6 +184,7 @@ export function addUserSuggestion(book: SuggestBook): void {
   if (isDuplicate(book.title, book.author, book.publisher)) return
   const current = getUserSuggestions()
   localStorage.setItem(USER_SUGGEST_KEY, JSON.stringify([...current, book]))
+  buildReadingIndex([book.title, book.author])
 }
 
 export function searchSuggestions(query: string): SuggestBook[] {
