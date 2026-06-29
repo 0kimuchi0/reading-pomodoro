@@ -8,7 +8,12 @@ const mocks = vi.hoisted(() => ({
   resetPasswordForEmail: vi.fn(() =>
     Promise.resolve({ error: null as { message: string } | null })
   ),
+  // legacy init mock — keeps old useEffect from throwing when unmocked
   googleInitialize: vi.fn(() => Promise.resolve()),
+  // new API mocks
+  socialLoginInitialize: vi.fn(() => Promise.resolve()),
+  socialLoginLogin: vi.fn(),
+  supabaseSignInWithIdToken: vi.fn(() => Promise.resolve({ error: null })),
   onAuthStateChange: vi.fn((..._args: unknown[]) => ({
     data: { subscription: { unsubscribe: vi.fn() } },
   })),
@@ -25,13 +30,22 @@ vi.mock('../lib/supabase', () => ({
       resetPasswordForEmail: mocks.resetPasswordForEmail,
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
-      signInWithIdToken: vi.fn(),
+      signInWithIdToken: mocks.supabaseSignInWithIdToken,
       signInWithOAuth: vi.fn(),
       signOut: vi.fn(),
     },
   },
 }))
 
+// new package mock — RED: AuthContext still uses old packages so these won't be called
+vi.mock('@capgo/capacitor-social-login', () => ({
+  SocialLogin: {
+    initialize: mocks.socialLoginInitialize,
+    login: mocks.socialLoginLogin,
+  },
+}))
+
+// legacy mocks kept so old imports don't throw during RED phase
 vi.mock('@codetrix-studio/capacitor-google-auth', () => ({
   GoogleAuth: {
     initialize: mocks.googleInitialize,
@@ -57,6 +71,7 @@ describe('resetPassword', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.resetPasswordForEmail.mockResolvedValue({ error: null })
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
     mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
@@ -119,40 +134,156 @@ describe('resetPassword', () => {
   })
 })
 
-describe('GoogleAuth.initialize', () => {
+describe('SocialLogin.initialize', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
     mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
     })
   })
 
-  it('ネイティブでは grantOfflineAccess: true で初期化される', async () => {
+  it('ネイティブでは google オプションで初期化される', async () => {
     mocks.isNativePlatform.mockReturnValue(true)
     renderHook(() => useAuth(), { wrapper })
 
     await vi.waitFor(() => {
-      expect(mocks.googleInitialize).toHaveBeenCalledWith(
-        expect.objectContaining({ grantOfflineAccess: true })
+      expect(mocks.socialLoginInitialize).toHaveBeenCalledWith(
+        expect.objectContaining({
+          google: expect.objectContaining({ iOSClientId: expect.any(String) }),
+        })
       )
     })
   })
 
-  it('Web では GoogleAuth.initialize を呼ばない', () => {
+  it('Web では SocialLogin.initialize を呼ばない', () => {
     mocks.isNativePlatform.mockReturnValue(false)
     renderHook(() => useAuth(), { wrapper })
 
-    expect(mocks.googleInitialize).not.toHaveBeenCalled()
+    expect(mocks.socialLoginInitialize).not.toHaveBeenCalled()
   })
 })
 
-describe('PASSWORD_RECOVERY と googleInitError', () => {
-  // onAuthStateChange に渡されたコールバックをキャプチャして手動で呼べるようにする
+describe('signInWithGoogle (native)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.googleInitialize.mockResolvedValue(undefined)
+    mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
+    mocks.onAuthStateChange.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
+  })
+
+  it('SocialLogin.login を呼んで idToken で Supabase にログインする', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockResolvedValue({
+      provider: 'google',
+      result: {
+        responseType: 'online',
+        idToken: 'google-id-token-123',
+        accessToken: null,
+        profile: { email: null, familyName: null, givenName: null, id: null, name: null, imageUrl: null },
+      },
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = 'sentinel'
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+
+    expect(mocks.socialLoginLogin).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'google' })
+    )
+    expect(mocks.supabaseSignInWithIdToken).toHaveBeenCalledWith({
+      provider: 'google',
+      token: 'google-id-token-123',
+    })
+    expect(error).toBeNull()
+  })
+
+  it('idToken が null のとき日本語エラーを返す', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockResolvedValue({
+      provider: 'google',
+      result: { responseType: 'online', idToken: null, accessToken: null, profile: null },
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = null
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+
+    expect(error).toBe('Google ログインに失敗しました')
+  })
+})
+
+describe('signInWithApple (native)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.googleInitialize.mockResolvedValue(undefined)
+    mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
+    mocks.onAuthStateChange.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
+  })
+
+  it('nonce を生成して SocialLogin.login を呼び idToken で Supabase にログインする', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockResolvedValue({
+      provider: 'apple',
+      result: {
+        idToken: 'apple-id-token-456',
+        accessToken: null,
+        profile: { user: 'apple-user-id', email: null, givenName: null, familyName: null },
+      },
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = 'sentinel'
+    await act(async () => {
+      error = await result.current.signInWithApple()
+    })
+
+    expect(mocks.socialLoginLogin).toHaveBeenCalledWith(
+      expect.objectContaining({
+        provider: 'apple',
+        options: expect.objectContaining({ nonce: expect.any(String) }),
+      })
+    )
+    expect(mocks.supabaseSignInWithIdToken).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'apple', token: 'apple-id-token-456' })
+    )
+    expect(error).toBeNull()
+  })
+
+  it('idToken が null のとき日本語エラーを返す', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockResolvedValue({
+      provider: 'apple',
+      result: { idToken: null, accessToken: null, profile: { user: '', email: null, givenName: null, familyName: null } },
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = null
+    await act(async () => {
+      error = await result.current.signInWithApple()
+    })
+
+    expect(error).toBe('Apple ログインに失敗しました')
+  })
+})
+
+describe('PASSWORD_RECOVERY と socialLoginInitError', () => {
   let fireAuthState: ((event: string, session: unknown) => Promise<void>) | null = null
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
     mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockImplementation((...args: unknown[]) => {
       fireAuthState = args[0] as (event: string, session: unknown) => Promise<void>
@@ -187,12 +318,11 @@ describe('PASSWORD_RECOVERY と googleInitError', () => {
     expect(result.current.passwordRecoveryMode).toBe(false)
   })
 
-  it('GoogleAuth init 失敗後に signInWithGoogle が日本語エラーを返す', async () => {
+  it('SocialLogin init 失敗後に signInWithGoogle が日本語エラーを返す', async () => {
     mocks.isNativePlatform.mockReturnValue(true)
-    mocks.googleInitialize.mockRejectedValue(new Error('serverClientId missing'))
+    mocks.socialLoginInitialize.mockRejectedValue(new Error('serverClientId missing'))
     const { result } = renderHook(() => useAuth(), { wrapper })
 
-    // useEffect の catch が走るまで待つ
     await act(async () => {
       await new Promise(r => setTimeout(r, 0))
     })
