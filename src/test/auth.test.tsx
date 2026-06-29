@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import React from 'react'
 import { AuthProvider, useAuth } from '../auth/AuthContext'
@@ -370,5 +370,73 @@ describe('admin role loading', () => {
     })
 
     expect(result.current.role).toBeNull()
+  })
+})
+
+describe('signInWithApple - error 1000 ハンドリング', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.onAuthStateChange.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
+  })
+
+  it('ASAuthorizationError error 1000 はユーザーフレンドリーなメッセージを返す', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockRejectedValue(
+      new Error("The operation couldn't be completed. (com.apple.AuthenticationServices.AuthorizationError error 1000.)")
+    )
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = null
+    await act(async () => {
+      error = await result.current.signInWithApple()
+    })
+
+    expect(error).toBe('Apple ログインに失敗しました。しばらくしてから再試行してください。')
+  })
+
+  it('ASAuthorizationError error 1001（キャンセル）は null を返す', async () => {
+    mocks.isNativePlatform.mockReturnValue(true)
+    mocks.socialLoginLogin.mockRejectedValue(
+      new Error("The operation couldn't be completed. (com.apple.AuthenticationServices.AuthorizationError error 1001.)")
+    )
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = 'sentinel'
+    await act(async () => {
+      error = await result.current.signInWithApple()
+    })
+
+    expect(error).toBeNull()
+  })
+})
+
+describe('signInWithGoogle - clientId 未設定', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.onAuthStateChange.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('VITE_GOOGLE_CLIENT_ID が未設定のとき SocialLogin.login を呼ばずにエラーを返す', async () => {
+    vi.stubEnv('VITE_GOOGLE_CLIENT_ID', '')
+    mocks.isNativePlatform.mockReturnValue(true)
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    let error: string | null = null
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+
+    expect(error).toBe('Google ログインが設定されていません')
+    expect(mocks.socialLoginLogin).not.toHaveBeenCalled()
   })
 })

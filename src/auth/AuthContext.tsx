@@ -151,6 +151,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (socialLoginInitError.current) {
           return 'Google 認証の初期化に失敗しました（設定を確認してください）'
         }
+        const iOSClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
+        if (!iOSClientId) {
+          return 'Google ログインが設定されていません'
+        }
         const { result } = await SocialLogin.login({
           provider: 'google',
           options: { scopes: ['email', 'profile'] },
@@ -205,6 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       if (e instanceof Error && /cancel|1001|USER_CANCELLED/i.test(e.message)) return null
+      if (e instanceof Error && /error 1000\b/.test(e.message)) return 'Apple ログインに失敗しました。しばらくしてから再試行してください。'
       return e instanceof Error ? e.message : 'Apple ログインに失敗しました'
     }
   }
