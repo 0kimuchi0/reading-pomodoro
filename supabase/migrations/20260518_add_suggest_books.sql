@@ -12,10 +12,12 @@ CREATE TABLE IF NOT EXISTS suggest_books (
 ALTER TABLE suggest_books ENABLE ROW LEVEL SECURITY;
 
 -- 認証済みユーザーは全員読み取り可
+DROP POLICY IF EXISTS "suggest_books_read" ON suggest_books;
 CREATE POLICY "suggest_books_read" ON suggest_books
   FOR SELECT TO authenticated USING (true);
 
 -- 管理者のみ書き込み可（profilesテーブルのroleで判定）
+DROP POLICY IF EXISTS "suggest_books_write" ON suggest_books;
 CREATE POLICY "suggest_books_write" ON suggest_books
   FOR ALL TO authenticated
   USING (
