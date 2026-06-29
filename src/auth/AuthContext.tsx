@@ -1,12 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
-import { SignInWithApple } from '@capacitor-community/apple-sign-in'
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
+import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
-import { APP_BUNDLE_ID, APP_URL_SCHEME } from '../lib/constants'
+import { APP_URL_SCHEME } from '../lib/constants'
 
 function generateRawNonce(): string {
   const array = new Uint8Array(16)
@@ -47,19 +46,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [bannedError, setBannedError] = useState<string | null>(null)
   const [passwordRecoveryMode, setPasswordRecoveryMode] = useState(false)
-  const googleInitError = useRef<Error | null>(null)
+  const socialLoginInitError = useRef<Error | null>(null)
 
   const clearPasswordRecoveryMode = () => setPasswordRecoveryMode(false)
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
-      GoogleAuth.initialize({
-        clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
-        scopes: ['profile', 'email'],
-        grantOfflineAccess: true,
+      SocialLogin.initialize({
+        google: {
+          iOSClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
+          webClientId: import.meta.env.VITE_GOOGLE_SERVER_CLIENT_ID ?? '',
+        },
       }).catch((err) => {
-        console.error('[GoogleAuth] initialize failed:', err)
-        googleInitError.current = err instanceof Error ? err : new Error(String(err))
+        console.error('[SocialLogin] initialize failed:', err)
+        socialLoginInitError.current = err instanceof Error ? err : new Error(String(err))
       })
     }
   }, [])
@@ -84,7 +84,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let initialDone = false
 
-    // onAuthStateChange で初回セッション取得 + 以降の変化を一本化
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setPasswordRecoveryMode(true)
@@ -96,7 +95,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const newUser = session?.user ?? null
 
       if (!initialDone) {
-        // 初回イベント (INITIAL_SESSION / SIGNED_IN / NO_SESSION など)
         initialDone = true
         setLoading(false)
         if (newUser) {
@@ -106,7 +104,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      // 以降のイベント（ログイン・ログアウト・トークン更新）
       if (newUser) {
         const banned = await checkBan(newUser.id)
         if (!banned) {
@@ -119,7 +116,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     })
 
-    // 万が一 onAuthStateChange が発火しない場合のフォールバック
     const timeout = setTimeout(() => {
       if (!initialDone) {
         initialDone = true
@@ -152,11 +148,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async (): Promise<string | null> => {
     try {
       if (Capacitor.isNativePlatform()) {
-        if (googleInitError.current) {
+        if (socialLoginInitError.current) {
           return 'Google 認証の初期化に失敗しました（設定を確認してください）'
         }
-        const googleUser = await GoogleAuth.signIn()
-        const idToken = googleUser.authentication.idToken
+        const { result } = await SocialLogin.login({
+          provider: 'google',
+          options: { scopes: ['email', 'profile'] },
+        })
+        if (result.responseType !== 'online') return 'Google ログインに失敗しました'
+        const { idToken } = result
         if (!idToken) return 'Google ログインに失敗しました'
         const { error } = await supabase.auth.signInWithIdToken({
           provider: 'google',
@@ -171,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return error?.message ?? null
       }
     } catch (e) {
-      if (e instanceof Error && /cancel|dismiss|interrupt/i.test(e.message)) return null
+      if (e instanceof Error && /cancel|dismiss|interrupt|USER_CANCELLED/i.test(e.message)) return null
       return e instanceof Error ? e.message : 'Google ログインに失敗しました'
     }
   }
@@ -181,17 +181,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (Capacitor.isNativePlatform()) {
         const rawNonce = generateRawNonce()
         const hashedNonce = await sha256(rawNonce)
-        const result = await SignInWithApple.authorize({
-          clientId: APP_BUNDLE_ID,
-          redirectURI: '',
-          scopes: 'email name',
-          nonce: hashedNonce,
+        const { result } = await SocialLogin.login({
+          provider: 'apple',
+          options: {
+            scopes: ['name', 'email'],
+            nonce: hashedNonce,
+          },
         })
-        const identityToken = result.response.identityToken
-        if (!identityToken) return 'Apple ログインに失敗しました'
+        const { idToken } = result
+        if (!idToken) return 'Apple ログインに失敗しました'
         const { error } = await supabase.auth.signInWithIdToken({
           provider: 'apple',
-          token: identityToken,
+          token: idToken,
           nonce: rawNonce,
         })
         return error?.message ?? null
@@ -203,7 +204,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return error?.message ?? null
       }
     } catch (e) {
-      if (e instanceof Error && /cancel|1001/i.test(e.message)) return null
+      if (e instanceof Error && /cancel|1001|USER_CANCELLED/i.test(e.message)) return null
       return e instanceof Error ? e.message : 'Apple ログインに失敗しました'
     }
   }
