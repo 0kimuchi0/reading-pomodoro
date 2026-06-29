@@ -154,7 +154,8 @@ export async function getMyProfile(userId?: string): Promise<Profile | null> {
   const id = userId ?? (await supabase.auth.getSession()).data.session?.user.id
   if (!id) return null
   const { data, error } = await supabase.from('profiles').select('*').eq('id', id).single()
-  if (error || !data) return null
+  if (error) return null
+  if (!data) return null
   return profileFromRow(data as Record<string, unknown>)
 }
 

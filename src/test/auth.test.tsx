@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import React from 'react'
 import { AuthProvider, useAuth } from '../auth/AuthContext'
+import { getMyProfile } from '../lib/db'
 
 const mocks = vi.hoisted(() => ({
   isNativePlatform: vi.fn(() => false),
@@ -324,5 +325,50 @@ describe('PASSWORD_RECOVERY と socialLoginInitError', () => {
     })
 
     expect(error).toBe('Google 認証の初期化に失敗しました（設定を確認してください）')
+  })
+})
+
+describe('admin role loading', () => {
+  let fireAuthState: ((event: string, session: unknown) => Promise<void>) | null = null
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.onAuthStateChange.mockImplementation((...args: unknown[]) => {
+      fireAuthState = args[0] as (event: string, session: unknown) => Promise<void>
+      return { data: { subscription: { unsubscribe: vi.fn() } } }
+    })
+  })
+
+  it('getMyProfile が admin プロフィールを返すと SIGNED_IN 後に role が admin になる', async () => {
+    mocks.isNativePlatform.mockReturnValue(false)
+    vi.mocked(getMyProfile).mockResolvedValueOnce({
+      id: 'user-admin-123',
+      email: 'admin@example.com',
+      role: 'admin',
+      banned: false,
+      createdAt: '2024-01-01T00:00:00Z',
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    await act(async () => {
+      await fireAuthState?.('SIGNED_IN', { user: { id: 'user-admin-123' } })
+    })
+
+    expect(result.current.role).toBe('admin')
+  })
+
+  it('getMyProfile が null を返すと SIGNED_IN 後も role は null（RLS ブロック時の挙動）', async () => {
+    mocks.isNativePlatform.mockReturnValue(false)
+    vi.mocked(getMyProfile).mockResolvedValueOnce(null)
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    await act(async () => {
+      await fireAuthState?.('SIGNED_IN', { user: { id: 'user-123' } })
+    })
+
+    expect(result.current.role).toBeNull()
   })
 })
