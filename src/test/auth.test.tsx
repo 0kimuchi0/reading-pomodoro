@@ -413,6 +413,64 @@ describe('signInWithApple - error 1000 ハンドリング', () => {
   })
 })
 
+describe('BAN ハンドリング', () => {
+  let fireAuthState: ((event: string, session: unknown) => Promise<void>) | null = null
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.onAuthStateChange.mockImplementation((...args: unknown[]) => {
+      fireAuthState = args[0] as (event: string, session: unknown) => Promise<void>
+      return { data: { subscription: { unsubscribe: vi.fn() } } }
+    })
+  })
+
+  it('BAN済み admin ユーザーが SIGNED_IN したとき bannedError が設定され role は null のまま', async () => {
+    mocks.isNativePlatform.mockReturnValue(false)
+    vi.mocked(getMyProfile).mockResolvedValueOnce({
+      id: 'user-banned-123',
+      email: 'banned-admin@example.com',
+      role: 'admin',
+      banned: true,
+      createdAt: '2024-01-01T00:00:00Z',
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    await act(async () => {
+      await fireAuthState?.('SIGNED_IN', { user: { id: 'user-banned-123' } })
+    })
+
+    expect(result.current.bannedError).toBe('このアカウントは利用が停止されています。')
+    expect(result.current.role).toBeNull()
+    expect(result.current.user).toBeNull()
+  })
+
+  it('bannedError は clearBannedError で解除できる', async () => {
+    mocks.isNativePlatform.mockReturnValue(false)
+    vi.mocked(getMyProfile).mockResolvedValueOnce({
+      id: 'user-banned-123',
+      email: 'banned-admin@example.com',
+      role: 'admin',
+      banned: true,
+      createdAt: '2024-01-01T00:00:00Z',
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+
+    await act(async () => {
+      await fireAuthState?.('SIGNED_IN', { user: { id: 'user-banned-123' } })
+    })
+    expect(result.current.bannedError).not.toBeNull()
+
+    act(() => {
+      result.current.clearBannedError()
+    })
+
+    expect(result.current.bannedError).toBeNull()
+  })
+})
+
 describe('signInWithGoogle - clientId 未設定', () => {
   beforeEach(() => {
     vi.clearAllMocks()
