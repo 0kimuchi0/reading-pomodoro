@@ -72,7 +72,7 @@ function AppInner() {
     }).then(h => {
       handle = h
       if (cleanedUp) h.remove()
-    }).catch(console.error)
+    }).catch(() => {})
     return () => {
       cleanedUp = true
       handle?.remove()
