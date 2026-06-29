@@ -8,9 +8,6 @@ const mocks = vi.hoisted(() => ({
   resetPasswordForEmail: vi.fn(() =>
     Promise.resolve({ error: null as { message: string } | null })
   ),
-  // legacy init mock — keeps old useEffect from throwing when unmocked
-  googleInitialize: vi.fn(() => Promise.resolve()),
-  // new API mocks
   socialLoginInitialize: vi.fn(() => Promise.resolve()),
   socialLoginLogin: vi.fn(),
   supabaseSignInWithIdToken: vi.fn(() => Promise.resolve({ error: null })),
@@ -37,24 +34,11 @@ vi.mock('../lib/supabase', () => ({
   },
 }))
 
-// new package mock — RED: AuthContext still uses old packages so these won't be called
 vi.mock('@capgo/capacitor-social-login', () => ({
   SocialLogin: {
     initialize: mocks.socialLoginInitialize,
     login: mocks.socialLoginLogin,
   },
-}))
-
-// legacy mocks kept so old imports don't throw during RED phase
-vi.mock('@codetrix-studio/capacitor-google-auth', () => ({
-  GoogleAuth: {
-    initialize: mocks.googleInitialize,
-    signIn: vi.fn(),
-  },
-}))
-
-vi.mock('@capacitor-community/apple-sign-in', () => ({
-  SignInWithApple: { authorize: vi.fn() },
 }))
 
 vi.mock('../lib/db', () => ({
@@ -72,7 +56,6 @@ describe('resetPassword', () => {
     vi.clearAllMocks()
     mocks.resetPasswordForEmail.mockResolvedValue({ error: null })
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
-    mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
     })
@@ -138,7 +121,6 @@ describe('SocialLogin.initialize', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
-    mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
     })
@@ -169,7 +151,6 @@ describe('signInWithGoogle (native)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
-    mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
@@ -225,7 +206,6 @@ describe('signInWithApple (native)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
-    mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
@@ -284,7 +264,6 @@ describe('PASSWORD_RECOVERY と socialLoginInitError', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
-    mocks.googleInitialize.mockResolvedValue(undefined)
     mocks.onAuthStateChange.mockImplementation((...args: unknown[]) => {
       fireAuthState = args[0] as (event: string, session: unknown) => Promise<void>
       return { data: { subscription: { unsubscribe: vi.fn() } } }
