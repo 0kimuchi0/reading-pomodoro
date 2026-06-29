@@ -236,8 +236,20 @@ describe('signInWithApple (native)', () => {
       })
     )
     expect(mocks.supabaseSignInWithIdToken).toHaveBeenCalledWith(
-      expect.objectContaining({ provider: 'apple', token: 'apple-id-token-456' })
+      expect.objectContaining({
+        provider: 'apple',
+        token: 'apple-id-token-456',
+        nonce: expect.any(String),
+      })
     )
+
+    // PKCE invariant: rawNonce (→ Supabase) ≠ hashedNonce (→ SocialLogin)
+    const hashedNonceUsed = (mocks.socialLoginLogin.mock.calls[0][0] as { options: { nonce: string } }).options.nonce
+    const rawNonceUsed = (mocks.supabaseSignInWithIdToken.mock.calls[0][0] as { nonce: string }).nonce
+    expect(rawNonceUsed).not.toBe(hashedNonceUsed)
+    expect(rawNonceUsed).toHaveLength(32)    // hex(Uint8Array(16))
+    expect(hashedNonceUsed).toHaveLength(64) // hex(SHA-256)
+
     expect(error).toBeNull()
   })
 
