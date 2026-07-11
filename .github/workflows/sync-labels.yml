@@ -1,0 +1,43 @@
+name: Sync Labels
+
+on:
+  push:
+    paths:
+      - 'labels.json'
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install labels-config
+        run: npm install -g @asagiri-design/labels-config
+
+      - name: Authenticate gh CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GH_TOKEN" | gh auth login --with-token
+
+      - name: Sync labels
+        run: |
+          REPO="${{ github.repository }}"
+          OWNER=$(echo "$REPO" | cut -d'/' -f1)
+          REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
+          labels-config sync \
+            --owner "$OWNER" \
+            --repo "$REPO_NAME" \
+            --file labels.json \
+            --delete-extra \
+            --verbose
