@@ -280,13 +280,14 @@ const COLORS = ['#534AB7', '#7C75D4', '#A8A3E3', '#D4D1F5', '#6C63C4', '#9B94D8'
 
 const RADIAN = Math.PI / 180
 function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: {
-  cx: number; cy: number; midAngle: number
-  innerRadius: number; outerRadius: number; percent: number
+  cx: number; cy: number; midAngle?: number
+  innerRadius: number; outerRadius: number; percent?: number
 }) {
-  if (percent < 0.15) return null
+  if (percent === undefined || percent < 0.15) return null
+  const angle = midAngle ?? 0
   const r = innerRadius + (outerRadius - innerRadius) * 0.55
-  const x = cx + r * Math.cos(-midAngle * RADIAN)
-  const y = cy + r * Math.sin(-midAngle * RADIAN)
+  const x = cx + r * Math.cos(-angle * RADIAN)
+  const y = cy + r * Math.sin(-angle * RADIAN)
   return (
     <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={15} fontWeight={600}>
       {`${(percent * 100).toFixed(0)}%`}
