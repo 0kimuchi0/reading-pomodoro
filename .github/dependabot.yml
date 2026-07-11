@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # npm (JavaScript/TypeScript) の設定
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily" # 毎日チェックする
+    open-pull-requests-limit: 10
