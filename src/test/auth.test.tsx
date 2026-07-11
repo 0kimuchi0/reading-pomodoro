@@ -151,11 +151,16 @@ describe('SocialLogin.initialize', () => {
 describe('signInWithGoogle (native)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.stubEnv('VITE_GOOGLE_CLIENT_ID', 'test-client-id')
     mocks.socialLoginInitialize.mockResolvedValue(undefined)
     mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
     mocks.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: vi.fn() } },
     })
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
   })
 
   it('SocialLogin.login を呼んで idToken で Supabase にログインする', async () => {
