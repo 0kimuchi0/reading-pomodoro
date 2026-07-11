@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "labels": [
+    {
+      "category": "Type",
+      "labels": [
+        { "name": "api-integration", "color": "ffb300", "description": "API・外部サービス連携" },
+        { "name": "bff", "color": "7057ff", "description": "BFF・バックエンド連携" },
+        { "name": "ci-cd", "color": "00ced1", "description": "CI/CD・自動化" },
+        { "name": "component", "color": "008672", "description": "コンポーネントの追加・更新" },
+        { "name": "documentation", "color": "332412", "description": "ドキュメントの追加・更新" },
+        { "name": "refactor", "color": "a9a9a9", "description": "リファクタリング・パフォーマンス最適化・コード整理" },
+        { "name": "hotfix", "color": "ff6347", "description": "緊急修正・Hotfix" },
+        { "name": "test", "color": "08a4d6", "description": "テスト・E2E・ユニットテスト" },
+        { "name": "design", "color": "d876e3", "description": "UIUXデザイン" },
+        { "name": "type-definition", "color": "e91e63", "description": "TypeScript型定義・型安全性" },
+        { "name": "spec-change", "color": "d93f0b", "description": "仕様変更" },
+        { "name": "feature", "color": "b3fa11", "description": "機能追加" },
+        { "name": "setup", "color": "c5def5", "description": "開発環境・パッケージの追加・変更・更新" },
+        { "name": "screen", "color": "16c9f5", "description": "画面の追加・更新" }
+      ]
+    },
+    {
+      "category": "PR",
+      "labels": [
+        { "name": "fix", "color": "d73a4a", "description": "不具合修正のPR" },
+        { "name": "wip", "color": "fbca04", "description": "作業中・レビュー未依頼" }
+      ]
+    },
+    {
+      "category": "Issue",
+      "labels": [
+        { "name": "bug", "color": "d73a4a", "description": "不具合報告" },
+        { "name": "question", "color": "d876e3", "description": "質問・確認事項" }
+      ]
+    },
+    {
+      "category": "Task Breakdown",
+      "labels": [
+        { "name": "Epic", "color": "5319e7", "description": "大きな機能単位" },
+        { "name": "Story", "color": "1d76db", "description": "ユーザー視点の価値" },
+        { "name": "Task", "color": "c2e0c6", "description": "具体的な実装作業（数時間〜1日）" }
+      ]
+    },
+    {
+      "category": "Comment",
+      "labels": [
+        { "name": "must", "color": "b60205", "description": "必須修正。バグや重大な規約違反" },
+        { "name": "imo", "color": "fbca04", "description": "私の意見。修正するかは任せる" },
+        { "name": "nits", "color": "c5def5", "description": "些細な点。修正不要だが気になった点" },
+        { "name": "ask", "color": "d876e3", "description": "質問。意図を確認したい" }
+      ]
+    },
+    {
+      "category": "Status",
+      "labels": [
+        { "name": "duplicate", "color": "cfd3d7", "description": "既に同様のIssue/PRが存在する" },
+        { "name": "wontfix", "color": "ffffff", "description": "対応しない方針" },
+        { "name": "invalid", "color": "e4e669", "description": "問題として成立しない・誤報告" },
+        { "name": "help wanted", "color": "008672", "description": "協力・対応者を募集中" },
+        { "name": "good first issue", "color": "7057ff", "description": "初心者向けの取り組みやすいIssue" }
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "0kimuchi0/Template"
+  }
+}
