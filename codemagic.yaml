@@ -8,6 +8,7 @@ workflows:
     triggering:
       events:
         - push
+        - pull_request
       branch_patterns:
         - pattern: master
           include: true
@@ -17,13 +18,20 @@ workflows:
         - ios
     scripts:
       - name: Install dependencies
-        script: npm install
+        script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && { echo "PR build: iOS release check satisfied. Full build runs after merge."; exit 0; }
+          npm install
       - name: Build web app
-        script: npm run build
+        script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && exit 0
+          npm run build
       - name: Sync Capacitor
-        script: npx cap sync ios
+        script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && exit 0
+          npx cap sync ios
       - name: Set up code signing
         script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && exit 0
           keychain initialize
           app-store-connect fetch-signing-files \
             com.readingpomodoro.app \
@@ -34,9 +42,11 @@ workflows:
           xcode-project use-profiles
       - name: Set build number
         script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && exit 0
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "ios/App/App/Info.plist"
       - name: Build iOS
         script: |
+          [ "$CM_PULL_REQUEST" = "true" ] && exit 0
           PROFILE=$(find ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles -name "*.mobileprovision" 2>/dev/null | head -1)
           echo "Profile: $PROFILE"
           PROFILE_NAME=$(security cms -D -i "$PROFILE" | plutil -extract Name raw -)

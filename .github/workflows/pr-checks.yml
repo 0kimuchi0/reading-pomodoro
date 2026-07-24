@@ -17,12 +17,6 @@ jobs:
     steps:
       - run: echo "Vercel deploy runs after merge to master. Check satisfied."
 
-  ios-release:
-    name: iOS Release
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "iOS build runs after merge via Codemagic. Check satisfied."
-
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
