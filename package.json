@@ -18,7 +18,7 @@
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
     "@capacitor/ios": "^8.4.1",
-    "@capgo/capacitor-social-login": "^8.3.30",
+    "@capgo/capacitor-social-login": "^8.3.38",
     "@supabase/supabase-js": "^2.110.5",
     "@tabler/icons-react": "^3.19.0",
     "@types/kuromoji": "^0.1.3",
