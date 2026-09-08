@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { IconX, IconBrandGoogle, IconBrandApple, IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
-import { Capacitor } from '@capacitor/core'
 import { useAuth } from './AuthContext'
 
-const isNative = Capacitor.isNativePlatform()
+const isNative = (window as any).Capacitor?.isNativePlatform?.() === true
 
 interface Props {
   onClose: () => void
