@@ -1,8 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { IconClock, IconBooks, IconChartBar, IconSettings, IconShield } from '@tabler/icons-react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
-import { Capacitor } from '@capacitor/core'
-import { App as CapApp } from '@capacitor/app'
 import { supabase } from './lib/supabase'
 import { APP_URL_SCHEME } from './lib/constants'
 import TimerTab from './components/TimerTab'
@@ -52,27 +50,29 @@ function AppInner() {
   }, [passwordRecoveryMode, clearPasswordRecoveryMode])
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return
+    if ((window as any).Capacitor?.isNativePlatform?.() !== true) return
     let handle: { remove: () => void } | null = null
     let cleanedUp = false
-    CapApp.addListener('appUrlOpen', async ({ url }) => {
-      if (!url.startsWith(APP_URL_SCHEME)) return
-      const urlObj = new URL(url)
-      const code = urlObj.searchParams.get('code')
-      if (code) {
-        await supabase.auth.exchangeCodeForSession(code)
-      } else {
-        const hash = new URLSearchParams(urlObj.hash.replace('#', ''))
-        const access_token = hash.get('access_token')
-        const refresh_token = hash.get('refresh_token')
-        if (access_token && refresh_token) {
-          await supabase.auth.setSession({ access_token, refresh_token })
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      CapApp.addListener('appUrlOpen', async ({ url }: { url: string }) => {
+        if (!url.startsWith(APP_URL_SCHEME)) return
+        const urlObj = new URL(url)
+        const code = urlObj.searchParams.get('code')
+        if (code) {
+          await supabase.auth.exchangeCodeForSession(code)
+        } else {
+          const hash = new URLSearchParams(urlObj.hash.replace('#', ''))
+          const access_token = hash.get('access_token')
+          const refresh_token = hash.get('refresh_token')
+          if (access_token && refresh_token) {
+            await supabase.auth.setSession({ access_token, refresh_token })
+          }
         }
-      }
-    }).then(h => {
-      handle = h
-      if (cleanedUp) h.remove()
-    }).catch(() => {})
+      }).then(h => {
+        handle = h
+        if (cleanedUp) h.remove()
+      }).catch(() => {})
+    })
     return () => {
       cleanedUp = true
       handle?.remove()

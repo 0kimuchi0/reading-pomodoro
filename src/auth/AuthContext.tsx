@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
-import { Capacitor } from '@capacitor/core'
-import { SocialLogin } from '@capgo/capacitor-social-login'
+const isNative = () => (window as any).Capacitor?.isNativePlatform?.() === true
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
@@ -51,7 +50,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const clearPasswordRecoveryMode = () => setPasswordRecoveryMode(false)
 
   useEffect(() => {
-    if (Capacitor.isNativePlatform()) {
+    if (!isNative()) return
+    import('@capgo/capacitor-social-login').then(({ SocialLogin }) => {
       SocialLogin.initialize({
         google: {
           iOSClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('[SocialLogin] initialize failed:', err)
         socialLoginInitError.current = err instanceof Error ? err : new Error(String(err))
       })
-    }
+    })
   }, [])
 
   const clearBannedError = () => setBannedError(null)
@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async (): Promise<string | null> => {
     try {
-      if (Capacitor.isNativePlatform()) {
+      if (isNative()) {
         if (socialLoginInitError.current) {
           return 'Google 認証の初期化に失敗しました（設定を確認してください）'
         }
@@ -155,6 +155,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!iOSClientId) {
           return 'Google ログインが設定されていません'
         }
+        const { SocialLogin } = await import('@capgo/capacitor-social-login')
         const { result } = await SocialLogin.login({
           provider: 'google',
           options: { scopes: ['email', 'profile'] },
@@ -182,9 +183,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithApple = async (): Promise<string | null> => {
     try {
-      if (Capacitor.isNativePlatform()) {
+      if (isNative()) {
         const rawNonce = generateRawNonce()
         const hashedNonce = await sha256(rawNonce)
+        const { SocialLogin } = await import('@capgo/capacitor-social-login')
         const { result } = await SocialLogin.login({
           provider: 'apple',
           options: {
@@ -225,7 +227,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const resetPassword = async (email: string): Promise<string | null> => {
-    const redirectTo = Capacitor.isNativePlatform()
+    const redirectTo = isNative()
       ? APP_URL_SCHEME
       : window.location.origin
     const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
