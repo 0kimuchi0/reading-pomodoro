@@ -17,10 +17,6 @@ const mocks = vi.hoisted(() => ({
   })),
 }))
 
-vi.mock('@capacitor/core', () => ({
-  Capacitor: { isNativePlatform: mocks.isNativePlatform },
-}))
-
 vi.mock('../lib/supabase', () => ({
   supabase: {
     auth: {
@@ -47,6 +43,15 @@ vi.mock('../lib/db', () => ({
   getMyProfile: vi.fn(),
   deleteAccount: vi.fn(),
 }))
+
+// Wire window.Capacitor to mocks.isNativePlatform so isNative() in AuthContext reads the mock
+beforeEach(() => {
+  Object.defineProperty(window, 'Capacitor', {
+    value: { isNativePlatform: mocks.isNativePlatform },
+    writable: true,
+    configurable: true,
+  })
+})
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <AuthProvider>{children}</AuthProvider>
@@ -176,6 +181,7 @@ describe('signInWithGoogle (native)', () => {
     })
 
     const { result } = renderHook(() => useAuth(), { wrapper })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     let error: string | null = 'sentinel'
     await act(async () => {
       error = await result.current.signInWithGoogle()
@@ -199,6 +205,7 @@ describe('signInWithGoogle (native)', () => {
     })
 
     const { result } = renderHook(() => useAuth(), { wrapper })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     let error: string | null = null
     await act(async () => {
       error = await result.current.signInWithGoogle()
