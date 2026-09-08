@@ -1,4 +1,4 @@
-import kuromoji from 'kuromoji'
+import type kuromoji from 'kuromoji'
 import { normalize } from '../suggestBooks'
 
 type Tokenizer = kuromoji.Tokenizer<kuromoji.IpadicFeatures>
@@ -9,12 +9,17 @@ let loadPromise: Promise<Tokenizer> | null = null
 function loadTokenizer(): Promise<Tokenizer> {
   if (tokenizer) return Promise.resolve(tokenizer)
   if (loadPromise) return loadPromise
-  loadPromise = new Promise((resolve, reject) => {
-    kuromoji.builder({ dicPath: '/dict' }).build((err, built) => {
-      if (err) { reject(err); return }
-      tokenizer = built
-      resolve(built)
+  loadPromise = import('kuromoji').then(({ default: k }) =>
+    new Promise<Tokenizer>((resolve, reject) => {
+      k.builder({ dicPath: '/dict' }).build((err, built) => {
+        if (err) { reject(err); return }
+        tokenizer = built
+        resolve(built)
+      })
     })
+  ).catch(err => {
+    loadPromise = null
+    return Promise.reject(err)
   })
   return loadPromise
 }
@@ -27,7 +32,7 @@ async function toReading(text: string): Promise<string> {
   const t = await loadTokenizer()
   return katakanaToHiragana(
     t.tokenize(text)
-      .map(tok => tok.reading ?? tok.surface_form)
+      .map((tok: { reading?: string; surface_form: string }) => tok.reading ?? tok.surface_form)
       .join('')
   )
 }
