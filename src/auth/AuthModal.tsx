@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { IconX, IconBrandGoogle, IconBrandApple, IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
+import { Capacitor } from '@capacitor/core'
 import { useAuth } from './AuthContext'
+
+const isNative = Capacitor.isNativePlatform()
 
 interface Props {
   onClose: () => void
@@ -173,7 +176,7 @@ export default function AuthModal({ onClose }: Props) {
               </button>
             </form>
 
-            {mode !== 'reset' && (
+            {mode !== 'reset' && isNative && (
               <>
                 <div className="auth-divider"><span>または</span></div>
                 <button className="btn-apple" onClick={handleApple} disabled={loading}>
