@@ -16,9 +16,24 @@
           try { return JSON.parse(JSON.stringify(obj)); } catch { return obj; }
         };
       }
+      var _jsErrors = [];
+      function _showError(msg) {
+        var r = document.getElementById('root');
+        if (!r) return;
+        r.innerHTML = '<div style="color:#eee;padding:16px;font-family:monospace;font-size:13px;word-break:break-all;background:#1a1a2e;min-height:100vh"><p style="color:#f87171;font-size:15px;margin-bottom:8px">&#128308; JS Error (please screenshot this)</p><pre style="white-space:pre-wrap;margin:0">' + msg + '</pre><button onclick="location.reload()" style="margin-top:16px;padding:8px 20px;font-size:13px;background:#534AB7;color:white;border:none;border-radius:6px;cursor:pointer">Reload</button></div>';
+      }
+      window.onerror = function(msg, src, line, col, err) {
+        _jsErrors.push((err ? err.stack : msg) || msg);
+        _showError(_jsErrors.join('\n\n'));
+      };
+      window.addEventListener('unhandledrejection', function(e) {
+        var msg = e.reason ? (e.reason.stack || String(e.reason)) : 'Unhandled rejection';
+        _jsErrors.push(msg);
+        _showError(_jsErrors.join('\n\n'));
+      });
       setTimeout(function() {
         var r = document.getElementById('root');
-        if (r && r.childElementCount === 0) {
+        if (r && r.childElementCount === 0 && _jsErrors.length === 0) {
           r.innerHTML = '<div style="color:#eee;padding:24px;font-family:sans-serif;text-align:center"><p style="font-size:16px">アプリの読み込みに失敗しました。<br>ページを再読み込みしてください。</p><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;font-size:14px;background:#534AB7;color:white;border:none;border-radius:8px;cursor:pointer">再読み込み</button></div>';
         }
       }, 10000);
