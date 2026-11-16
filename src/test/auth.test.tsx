@@ -514,3 +514,64 @@ describe('signInWithGoogle - clientId 未設定', () => {
     expect(mocks.socialLoginLogin).not.toHaveBeenCalled()
   })
 })
+
+describe('signInWithGoogle (Android)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.socialLoginInitialize.mockResolvedValue(undefined)
+    mocks.supabaseSignInWithIdToken.mockResolvedValue({ error: null })
+    mocks.onAuthStateChange.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
+    mocks.isNativePlatform.mockReturnValue(true)
+    Object.defineProperty(window, 'Capacitor', {
+      value: { isNativePlatform: mocks.isNativePlatform, getPlatform: () => 'android' },
+      writable: true,
+      configurable: true,
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('Web クライアント ID があれば scopes を付けずに SocialLogin.login を呼ぶ', async () => {
+    vi.stubEnv('VITE_GOOGLE_CLIENT_ID', '')
+    vi.stubEnv('VITE_GOOGLE_SERVER_CLIENT_ID', 'web-client-id')
+    mocks.socialLoginLogin.mockResolvedValue({
+      provider: 'google',
+      result: { responseType: 'online', idToken: 'android-id-token', accessToken: null, profile: null },
+    })
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    let error: string | null = 'sentinel'
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+
+    const call = mocks.socialLoginLogin.mock.calls[0][0]
+    expect(call.provider).toBe('google')
+    expect(call.options).not.toHaveProperty('scopes')
+    expect(call.options.nonce).toMatch(/^[0-9a-f]{64}$/)
+    expect(mocks.supabaseSignInWithIdToken).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'google', token: 'android-id-token' })
+    )
+    expect(error).toBeNull()
+  })
+
+  it('Web クライアント ID が未設定のとき SocialLogin.login を呼ばずにエラーを返す', async () => {
+    vi.stubEnv('VITE_GOOGLE_CLIENT_ID', 'ios-client-id')
+    vi.stubEnv('VITE_GOOGLE_SERVER_CLIENT_ID', '')
+
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    let error: string | null = null
+    await act(async () => {
+      error = await result.current.signInWithGoogle()
+    })
+
+    expect(mocks.socialLoginLogin).not.toHaveBeenCalled()
+    expect(error).toBe('Google ログインが設定されていません')
+  })
+})

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 const isNative = () => (window as any).Capacitor?.isNativePlatform?.() === true
+const isAndroid = () => (window as any).Capacitor?.getPlatform?.() === 'android'
 import { supabase } from '../lib/supabase'
 import { migrateLocalDataToSupabase, getMyProfile, deleteAccount } from '../lib/db'
 import type { UserRole } from '../types'
@@ -151,8 +152,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (socialLoginInitError.current) {
           return 'Google 認証の初期化に失敗しました（設定を確認してください）'
         }
-        const iOSClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
-        if (!iOSClientId) {
+        // Android は Web クライアント ID、iOS は iOS クライアント ID で認証する
+        const android = isAndroid()
+        const clientId = (android
+          ? import.meta.env.VITE_GOOGLE_SERVER_CLIENT_ID
+          : import.meta.env.VITE_GOOGLE_CLIENT_ID) as string | undefined
+        if (!clientId) {
           return 'Google ログインが設定されていません'
         }
         // Supabase は生の nonce を SHA-256 して ID トークン内の nonce と照合する
@@ -161,7 +166,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { SocialLogin } = await import('@capgo/capacitor-social-login')
         const { result } = await SocialLogin.login({
           provider: 'google',
-          options: { scopes: ['email', 'profile'], nonce: hashedNonce },
+          // Android のプラグインは MainActivity を改造しない限り scopes 指定を拒否する（email / profile は既定で付与される）
+          options: android
+            ? { nonce: hashedNonce }
+            : { scopes: ['email', 'profile'], nonce: hashedNonce },
         })
         if (result.responseType !== 'online') return 'Google ログインに失敗しました'
         const { idToken } = result

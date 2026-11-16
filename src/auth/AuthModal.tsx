@@ -4,6 +4,7 @@ import { IconX, IconBrandGoogle, IconBrandApple, IconMail, IconLock, IconEye, Ic
 import { useAuth } from './AuthContext'
 
 const isNative = (window as any).Capacitor?.isNativePlatform?.() === true
+const isIOS = isNative && (window as any).Capacitor?.getPlatform?.() === 'ios'
 
 interface Props {
   onClose: () => void
@@ -178,10 +179,12 @@ export default function AuthModal({ onClose }: Props) {
             {mode !== 'reset' && isNative && (
               <>
                 <div className="auth-divider"><span>または</span></div>
-                <button className="btn-apple" onClick={handleApple} disabled={loading}>
-                  <IconBrandApple size={18} />
-                  Apple でログイン
-                </button>
+                {isIOS && (
+                  <button className="btn-apple" onClick={handleApple} disabled={loading}>
+                    <IconBrandApple size={18} />
+                    Apple でログイン
+                  </button>
+                )}
                 <button className="btn-google" onClick={handleGoogle} disabled={loading}>
                   <IconBrandGoogle size={18} />
                   Google でログイン
